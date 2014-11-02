@@ -3,7 +3,7 @@ import javax.media.opengl.GL2;
 
 public class SplitingSquare extends HomingObject {
 	
-	public static final int HOME_SPEED = 3; 
+	public static final int HOME_SPEED = 3;
 	private int ORBIT_SPEED = 3;
 	
 	private double orbitAngle;

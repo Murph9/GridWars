@@ -1,5 +1,6 @@
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.media.opengl.GL2;
@@ -121,18 +122,19 @@ public class GameEngine implements GLEventListener {
             g.update(dt);
         }
         
-        bulletCollision();
+        calcCollisions();
 	}
 	
-	//calculates collision with bullets only (sounds easier so far, my merge with player in future)
-	private void bulletCollision() {
+	/**checks relative distances of everything then calls @calcDeletions to actually delete them
+	 */
+	private void calcCollisions() {
 		List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 	
+		HashSet<GameObject> obj2Del = new HashSet<GameObject>(); //because constant check time
+		
 		for (GameObject obj1: objects) { //for each bullet
-			if (obj1.hasCollided) { //collided last call
-				if (optionsForDelete(objects, obj1)) {
-					break; //this occurs if player has been hit, then stop this big loop
-				}
+			if (obj2Del.contains(obj1)) {
+				continue;
 			}
 			
 			if (obj1 instanceof PlayerBullet || obj1 instanceof Player) { 
@@ -140,6 +142,9 @@ public class GameEngine implements GLEventListener {
 							//if player, check if you lose a life
 				
 				for (GameObject obj2: objects) { //look at everything that could hit you (or get hit by bullet)
+					if (obj2Del.contains(obj2)) {
+						continue;
+					}
 					
 					//list of things you can't even hit with a bullet (but might have a position)
 					if (obj2 instanceof PlayerBullet || obj2 instanceof Player || obj2 instanceof Border 
@@ -155,59 +160,58 @@ public class GameEngine implements GLEventListener {
 					
 					if ((Math.abs(pos1[0] - pos2[0]) < Math.abs(size1/3 + size2/3 )) && //if closeish
 							(Math.abs(pos1[1] - pos2[1]) < Math.abs(size1/3 + size2/3))) {
-						obj1.hasCollided = true;
-//						optionsForDelete(objects, obj1);
-						obj2.hasCollided = true;
-//						optionsForDelete(objects, obj2);
+						obj2Del.add(obj1);
+						obj2Del.add(obj1);
 						break;
 					}
 				}
 			}
+			
+		}
+		
+		
+		if (calcDeletions(obj2Del)) {
+			//delete everything from the GameObjects.ROOT
+			lives -= 1;
 		}
 	}
-	
 
 	/**Return true if Player has collided with something
 	 * Handles all the logic behind what happens when collisions occur
+	 * replaced the old optionsForDelete
+	 * @param objects List of things to try and delete
 	 */
-	private boolean optionsForDelete(List<GameObject> objects, GameObject obj1) {
-		if (obj1 instanceof Player) {
-			obj1.hasCollided = false;
-			for (GameObject obj2: objects) {
-				if (obj2 instanceof Player || obj2 instanceof Border || obj2 instanceof Camera || obj2.equals(GameObject.ROOT)) {
-				} else { //all things we need for the next run
-//					obj2.destroy();
-					//DEBUG: comment out above line if you want to test, player can't be 'killed'
-				}
+	private boolean calcDeletions(HashSet<GameObject> objects) {
+		for (GameObject o: objects) {
+			if (o instanceof Player) {
+				return true; //then exit because we are done here
 			}
-			lives -= 1;
-			return true; //stop, there should be no more collisions, because i just deleted it all
+			if (o.hasCollided == true) { //bullets call this on themselves if they hit a wall
+				o.destroy();
+			}
+			if (o instanceof SplitingSquare && o.getSize() == 1) { //something about changing this to a variable
+				SplitingSquare square = (SplitingSquare) o; //because it has to be to get in here
+				double[] t = square.getCollisionPosition();
+				double angle = square.getOrbitAngle();
+				
+				SplitingSquare sA = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, false);
+				sA.setPosition(new double[] {t[0]+Math.cos(angle+60)*0.7, t[1]+Math.sin(angle+60)*0.7});
+				
+				SplitingSquare sB = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, true);
+				sB.setPosition(new double[] {t[0]+Math.cos(angle-30)*0.7, t[1]+Math.sin(angle-30)*0.7});
+				
+				SplitingSquare sC = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, true);
+				sC.setPosition(new double[] {t[0]+Math.cos(angle-120)*0.7, t[1]+Math.sin(angle-120)*0.7});
+				
+				score += 1;
+				o.destroy();
+			} else if (o instanceof Shield || o instanceof SnakeBody) {
+				//NOTHING, because they don't die
+			} else {
+				score += 1; //could definately be: o.getScore()
+				o.destroy();
+			}
 			
-		} else if (obj1 instanceof PlayerBullet) { //we don't want to add points for just shooting now do we?
-			obj1.destroy(); //so kill it
-			
-		} else if (obj1 instanceof SplitingSquare && obj1.getSize() == 1) { //special case for the square
-			SplitingSquare square = (SplitingSquare) obj1;
-			double[] t = square.getCollisionPosition();
-			double angle = square.getOrbitAngle();
-			
-			SplitingSquare sA = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, false);
-			sA.setPosition(new double[] {t[0]+Math.cos(angle+60)*0.7, t[1]+Math.sin(angle+60)*0.7});
-			
-			SplitingSquare sB = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, true);
-			sB.setPosition(new double[] {t[0]+Math.cos(angle-30)*0.7, t[1]+Math.sin(angle-30)*0.7});
-			
-			SplitingSquare sC = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, true);
-			sC.setPosition(new double[] {t[0]+Math.cos(angle-120)*0.7, t[1]+Math.sin(angle-120)*0.7});
-			
-			score += 1;
-			obj1.destroy();
-		} else if (obj1 instanceof Shield || obj1 instanceof SnakeBody) {
-			//do nothing because these can NOT be destroyed
-			obj1.hasCollided = false; //and to stop further computations
-		} else {
-			score += 1;
-			obj1.destroy();
 		}
 		return false;
 	}

@@ -33,14 +33,14 @@ public class Player extends MovingObject implements KeyListener {
 				newBullet();
 			}
 		};
-		this.timer = new Timer(100, taskPerformer);
+		this.timer = new Timer(300, taskPerformer);
 		this.timer.start();
 		
 	}
 	
 	private void newBullet() { //creats a PlayerBullet
-		PlayerBullet b1 = new PlayerBullet(0.4, TheGame.GREEN);
-		PlayerBullet b2 = new PlayerBullet(0.4, TheGame.GREEN);
+		PlayerBullet b1 = new PlayerBullet(0.4, GameEngine.GREEN);
+		PlayerBullet b2 = new PlayerBullet(0.4, GameEngine.GREEN);
 
 		double[] myPos = getPosition();
 		double angle = getRotation();

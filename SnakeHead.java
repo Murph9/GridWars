@@ -73,7 +73,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SNAKEHEAD].getTextureId());
-		double[] colour = TheGame.WHITE; //the colour is really only for the body objects :P
+		double[] colour = GameEngine.WHITE; //the colour is really only for the body objects :P
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		
 		gl.glBegin(GL2.GL_QUADS);

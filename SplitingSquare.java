@@ -6,6 +6,7 @@ public class SplitingSquare extends HomingObject {
 	public static final int HOME_SPEED = 3;
 	private int ORBIT_SPEED = 3;
 	
+	private boolean hasSplit;
 	private double orbitAngle;
 	private double orbitRadius;
 		//remember this object type rotates about the same point
@@ -19,6 +20,7 @@ public class SplitingSquare extends HomingObject {
 	 */
 	SplitingSquare(double size, double[] colour, double angle, double radius, boolean rotDirection) {
 		super(size, colour, SplitingSquare.HOME_SPEED);
+		hasSplit = false;
 		orbitAngle = angle;
 		orbitRadius = radius;
 		isPosOrbit = rotDirection;
@@ -27,12 +29,36 @@ public class SplitingSquare extends HomingObject {
 	public double getOrbitAngle() {
 		return orbitAngle;
 	}
+	public void setSplitStatus() {
+		hasSplit = true;
+	}
 	
 	public double[] getCollisionPosition() { //because this object rotates about a point that moves
 		double[] temp = getPosition();
 		temp[0] = temp[0] + Math.cos(orbitAngle)*orbitRadius;
 		temp[1] = temp[1] + Math.sin(orbitAngle)*orbitRadius;
 		return temp;
+	}
+	
+
+	public void destroy() {
+		super.destroy();
+		if (!hasSplit) {
+			double[] t = this.getCollisionPosition();
+			double angle = this.getOrbitAngle();
+			
+			SplitingSquare sA = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, false);
+			sA.setPosition(new double[] {t[0]+Math.cos(angle+60)*0.7, t[1]+Math.sin(angle+60)*0.7});
+			sA.hasSplit = true;
+			
+			SplitingSquare sB = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
+			sB.setPosition(new double[] {t[0]+Math.cos(angle-30)*0.7, t[1]+Math.sin(angle-30)*0.7});
+			sB.hasSplit = true;
+			
+			SplitingSquare sC = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
+			sC.setPosition(new double[] {t[0]+Math.cos(angle-120)*0.7, t[1]+Math.sin(angle-120)*0.7});
+			sC.hasSplit = true;
+		}
 	}
 	
 	public void update(double dt) {

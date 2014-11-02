@@ -13,6 +13,7 @@ public class PlayerBullet extends MovingObject {
 		pos[0] += mySpeedX*dt;
 		pos[1] += mySpeedY*dt;
 		setPosition(pos); //set it
+		boolean hasCollided = false;
 		
 		if (pos[0] > GameEngine.boardWidth-(size/2)) {
 			mySpeedX = -mySpeedX;
@@ -32,6 +33,10 @@ public class PlayerBullet extends MovingObject {
 			mySpeedY = -mySpeedY;
 			pos[1] = -GameEngine.boardHeight+(size/2);
 			hasCollided = true;
+		}
+		
+		if (hasCollided) {
+			this.destroy();
 		}
 	}
 	

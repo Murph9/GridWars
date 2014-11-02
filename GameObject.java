@@ -23,7 +23,6 @@ public class GameObject {
 	protected double[] colour;
 	
 	protected double size = 1;
-	protected boolean hasCollided = false;
 	
 
 	GameObject() {

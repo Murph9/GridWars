@@ -35,6 +35,10 @@ public class GameEngine implements GLEventListener {
 	SQUARE_IMG = "square.png",  BULLET_IMG = "bullet.png", CLONE_IMG = "clone.png", SHIELD_IMG = "shield.png",
 	SNAKEHEAD_IMG = "snakeHead.png", SNAKEBODY_IMG = "snakeBody.png";
 	
+	public static final double[] WHITE = {1,1,1,0.5}, 	RED = {1,0,0,0.5},
+			LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
+			PURPLE = {1,0,1,0.5}, 		YELLOW = {1,1,0,0.5},
+			ORANGE = {0.8, 0.3, 0.2,0.5};
 	
 	public GameEngine(Camera camera, int width, int height) {
 		startTime = System.currentTimeMillis();
@@ -128,52 +132,64 @@ public class GameEngine implements GLEventListener {
 	/**checks relative distances of everything then calls @calcDeletions to actually delete them
 	 */
 	private void calcCollisions() {
-		List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
+//		System.out.print(GameObject.ALL_OBJECTS.size()+ ",");
+		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 	
 		HashSet<GameObject> obj2Del = new HashSet<GameObject>(); //because constant check time
 		
-		for (GameObject obj1: objects) { //for each bullet
-			if (obj2Del.contains(obj1)) {
+		loop1: for (GameObject oA: objects) { //for each bullet
+			if (obj2Del.contains(oA)) {
 				continue;
 			}
-			
-			if (obj1 instanceof PlayerBullet || obj1 instanceof Player) { 
+
+			if (oA instanceof PlayerBullet || oA instanceof Player) { 
 							//if a bullet, check that you hit something
 							//if player, check if you lose a life
 				
-				for (GameObject obj2: objects) { //look at everything that could hit you (or get hit by bullet)
-					if (obj2Del.contains(obj2)) {
+				for (GameObject oB: objects) { //look at everything that could hit you (or get hit by bullet)
+					if (obj2Del.contains(oB)) {
 						continue;
 					}
 					
 					//list of things you can't even hit with a bullet (but might have a position)
-					if (obj2 instanceof PlayerBullet || obj2 instanceof Player || obj2 instanceof Border 
-							|| obj2 instanceof Camera || obj2.equals(GameObject.ROOT)) {
+					if (oB instanceof PlayerBullet || oB instanceof Player || oB instanceof Border
+							|| oB instanceof Camera || oB.equals(GameObject.ROOT)) {
 						continue; //not these, next object please
 						//and please don't delete root
 					}
 					
-					double[] pos1 = obj1.getCollisionPosition(); //make sure this one is called
-					double size1 = (obj1).getSize();
-					double[] pos2 = obj2.getCollisionPosition(); //seriously
-					double size2 = (obj2).getSize();
+					double[] pos1 = oA.getCollisionPosition(); //make sure this one is called
+					double sizeA = (oA).getSize();
+					double[] pos2 = oB.getCollisionPosition(); //seriously
+					double sizeB = (oB).getSize();
 					
-					if ((Math.abs(pos1[0] - pos2[0]) < Math.abs(size1/3 + size2/3 )) && //if closeish
-							(Math.abs(pos1[1] - pos2[1]) < Math.abs(size1/3 + size2/3))) {
-						obj2Del.add(obj1);
-						obj2Del.add(obj1);
-						break;
+					if ((Math.abs(pos1[0] - pos2[0]) < sizeA/3 + sizeB/3) && //if closeish
+							(Math.abs(pos1[1] - pos2[1]) < sizeA/3 + sizeB/3)) {
+						obj2Del.add(oA);
+						obj2Del.add(oB);
+						continue loop1; //don't think about this loop again = yay
 					}
 				}
 			}
 			
 		}
 		
-		
+		//if player got hit do stuff
 		if (calcDeletions(obj2Del)) {
 			//delete everything from the GameObjects.ROOT
+			for (GameObject o: objects) {
+				if (o instanceof SplitingSquare) {
+					SplitingSquare sq = (SplitingSquare) o;
+					sq.setSplitStatus();
+				}
+				if (!(o instanceof Border || o instanceof Player || o instanceof Camera || o.equals(GameObject.ROOT))) {
+					o.destroy();
+				}
+			}
 			lives -= 1;
 		}
+//		System.out.print(obj2Del.size());
+//		System.out.println(","+GameObject.ALL_OBJECTS.size());
 	}
 
 	/**Return true if Player has collided with something
@@ -182,36 +198,18 @@ public class GameEngine implements GLEventListener {
 	 * @param objects List of things to try and delete
 	 */
 	private boolean calcDeletions(HashSet<GameObject> objects) {
+		
 		for (GameObject o: objects) {
 			if (o instanceof Player) {
 				return true; //then exit because we are done here
 			}
-			if (o.hasCollided == true) { //bullets call this on themselves if they hit a wall
-				o.destroy();
-			}
-			if (o instanceof SplitingSquare && o.getSize() == 1) { //something about changing this to a variable
-				SplitingSquare square = (SplitingSquare) o; //because it has to be to get in here
-				double[] t = square.getCollisionPosition();
-				double angle = square.getOrbitAngle();
-				
-				SplitingSquare sA = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, false);
-				sA.setPosition(new double[] {t[0]+Math.cos(angle+60)*0.7, t[1]+Math.sin(angle+60)*0.7});
-				
-				SplitingSquare sB = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, true);
-				sB.setPosition(new double[] {t[0]+Math.cos(angle-30)*0.7, t[1]+Math.sin(angle-30)*0.7});
-				
-				SplitingSquare sC = new SplitingSquare(0.75, TheGame.RED, angle, 0.7, true);
-				sC.setPosition(new double[] {t[0]+Math.cos(angle-120)*0.7, t[1]+Math.sin(angle-120)*0.7});
-				
-				score += 1;
-				o.destroy();
-			} else if (o instanceof Shield || o instanceof SnakeBody) {
+			if (o instanceof Shield || o instanceof SnakeBody) {
 				//NOTHING, because they don't die
+				
 			} else {
 				score += 1; //could definately be: o.getScore()
 				o.destroy();
 			}
-			
 		}
 		return false;
 	}

@@ -26,11 +26,6 @@ public class TheGame extends JFrame {
 	private static int boardWidth = 12, 
 					boardHeight = 10; //at least 4 please
 	
-	public static final double[] WHITE = {1,1,1}, 	RED = {1,0,0},
-							LIGHT_BLUE = {0,1,0.8}, GREEN = {0,1,0},
-							PURPLE = {1,0,1}, 		YELLOW = {1,1,0},
-							ORANGE = {0.8, 0.3, 0.2};
-    
     public static void main(String[] args) {
 		TheGame system = new TheGame();
 		system.init();
@@ -41,20 +36,20 @@ public class TheGame extends JFrame {
     	MovingObject s = null;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
-    		s = new SimpleSpinner(1, PURPLE, (random.nextInt(180)+90)*(random.nextInt(1)*2-1));
+    		s = new SimpleSpinner(1, GameEngine.PURPLE, (random.nextInt(180)+90)*(random.nextInt(1)*2-1));
     		s.setSpeed(random.nextDouble(), random.nextDouble());
     		break;
     	case 3: case 4:
-    		s = new HomingDiamond(1, LIGHT_BLUE);
+    		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);
     		break;
     	case 5: case 6:
-    		s = new SplitingSquare(1, RED, 0, 1.4, true);
+    		s = new SplitingSquare(1, GameEngine.RED, 0, 1.4, true);
     		break;
     	case 7:
-    		s = new ShieldedClone(1.1, ORANGE);
+    		s = new ShieldedClone(1.1, GameEngine.ORANGE);
     		break;
     	case 8:
-    		s = new SnakeHead(0.7, YELLOW, 10);
+    		s = new SnakeHead(0.7, GameEngine.YELLOW, 10);
     		break;
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
@@ -71,7 +66,7 @@ public class TheGame extends JFrame {
         
         random = new Random();
         
-        GameEngine.player = new Player(1, WHITE);
+        GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);
         border.setScale(1); //so no warning
         

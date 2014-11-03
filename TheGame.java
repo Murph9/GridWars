@@ -12,6 +12,9 @@ import javax.swing.Timer;
 import com.jogamp.opengl.util.FPSAnimator;
 
 
+//not sure whether this file or GameEngine/other should handle the 
+	// actual position and speed of the spawning objects 
+
 public class TheGame extends JFrame {
 	//contains main and all that jazz
 	private static final long serialVersionUID = 1L;
@@ -23,8 +26,7 @@ public class TheGame extends JFrame {
 	private static int TIME_INTERVAL = 500;
 	private Random random;
 	
-	private static int boardWidth = 12, 
-					boardHeight = 10; //at least 4 please
+	private static int boardWidth = 12, boardHeight = 10; //at least 4 please
 	
     public static void main(String[] args) {
 		TheGame system = new TheGame();
@@ -32,18 +34,18 @@ public class TheGame extends JFrame {
 	}
     
     private void newEnemy() {
-    	int a = random.nextInt(10);
+    	int a = random.nextInt(11);
     	MovingObject s = null;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
-    		s = new SimpleSpinner(1, GameEngine.PURPLE, (random.nextInt(180)+90)*(random.nextInt(1)*2-1));
+    		s = new SimpleSpinner(1, GameEngine.PURPLE, -180);
     		s.setSpeed(random.nextDouble(), random.nextDouble());
     		break;
     	case 3: case 4:
     		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);
     		break;
     	case 5: case 6:
-    		s = new SplitingSquare(1, GameEngine.RED, 0, 1.4, true);
+    		s = new SplitingSquare(1, GameEngine.RED, 0, 1, true);
     		break;
     	case 7:
     		s = new ShieldedClone(1.1, GameEngine.ORANGE);
@@ -53,6 +55,8 @@ public class TheGame extends JFrame {
     		break;
     	case 9:
     		s = new ShySquare(1, GameEngine.GREEN);
+    	case 10:
+    		s = new BlackHole(2, GameEngine.RED);
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }

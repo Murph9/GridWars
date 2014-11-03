@@ -40,7 +40,7 @@ public class SimpleSpinner extends MovingObject {
 	
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.DOT].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SPINNER].getTextureId());
 		
     	gl.glColor3d(colour[0], colour[1], colour[2]);
 		gl.glBegin(GL2.GL_QUADS);

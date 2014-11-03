@@ -4,7 +4,7 @@ import javax.media.opengl.GL2;
 public class SplitingSquare extends HomingObject {
 	
 	public static final int HOME_SPEED = 3;
-	private int ORBIT_SPEED = 3;
+	private int ORBIT_SPEED = 6;
 	
 	private boolean hasSplit;
 	private double orbitAngle;
@@ -34,10 +34,14 @@ public class SplitingSquare extends HomingObject {
 	}
 	
 	public double[] getCollisionPosition() { //because this object rotates about a point that moves
-		double[] temp = getPosition();
-		temp[0] = temp[0] + Math.cos(orbitAngle)*orbitRadius;
-		temp[1] = temp[1] + Math.sin(orbitAngle)*orbitRadius;
-		return temp;
+		if (hasSplit) {
+			double[] temp = getPosition();
+			temp[0] = temp[0] + Math.cos(orbitAngle)*orbitRadius;
+			temp[1] = temp[1] + Math.sin(orbitAngle)*orbitRadius;
+			return temp;
+		} else {
+			return super.getPosition();
+		}
 	}
 	
 
@@ -63,17 +67,21 @@ public class SplitingSquare extends HomingObject {
 	
 	public void update(double dt) {
 		super.update(dt);
-		if (isPosOrbit) {
-			orbitAngle += dt*ORBIT_SPEED;
-		} else {
-			orbitAngle -= dt*ORBIT_SPEED;
+		if (hasSplit) {
+			if (isPosOrbit) {
+				orbitAngle += dt*ORBIT_SPEED;
+			} else {
+				orbitAngle -= dt*ORBIT_SPEED;
+			}
 		}
 	}
 
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SQUARE].getTextureId());
 		
-    	gl.glTranslated(Math.cos(orbitAngle)*orbitRadius, Math.sin(orbitAngle)*orbitRadius, 0);
+		if (hasSplit) {
+			gl.glTranslated(Math.cos(orbitAngle)*orbitRadius, Math.sin(orbitAngle)*orbitRadius, 0);
+		}
     	gl.glColor3d(colour[0], colour[1], colour[2]);
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);

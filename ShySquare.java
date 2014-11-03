@@ -7,6 +7,7 @@ public class ShySquare extends MovingObject {
 
 	private float speed = 4;
 	private float dodgeRange = 4;
+	private float dodgeSpeed = 1f;
 	
 	ShySquare(double size, double[] colour) {
 		super(size, colour);
@@ -37,8 +38,8 @@ public class ShySquare extends MovingObject {
 				double[] bullPos = o.getPosition();
 				double distance = (myPos[0] - bullPos[0])*(myPos[0] - bullPos[0]) + (myPos[1] - bullPos[1])*(myPos[1] - bullPos[1]);
 				if (distance < dodgeRange) {
-					mySpeedX += (myPos[0]-bullPos[0])*speed/(2*distance);
-					mySpeedY += (myPos[1]-bullPos[1])*speed/(2*distance);
+					mySpeedX += (myPos[0]-bullPos[0])*dodgeSpeed/(distance);
+					mySpeedY += (myPos[1]-bullPos[1])*dodgeSpeed/(distance);//yes its some random number
 				}
 			}
 		}
@@ -65,7 +66,7 @@ public class ShySquare extends MovingObject {
 
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.DIAMOND].getTextureId()); //get id of the dot file
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SHY].getTextureId()); //get id of the dot file
 		
     	gl.glColor3d(colour[0], colour[1], colour[2]);
 		gl.glBegin(GL2.GL_QUADS);

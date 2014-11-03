@@ -39,8 +39,8 @@ public class Player extends MovingObject implements KeyListener {
 	}
 	
 	private void newBullet() { //creats a PlayerBullet
-		PlayerBullet b1 = new PlayerBullet(0.4, GameEngine.YELLOW);
-		PlayerBullet b2 = new PlayerBullet(0.4, GameEngine.YELLOW);
+		MovingObject b1 = new PlayerBullet(0.4, GameEngine.YELLOW);
+		MovingObject b2 = new PlayerBullet(0.4, GameEngine.YELLOW);
 
 		double[] myPos = getPosition();
 		double angle = getRotation();

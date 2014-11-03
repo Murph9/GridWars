@@ -55,8 +55,8 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		double[] beforePos = before.getPosition();
 		double[] dir = new double[] {pos[0]-beforePos[0], pos[1] - beforePos[1]};
 
-		double angle = Math.toDegrees(Math.atan2((beforePos[1]-pos[1]), (beforePos[0]-pos[0]))) % 180;
-		double beforeAngle = before.getRotation() % 180;
+		double angle = Math.toDegrees(Math.atan2((beforePos[1]-pos[1]), (beforePos[0]-pos[0])));
+		double beforeAngle = before.getRotation();
 		setRotation((angle+beforeAngle)/2);
 		
 		double dist = (pos[0]-beforePos[0])*(pos[0]-beforePos[0]) + (pos[1]-beforePos[1])*(pos[1]-beforePos[1]);

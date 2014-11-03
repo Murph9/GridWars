@@ -30,12 +30,13 @@ public class GameEngine implements GLEventListener {
 	public static MyTexture[] textures;
 	public static final String EXTENSION = "png";
 	public static final int TEXTURE_SIZE = 15; //space for more
-	public static final int PLAYER = 0, DOT = 1, DIAMOND = 2, SQUARE = 3, BULLET = 4, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7,
-				SNAKEBODY = 8, BUTTERFLY = 9, CIRCLE = 10;
+	public static final int PLAYER = 0, SPINNER = 1, DIAMOND = 2, SQUARE = 3, BULLET = 4, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7,
+				SNAKEBODY = 8, BUTTERFLY = 9, CIRCLE = 10, SHY = 11;
 	
-	public static final String  PLAYER_IMG = "player.png", DOT_IMG = "dot.png", DIAMOND_IMG = "diamond.png",
+	public static final String  PLAYER_IMG = "player.png", SPINNER_IMG = "spinner.png", DIAMOND_IMG = "diamond.png",
 	SQUARE_IMG = "square.png",  BULLET_IMG = "bullet.png", CLONE_IMG = "clone.png", SHIELD_IMG = "shield.png",
-	SNAKEHEAD_IMG = "snakeHead.png", SNAKEBODY_IMG = "snakeBody.png", BUTTERFLY_IMG = "butterfly.png", CIRCLE_IMG = "circle.png";
+	SNAKEHEAD_IMG = "snakeHead.png", SNAKEBODY_IMG = "snakeBody.png", BUTTERFLY_IMG = "butterfly.png", CIRCLE_IMG = "circle.png",
+	SHY_IMG = "shy.png";
 	
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
 			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, BLUE = {0,0,1,0.5}, ORANGE = {1,0.6,0,0.5},
@@ -91,7 +92,7 @@ public class GameEngine implements GLEventListener {
 		
 		textures = new MyTexture[TEXTURE_SIZE]; 
 		textures[PLAYER] = new MyTexture(gl, PLAYER_IMG, EXTENSION);
-		textures[DOT] = new MyTexture(gl, DOT_IMG, EXTENSION);
+		textures[SPINNER] = new MyTexture(gl, SPINNER_IMG, EXTENSION);
 		textures[DIAMOND] = new MyTexture(gl, DIAMOND_IMG, EXTENSION);
 		textures[SQUARE] = new MyTexture(gl, SQUARE_IMG, EXTENSION);
 		textures[BULLET] = new MyTexture(gl, BULLET_IMG, EXTENSION);
@@ -100,6 +101,7 @@ public class GameEngine implements GLEventListener {
 		textures[SNAKEHEAD] = new MyTexture(gl, SNAKEHEAD_IMG, EXTENSION);
 		textures[BUTTERFLY] = new MyTexture(gl, BUTTERFLY_IMG, EXTENSION);
 		textures[CIRCLE] = new MyTexture(gl, CIRCLE_IMG, EXTENSION);
+		textures[SHY] = new MyTexture(gl, SHY_IMG, EXTENSION);
 		
 		renderer = new TextRenderer(new Font("Courier", Font.BOLD, 22), true);
 		
@@ -142,9 +144,9 @@ public class GameEngine implements GLEventListener {
 	}
 	
 	/**checks relative distances of everything then calls @calcDeletions to actually delete them
+	 * TODO
 	 */
 	private void calcCollisions() {
-//		System.out.print(GameObject.ALL_OBJECTS.size()+ ",");
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 	
 		HashSet<GameObject> obj2Del = new HashSet<GameObject>(); //because constant check time
@@ -154,35 +156,34 @@ public class GameEngine implements GLEventListener {
 				continue;
 			}
 
-			if (oA instanceof PlayerBullet || oA instanceof Player) { 
-							//if a bullet, check that you hit something
-							//if player, check if you lose a life
-				
 				for (GameObject oB: objects) { //look at everything that could hit you (or get hit by bullet)
-					if (obj2Del.contains(oB)) {
+					if (obj2Del.contains(oB) || oA.equals(oB)) {
 						continue;
 					}
 					
-					//list of things you can't even hit with a bullet (but might have a position)
-					if (oB instanceof PlayerBullet || oB instanceof Player || oB instanceof Border
-							|| oB instanceof Camera || oB.equals(GameObject.ROOT)) {
-						continue; //not these, next object please
-						//and please don't delete root
-					}
-					
-					double[] pos1 = oA.getCollisionPosition(); //make sure this one is called
-					double sizeA = (oA).getSize();
-					double[] pos2 = oB.getCollisionPosition(); //seriously
-					double sizeB = (oB).getSize();
-					
-					if ((Math.abs(pos1[0] - pos2[0]) < sizeA/3 + sizeB/3) && //if closeish
-							(Math.abs(pos1[1] - pos2[1]) < sizeA/3 + sizeB/3)) {
-						obj2Del.add(oA);
-						obj2Del.add(oB);
-						continue loop1; //don't think about this loop again = yay
+					if (oA instanceof PlayerBullet || oA instanceof Player) { 
+									//if a bullet, check that you hit something
+									//if player, check if you lose a life
+						
+						//list of things you can't even hit with a bullet (but might have a position)
+						if (oB instanceof PlayerBullet || oB instanceof Player || oB instanceof Border
+								|| oB instanceof Camera || oB.equals(GameObject.ROOT)) {
+							continue; //not these, next object please
+							//and please don't delete root
+						}
+						
+						double[] pos1 = oA.getCollisionPosition(); //make sure this one is called
+						double sizeA = (oA).getSize();
+						double[] pos2 = oB.getCollisionPosition(); //seriously
+						double sizeB = (oB).getSize();
+						
+						if (((pos1[0] - pos2[0])*(pos1[0] - pos2[0]) + (pos1[1] - pos2[1])*(pos1[1] - pos2[1])) < 0.5*sizeA*sizeB) { //if closeish
+							obj2Del.add(oA);
+							obj2Del.add(oB);
+							continue loop1; //don't think about this loop again = yay
+						}
 					}
 				}
-			}
 			
 		}
 		
@@ -200,8 +201,6 @@ public class GameEngine implements GLEventListener {
 			}
 			lives -= 1;
 		}
-//		System.out.print(obj2Del.size());
-//		System.out.println(","+GameObject.ALL_OBJECTS.size());
 	}
 
 	/**Return true if Player has collided with something
@@ -215,9 +214,9 @@ public class GameEngine implements GLEventListener {
 			if (o instanceof Player) {
 				return true; //then exit because we are done here
 			}
+		
 			if (o instanceof Shield || o instanceof SnakeBody) {
 				//NOTHING, because they don't die
-				
 			} else {
 				MovingObject mo = (MovingObject) o;
 				score += mo.score(); //could definately be: o.getScore()

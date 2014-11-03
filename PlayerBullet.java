@@ -57,4 +57,9 @@ public class PlayerBullet extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
+	@Override
+	public int score() {
+		return 0; //imagine the imbalance of this being worth something
+	}
+
 }

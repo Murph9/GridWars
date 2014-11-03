@@ -12,7 +12,7 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		this.before = before;
 		
 		if (length > 0) {
-			after = new SnakeBody(size, colour, this, length-1);
+			after = new SnakeBody(size/1.038, colour, this, length-1);
 		} else {
 			after = null;
 		}
@@ -33,8 +33,7 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SNAKEBODY].getTextureId());
-		
-		gl.glColor3d(colour[0], colour[1], colour[2]);
+		gl.glColor3d(GameEngine.BROWN[0], GameEngine.BROWN[1], GameEngine.BROWN[2]);
 		
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
@@ -74,5 +73,10 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		if (after != null) {
 			after.update(dt);
 		}
+	}
+
+	@Override
+	public int score() {
+		return 0; //you can't destroy it directly
 	}
 }

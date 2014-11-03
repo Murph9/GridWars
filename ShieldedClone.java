@@ -107,4 +107,9 @@ public class ShieldedClone extends MovingObject {
 		
 	}
 
+	@Override
+	public int score() {
+		return 100;
+	}
+
 }

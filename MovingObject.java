@@ -17,7 +17,8 @@ public abstract class MovingObject extends GameObject {
 		return new double[]{mySpeedX, mySpeedY};
 	}
 	
-	/**Every subclass must have this method, so it moves.
-	 */
+	//Every subclass must have these methods:
+		//how do i add a private method here?
 	public abstract void update(double dt);
+	public abstract int score();
 }

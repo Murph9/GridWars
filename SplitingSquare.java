@@ -88,4 +88,13 @@ public class SplitingSquare extends HomingObject {
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
+
+	@Override
+	public int score() {
+		if (hasSplit) { //is small
+			return 100;
+		} else { //is normal
+			return 50;
+		}
+	}
 }

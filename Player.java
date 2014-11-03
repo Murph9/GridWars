@@ -24,7 +24,7 @@ public class Player extends MovingObject implements KeyListener {
 		super(size, colour);
 		
 		double[] myPos = getPosition();
-		double[] s = Mouse.theMouse.getPosition();
+		double[] s = GameEngine.getMousePos();
 		double angle = Math.toDegrees(Math.atan2((s[1]-myPos[1]), (s[0]-myPos[0])));
 		setRotation(angle);
 		
@@ -33,14 +33,14 @@ public class Player extends MovingObject implements KeyListener {
 				newBullet();
 			}
 		};
-		this.timer = new Timer(300, taskPerformer);
+		this.timer = new Timer(100, taskPerformer);
 		this.timer.start();
 		
 	}
 	
 	private void newBullet() { //creats a PlayerBullet
-		PlayerBullet b1 = new PlayerBullet(0.4, GameEngine.GREEN);
-		PlayerBullet b2 = new PlayerBullet(0.4, GameEngine.GREEN);
+		PlayerBullet b1 = new PlayerBullet(0.4, GameEngine.YELLOW);
+		PlayerBullet b2 = new PlayerBullet(0.4, GameEngine.YELLOW);
 
 		double[] myPos = getPosition();
 		double angle = getRotation();
@@ -87,7 +87,7 @@ public class Player extends MovingObject implements KeyListener {
 		setPosition(pos);
 		
 		//do rotation stuff
-		double[] s = Mouse.theMouse.getPosition();
+		double[] s = GameEngine.getMousePos();
 		double angle = Math.toDegrees(Math.atan2((s[1]-pos[1]), (s[0]-pos[0])));
 		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
 		setRotation(angle);
@@ -126,7 +126,7 @@ public class Player extends MovingObject implements KeyListener {
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		
-		double[] s = Mouse.theMouse.getPosition();
+		double[] s = GameEngine.getMousePos();
 		double[] myPos = getPosition();
 		gl.glRotated(-getRotation(), 0, 0, 1);
 		
@@ -174,5 +174,10 @@ public class Player extends MovingObject implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
+
+	@Override
+	public int score() {
+		return 0; //well yeah, player shouldn't really add to the score 
+	}
 
 }

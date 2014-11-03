@@ -57,4 +57,9 @@ public class SimpleSpinner extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
+	@Override
+	public int score() {
+		return 25;
+	}
+
 }

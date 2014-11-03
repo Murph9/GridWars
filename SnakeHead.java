@@ -14,19 +14,20 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	private double angle; //angle of movement
 	private boolean curAngleChange = true;
 	private int curChangeRate = 0;
+	private static int ANGLE_VEL = 40;
 	
 	SnakeHead(double size, double[] colour, int length) {
 		super(size, colour);
 
 		this.angle = 0;
-		if (length < 2) {
-			length = 2; //set minimum length to be 2, just because - also negative is bad
+		if (length < 10) {
+			length = 10; //set minimum length to be 10, just because they look funny otherwise
 		}
 		
-		after = new SnakeBody(size*0.7, colour, this, length-1);
+		after = new SnakeBody(size*0.8, colour, this, length);
 	}
 	
-	public void destroy() { //destroy properly
+	public void destroy() { //destroy properly (and down the line)
 		super.destroy();
 		after.destroy();
 	}
@@ -39,9 +40,9 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		pos[1] += Math.sin(Math.toRadians(angle))*dt*MAX_SPEED;
 		
 		if (curAngleChange) { //pick a direction 
-			angle += 0.5; //change in the angle
+			angle += ANGLE_VEL*dt; //change in the angle
 		} else {
-			angle -= 0.5;
+			angle -= ANGLE_VEL*dt;
 		}
 		angle = angle % 360; //clamp (because bad things happen otherwise)
 		
@@ -52,19 +53,23 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		} else {
 			curChangeRate--;
 		}
-		
+
 		setRotation(angle);
 		
 		//wall collision
 		if (pos[0] > GameEngine.boardWidth-(size/2)) {
 			pos[0] = GameEngine.boardWidth-(size/2);
+			angle += ANGLE_VEL*dt;
 		} else if (pos[0] < -GameEngine.boardWidth+(size/2)) {
 			pos[0] = -GameEngine.boardWidth+(size/2);
+			angle += ANGLE_VEL*dt;
 		}
 		if (pos[1] > GameEngine.boardHeight-(size/2)) {
 			pos[1] = GameEngine.boardHeight-(size/2);
+			angle += ANGLE_VEL*dt;
 		} else if (pos[1] < -GameEngine.boardHeight+(size/2)) {
 			pos[1] = -GameEngine.boardHeight+(size/2);
+			angle += ANGLE_VEL*dt;
 		}
 		setPosition(pos);
 
@@ -73,7 +78,6 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SNAKEHEAD].getTextureId());
-		double[] colour = GameEngine.WHITE; //the colour is really only for the body objects :P
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		
 		gl.glBegin(GL2.GL_QUADS);
@@ -93,6 +97,11 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	public SnakeObject getBefore() { return null; }
 	@Override
 	public SnakeObject getAfter() { return after; }
+
+	@Override
+	public int score() {
+		return 100;
+	}
 
 }
 

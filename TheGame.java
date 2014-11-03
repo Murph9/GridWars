@@ -32,7 +32,7 @@ public class TheGame extends JFrame {
 	}
     
     private void newEnemy() {
-    	int a = random.nextInt(9);
+    	int a = random.nextInt(10);
     	MovingObject s = null;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
@@ -49,8 +49,10 @@ public class TheGame extends JFrame {
     		s = new ShieldedClone(1.1, GameEngine.ORANGE);
     		break;
     	case 8:
-    		s = new SnakeHead(0.7, GameEngine.YELLOW, 10);
+    		s = new SnakeHead(0.8, GameEngine.YELLOW, 18);
     		break;
+    	case 9:
+    		s = new ShySquare(1, GameEngine.GREEN);
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
@@ -68,7 +70,7 @@ public class TheGame extends JFrame {
         
         GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);
-        border.setScale(1); //so no warning
+        border.setScale(1); //just incase it stopped being 1
         
         GameEngine engine = new GameEngine(camera, boardWidth, boardHeight);
         this.myPanel.addGLEventListener(engine);

@@ -25,20 +25,21 @@ public class GameEngine implements GLEventListener {
 				boardHeight = 10; //at least 4 please
 	
 	public static Player player;
+	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; //updated each 'update()' for speed
 	
 	public static MyTexture[] textures;
 	public static final String EXTENSION = "png";
-	public static final int PLAYER = 0, DOT = 1,DIAMOND = 2,SQUARE = 3, BULLET = 4, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7,
-				SNAKEBODY = 8;
+	public static final int TEXTURE_SIZE = 15; //space for more
+	public static final int PLAYER = 0, DOT = 1, DIAMOND = 2, SQUARE = 3, BULLET = 4, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7,
+				SNAKEBODY = 8, BUTTERFLY = 9, CIRCLE = 10;
 	
 	public static final String  PLAYER_IMG = "player.png", DOT_IMG = "dot.png", DIAMOND_IMG = "diamond.png",
 	SQUARE_IMG = "square.png",  BULLET_IMG = "bullet.png", CLONE_IMG = "clone.png", SHIELD_IMG = "shield.png",
-	SNAKEHEAD_IMG = "snakeHead.png", SNAKEBODY_IMG = "snakeBody.png";
+	SNAKEHEAD_IMG = "snakeHead.png", SNAKEBODY_IMG = "snakeBody.png", BUTTERFLY_IMG = "butterfly.png", CIRCLE_IMG = "circle.png";
 	
-	public static final double[] WHITE = {1,1,1,0.5}, 	RED = {1,0,0,0.5},
-			LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
-			PURPLE = {1,0,1,0.5}, 		YELLOW = {1,1,0,0.5},
-			ORANGE = {0.8, 0.3, 0.2,0.5};
+	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
+			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, BLUE = {0,0,1,0.5}, ORANGE = {1,0.6,0,0.5},
+			REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 	
 	public GameEngine(Camera camera, int width, int height) {
 		startTime = System.currentTimeMillis();
@@ -51,11 +52,15 @@ public class GameEngine implements GLEventListener {
 	}
 	
 	public static double[] getPlayerPos() {
-		return player.getPosition();
+		return playerPos;
+	}
+	public static double[] getMousePos() {
+		return mousePos;
 	}
 	public static GameObject getPlayer() {
 		return player;
 	}
+	
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
@@ -63,18 +68,20 @@ public class GameEngine implements GLEventListener {
 
 		GL2 gl = drawable.getGL().getGL2();
 
-        // set the view matrix based on the camera position
-        myCamera.setView(gl);
-        
-        Mouse.theMouse.update(gl);
-        
-        GameObject.ROOT.draw(gl);
-        
-        //Draw the text
-        renderer.beginRendering(drawable.getWidth(), drawable.getHeight(), true);
-        renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
-        renderer.draw("Score: "+score+"   Time:  "+(myTime-startTime)/1000+"   Lives:  "+lives+"   Multiplier:  "+multiplier, 10, drawable.getHeight()-22); //x,y = 10,10
-        renderer.endRendering();
+		// set the view matrix based on the camera position
+		myCamera.setView(gl);
+		
+		Mouse.theMouse.update(gl);
+		playerPos = player.getPosition();
+		mousePos = Mouse.theMouse.getPosition();
+		
+		GameObject.ROOT.draw(gl);
+		
+		//Draw the text
+		renderer.beginRendering(drawable.getWidth(), drawable.getHeight(), true);
+		renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
+		renderer.draw("Score: "+score+"   Time:  "+(myTime-startTime)/1000+"   Lives:  "+lives+"   Multiplier:  "+multiplier, 10, drawable.getHeight()-22); //x,y = 10,10
+		renderer.endRendering();
 	}
 
 	@Override
@@ -82,7 +89,7 @@ public class GameEngine implements GLEventListener {
 		myTime = System.currentTimeMillis();
 		GL2 gl = drawable.getGL().getGL2();
 		
-		textures = new MyTexture[10]; //space for more
+		textures = new MyTexture[TEXTURE_SIZE]; 
 		textures[PLAYER] = new MyTexture(gl, PLAYER_IMG, EXTENSION);
 		textures[DOT] = new MyTexture(gl, DOT_IMG, EXTENSION);
 		textures[DIAMOND] = new MyTexture(gl, DIAMOND_IMG, EXTENSION);
@@ -91,8 +98,13 @@ public class GameEngine implements GLEventListener {
 		textures[SHIELD] = new MyTexture(gl, SHIELD_IMG, EXTENSION);
 		textures[SNAKEBODY] = new MyTexture(gl, SNAKEBODY_IMG, EXTENSION);
 		textures[SNAKEHEAD] = new MyTexture(gl, SNAKEHEAD_IMG, EXTENSION);
+		textures[BUTTERFLY] = new MyTexture(gl, BUTTERFLY_IMG, EXTENSION);
+		textures[CIRCLE] = new MyTexture(gl, CIRCLE_IMG, EXTENSION);
 		
 		renderer = new TextRenderer(new Font("Courier", Font.BOLD, 22), true);
+		
+		playerPos = player.getPosition();
+        mousePos = Mouse.theMouse.getPosition();
 		
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT); //Set wrap mode for texture in S direction
@@ -207,7 +219,8 @@ public class GameEngine implements GLEventListener {
 				//NOTHING, because they don't die
 				
 			} else {
-				score += 1; //could definately be: o.getScore()
+				MovingObject mo = (MovingObject) o;
+				score += mo.score(); //could definately be: o.getScore()
 				o.destroy();
 			}
 		}

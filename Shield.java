@@ -46,4 +46,9 @@ public class Shield extends MovingObject {
 			gl.glVertex2d(-size/2, size/2);
 		gl.glEnd();
 	}
+
+	@Override
+	public int score() {
+		return 0; //can't be killed = 0 points
+	}
 }

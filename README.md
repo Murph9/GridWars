@@ -2,7 +2,16 @@ GridWars
 ========
 
 Well the git description should do, its a GridWars clone.
+Made by Jake Murphy (Australia)
 
+========
+
+0.2:
+- added a rewritten collision system that functions exactly the same (still needs fixing)
+- Better Scoring (with values taken from the speedrun wiki)
+- added the 2 simple enemies butterfly and circle (Note: they move exactly the same as homingsquare)
+- added a early version of the ShySquare (needs a little smoothing)
+- fixed snakes to be better looking
 
 ========
 

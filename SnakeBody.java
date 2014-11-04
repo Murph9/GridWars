@@ -39,13 +39,13 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-size/2, -size/2);
+			gl.glVertex2d(-0.5, -0.5);
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(size/2, -size/2);
+			gl.glVertex2d(0.5, -0.5);
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(size/2, size/2);
+			gl.glVertex2d(0.5, 0.5);
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-size/2, size/2);
+			gl.glVertex2d(-0.5, 0.5);
 		gl.glEnd();
 	}
 	
@@ -63,9 +63,9 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		
 		double dist = (pos[0]-beforePos[0])*(pos[0]-beforePos[0]) + (pos[1]-beforePos[1])*(pos[1]-beforePos[1]);
 		
-		if (dist > 2*size*size) {
+		if (dist > 2*mySize*mySize) {
 			pos = beforePos;
-		} else if (dist > 0.7*size*size) {
+		} else if (dist > 0.7*mySize*mySize) {
 			pos[0] -= dir[0]*dt*MAX_SPEED;
 			pos[1] -= dir[1]*dt*MAX_SPEED;
 			setPosition(pos);

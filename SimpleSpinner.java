@@ -1,17 +1,16 @@
-
-import java.util.HashSet;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 
 
 public class SimpleSpinner extends MovingObject {
 	
-	public final static HashSet<SimpleSpinner> ALL_THIS = new HashSet<SimpleSpinner>();
+	public final static ArrayList<SimpleSpinner> ALL_THIS = new ArrayList<SimpleSpinner>();
 	public int rotSpeed = 180; //if not set
 	
-	SimpleSpinner(double size, double[] colour, int rotationSpeed) {
+	SimpleSpinner(double size, double[] colour) {
 		super(size, colour);
-		this.rotSpeed = rotationSpeed;
+		this.rotSpeed = (GameEngine.rand.nextInt(270)+90)*(GameEngine.rand.nextInt(2)*2-1);
 		ALL_THIS.add(this);
 	}
 
@@ -24,23 +23,33 @@ public class SimpleSpinner extends MovingObject {
 		rot += dt*rotSpeed;
 		setRotation(rot);
 		
-		if (pos[0] > GameEngine.boardWidth-(size/2)) {
+		if (pos[0] > GameEngine.boardWidth-(mySize/2)) {
 			mySpeedX = -mySpeedX;
-			pos[0] = GameEngine.boardWidth-(size/2);
-		} else if (pos[0] < -GameEngine.boardWidth+(size/2)) {
+			pos[0] = GameEngine.boardWidth-(mySize/2);
+		} else if (pos[0] < -GameEngine.boardWidth+(mySize/2)) {
 			mySpeedX = -mySpeedX;
-			pos[0] = -GameEngine.boardWidth+(size/2);
+			pos[0] = -GameEngine.boardWidth+(mySize/2);
 		}
 		
-		if (pos[1] > GameEngine.boardHeight-(size/2)) {
+		if (pos[1] > GameEngine.boardHeight-(mySize/2)) {
 			mySpeedY = -mySpeedY;
-			pos[1] = GameEngine.boardHeight-(size/2);
-		} else if (pos[1] < -GameEngine.boardHeight+(size/2)) {
+			pos[1] = GameEngine.boardHeight-(mySize/2);
+		} else if (pos[1] < -GameEngine.boardHeight+(mySize/2)) {
 			mySpeedY = -mySpeedY;
-			pos[1] = -GameEngine.boardHeight+(size/2);
+			pos[1] = -GameEngine.boardHeight+(mySize/2);
 		}
 		
+		blackHole();
 		
+		for (SimpleSpinner s: ALL_THIS) {
+			if (!s.equals(this)) { //because that would be silly
+				double distX = mySpeedX - s.mySpeedX;
+				double distY = mySpeedY - s.mySpeedY;
+				if (distX*distX + distY*distY < mySize*s.mySize) {
+//					mySpeedX
+				}
+			}
+		}
 		
 		setPosition(pos);
 	}
@@ -56,26 +65,15 @@ public class SimpleSpinner extends MovingObject {
     	gl.glColor3d(colour[0], colour[1], colour[2]);
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-size/2, -size/2);
+			gl.glVertex2d(-0.5, -0.5);
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(size/2, -size/2);
+			gl.glVertex2d(0.5, -0.5);
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(size/2, size/2);
+			gl.glVertex2d(0.5, 0.5);
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-size/2, size/2);
+			gl.glVertex2d(-0.5, 0.5);
 		gl.glEnd();
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
-
-	//it gets not so 'simplespinner' here (only object in the whole game that bounces)
-//	@Override
-//	public void collision(GameObject o) {
-//		if (o instanceof PlayerBullet) {
-//			this.destroy();
-//		} else if (o instanceof SimpleSpinner) {
-//			
-//		}
-//	}
-
 }

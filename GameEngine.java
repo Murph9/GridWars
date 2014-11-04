@@ -1,6 +1,7 @@
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -16,9 +17,14 @@ public class GameEngine implements GLEventListener {
 	private long startTime;
 	
 	private TextRenderer renderer;
+	
+	public static final Random rand = new Random(); 
+			//just because ease of use, for specific games, might be given a seed
+	
 	public static Score score;
 	private	int lives;
 	private int multiplier;
+	
 	
 	public static int boardWidth = 12, 
 				boardHeight = 10; //at least 4 please

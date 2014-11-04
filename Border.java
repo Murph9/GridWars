@@ -1,6 +1,7 @@
 import javax.media.opengl.GL2;
 
 //Just draws a simple border around the outside
+//Should never touch the mySize field
 public class Border extends GameObject {
 
 	private int width;

@@ -39,7 +39,7 @@ public class Camera extends GameObject {
     	
         gl.glLoadIdentity();
         
-        gl.glScaled(1/getScale(), 1/getScale(), 1);
+        gl.glScaled(1/getSize(), 1/getSize(), 1);
     	gl.glRotated(-getRotation(), 0, 0, 1);
 
     	double[] myTranslation = getPosition();

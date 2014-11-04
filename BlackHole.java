@@ -1,4 +1,4 @@
-import java.util.HashSet;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 
@@ -6,7 +6,7 @@ import javax.media.opengl.GL2;
 	//but this does require that all objects have a blackhole method 
 public class BlackHole extends MovingObject {
 
-	public final static HashSet<BlackHole> ALL_THIS = new HashSet<BlackHole>();
+	public final static ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
 	
 	private boolean isInert;
 	private int numCount; //number of objects consumed, snakes are weird here
@@ -31,7 +31,7 @@ public class BlackHole extends MovingObject {
 	public void giveObject() {
 		numCount++;
 		hitPoints += 2;
-		size += 0.1;
+		mySize += 0.1;
 	}
 	
 	public boolean isInert() {
@@ -64,13 +64,13 @@ public class BlackHole extends MovingObject {
 		
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-size/2, -size/2);
+			gl.glVertex2d(-0.5, -0.5);
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(size/2, -size/2);
+			gl.glVertex2d(0.5, -0.5);
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(size/2, size/2);
+			gl.glVertex2d(0.5, 0.5);
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-size/2, size/2);
+			gl.glVertex2d(-0.5, 0.5);
 		gl.glEnd();
 	}
 

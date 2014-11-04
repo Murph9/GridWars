@@ -37,13 +37,13 @@ public class Shield extends MovingObject {
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-size/2, -size/2);
+			gl.glVertex2d(-0.5, -0.5);
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(size/2, -size/2);
+			gl.glVertex2d(0.5, -0.5);
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(size/2, size/2);
+			gl.glVertex2d(0.5, 0.5);
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-size/2, size/2);
+			gl.glVertex2d(-0.5, 0.5);
 		gl.glEnd();
 	}
 }

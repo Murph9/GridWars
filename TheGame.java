@@ -23,7 +23,7 @@ public class TheGame extends JFrame {
 	private FPSAnimator animator;	
 	
 	private Timer timer;
-	private static int TIME_INTERVAL = 50;
+	private static int TIME_INTERVAL = 500;
 	private Random random;
 	
 	private static int boardWidth = 12, boardHeight = 10; //at least 4 please
@@ -34,12 +34,11 @@ public class TheGame extends JFrame {
 	}
     
     private void newEnemy() {
-    	int a = random.nextInt(11);
+    	int a = random.nextInt(12);
     	MovingObject s = null;
-    	a = 3;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
-    		s = new SimpleSpinner(1, GameEngine.PURPLE, -180);
+    		s = new SimpleSpinner(1, GameEngine.PURPLE);
     		s.setSpeed(random.nextDouble(), random.nextDouble());
     		break;
     	case 3: case 4:
@@ -54,12 +53,12 @@ public class TheGame extends JFrame {
     	case 8:
     		s = new SnakeHead(0.8, GameEngine.YELLOW, 18);
     		break;
-    	case 9:
+    	case 9: case 10:
     		s = new ShySquare(1, GameEngine.GREEN);
-    	case 10:
+    	case 11:
     		s = new BlackHole(2, GameEngine.RED);
     	}
-//    	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
+    	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
     
     public void init() {
@@ -69,13 +68,13 @@ public class TheGame extends JFrame {
         this.myPanel = new GLJPanel(glcapabilities);
 
         Camera camera = new Camera();
-        camera.setScale(Math.max(boardHeight + 1, boardWidth - 4)); //these numbers are just so that it always fits on screen
+        camera.setSize(Math.max(boardHeight + 1, boardWidth - 4)); //these numbers are just so that it always fits on screen
         
         random = new Random();
         
         GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);
-        border.setScale(1); //just incase it stopped being 1
+        border.setSize(1); //just incase it stopped being 1
         
         GameEngine engine = new GameEngine(camera, boardWidth, boardHeight);
         this.myPanel.addGLEventListener(engine);

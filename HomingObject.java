@@ -31,19 +31,19 @@ public abstract class HomingObject extends MovingObject {
 		//please future me don't try to add border collisions again, homing objets will NEVER hit the side.
 			//just think about it (and if they do they can have that code themselves
 		
-		if (myPos[0] > GameEngine.boardWidth-(size/2)) {
-			mySpeedX = GameEngine.boardWidth-(size/2);
-		} else if (myPos[0] < -GameEngine.boardWidth+(size/2)) {
+		if (myPos[0] > GameEngine.boardWidth-(mySize/2)) {
+			mySpeedX = GameEngine.boardWidth-(mySize/2);
+		} else if (myPos[0] < -GameEngine.boardWidth+(mySize/2)) {
 			mySpeedX = 0;
-			myPos[0] = -GameEngine.boardWidth+(size/2);
+			myPos[0] = -GameEngine.boardWidth+(mySize/2);
 		}
 		
-		if (myPos[1] > GameEngine.boardHeight-(size/2)) {
+		if (myPos[1] > GameEngine.boardHeight-(mySize/2)) {
 			mySpeedY = 0;
-			myPos[1] = GameEngine.boardHeight-(size/2);
-		} else if (myPos[1] < -GameEngine.boardHeight+(size/2)) {
+			myPos[1] = GameEngine.boardHeight-(mySize/2);
+		} else if (myPos[1] < -GameEngine.boardHeight+(mySize/2)) {
 			mySpeedY = 0;
-			myPos[1] = -GameEngine.boardHeight+(size/2);
+			myPos[1] = -GameEngine.boardHeight+(mySize/2);
 		}
 		
 		setPosition(myPos); //set it

@@ -47,11 +47,11 @@ public class Player extends MovingObject implements KeyListener {
 		
 		double[] temp = new double[2];
 
-		temp[0] = (Math.cos(Math.toRadians(angle))*size/2 + myPos[0]);
-		temp[1] = (Math.sin(Math.toRadians(angle))*size/2 + myPos[1]);
+		temp[0] = (Math.cos(Math.toRadians(angle))*mySize/2 + myPos[0]);
+		temp[1] = (Math.sin(Math.toRadians(angle))*mySize/2 + myPos[1]);
 		
-		b1.setPosition(new double[] {Math.cos(Math.toRadians(angle+30))*size/2 + myPos[0], Math.sin(Math.toRadians(angle+20))*size/2 + myPos[1]});
-		b2.setPosition(new double[] {Math.cos(Math.toRadians(angle-30))*size/2 + myPos[0], Math.sin(Math.toRadians(angle-20))*size/2 + myPos[1]});
+		b1.setPosition(new double[] {Math.cos(Math.toRadians(angle+30))*mySize/2 + myPos[0], Math.sin(Math.toRadians(angle+20))*mySize/2 + myPos[1]});
+		b2.setPosition(new double[] {Math.cos(Math.toRadians(angle-30))*mySize/2 + myPos[0], Math.sin(Math.toRadians(angle-20))*mySize/2 + myPos[1]});
 		
 		b1.setRotation(getRotation());
 		b2.setRotation(getRotation()); //yay
@@ -68,20 +68,20 @@ public class Player extends MovingObject implements KeyListener {
     	pos[1] += mySpeedY*dt*MAX_SPEED;
 		
     	//border collision stuff
-		if (pos[0] > GameEngine.boardWidth-(size/2)) {
+		if (pos[0] > GameEngine.boardWidth-(mySize/2)) {
 			mySpeedX = 0;
-			pos[0] = GameEngine.boardWidth-(size/2);
-		} else if (pos[0] < -GameEngine.boardWidth+(size/2)) {
+			pos[0] = GameEngine.boardWidth-(mySize/2);
+		} else if (pos[0] < -GameEngine.boardWidth+(mySize/2)) {
 			mySpeedX = 0;
-			pos[0] = -GameEngine.boardWidth+(size/2);
+			pos[0] = -GameEngine.boardWidth+(mySize/2);
 		}
 		
-		if (pos[1] > GameEngine.boardHeight-(size/2)) {
+		if (pos[1] > GameEngine.boardHeight-(mySize/2)) {
 			mySpeedY = 0;
-			pos[1] = GameEngine.boardHeight-(size/2);
-		} else if (pos[1] < -GameEngine.boardHeight+(size/2)) {
+			pos[1] = GameEngine.boardHeight-(mySize/2);
+		} else if (pos[1] < -GameEngine.boardHeight+(mySize/2)) {
 			mySpeedY = 0;
-			pos[1] = -GameEngine.boardHeight+(size/2);
+			pos[1] = -GameEngine.boardHeight+(mySize/2);
 		}
 		
 		setPosition(pos);

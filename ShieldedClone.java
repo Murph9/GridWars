@@ -1,11 +1,11 @@
-import java.util.HashSet;
+import java.util.LinkedList;
 
 import javax.media.opengl.GL2;
 
 
 public class ShieldedClone extends MovingObject {
 
-	public final static HashSet<ShieldedClone> ALL_THIS = new HashSet<ShieldedClone>();
+	public final static LinkedList<ShieldedClone> ALL_THIS = new LinkedList<ShieldedClone>();
 	
 	public static final int score = 100;
 	private static final int MAX_ANGLE_CHANGE = 120;
@@ -65,20 +65,20 @@ public class ShieldedClone extends MovingObject {
 		shield.setRotation(lastAngle);
 		
 		//bounce off walls now
-		if (pos[0] > GameEngine.boardWidth-(size/2)) { 
+		if (pos[0] > GameEngine.boardWidth-(mySize/2)) { 
 			mySpeedX = -mySpeedX;
-			pos[0] = GameEngine.boardWidth-(size/2);
-		} else if (pos[0] < -GameEngine.boardWidth+(size/2)) {
+			pos[0] = GameEngine.boardWidth-(mySize/2);
+		} else if (pos[0] < -GameEngine.boardWidth+(mySize/2)) {
 			mySpeedX = -mySpeedX;
-			pos[0] = -GameEngine.boardWidth+(size/2);
+			pos[0] = -GameEngine.boardWidth+(mySize/2);
 		}
 		
-		if (pos[1] > GameEngine.boardHeight-(size/2)) {
+		if (pos[1] > GameEngine.boardHeight-(mySize/2)) {
 			mySpeedY = -mySpeedY;
-			pos[1] = GameEngine.boardHeight-(size/2);
-		} else if (pos[1] < -GameEngine.boardHeight+(size/2)) {
+			pos[1] = GameEngine.boardHeight-(mySize/2);
+		} else if (pos[1] < -GameEngine.boardHeight+(mySize/2)) {
 			mySpeedY = -mySpeedY;
-			pos[1] = -GameEngine.boardHeight+(size/2);
+			pos[1] = -GameEngine.boardHeight+(mySize/2);
 		}
 		
 		pos[0] += mySpeedX*dt*MAX_SPEED;
@@ -103,13 +103,13 @@ public class ShieldedClone extends MovingObject {
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-size/2, -size/2);
+			gl.glVertex2d(-0.5, -0.5);
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(size/2, -size/2);
+			gl.glVertex2d(0.5, -0.5);
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(size/2, size/2);
+			gl.glVertex2d(0.5, 0.5);
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-size/2, size/2);
+			gl.glVertex2d(-0.5, 0.5);
 		gl.glEnd();
 		
 	}

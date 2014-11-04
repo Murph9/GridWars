@@ -5,8 +5,8 @@ public abstract class MovingObject extends GameObject {
 	protected double mySpeedY = 0;
 	
 	MovingObject(double size, double[] colour) {
-		this.size = size;
 		this.colour = colour;
+		this.mySize = size;
 	}
 
 	public void setSpeed(double x, double y) {
@@ -15,6 +15,10 @@ public abstract class MovingObject extends GameObject {
 	}
 	public double[] getSpeed() {
 		return new double[]{mySpeedX, mySpeedY};
+	}
+	
+	public void blackHole() {
+		//does things (that every object does)
 	}
 	
 	//Every subclass must have these methods:

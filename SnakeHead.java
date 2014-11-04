@@ -58,18 +58,18 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		setRotation(angle);
 		
 		//wall collision
-		if (pos[0] > GameEngine.boardWidth-(size/2)) {
-			pos[0] = GameEngine.boardWidth-(size/2);
+		if (pos[0] > GameEngine.boardWidth-(mySize/2)) {
+			pos[0] = GameEngine.boardWidth-(mySize/2);
 			angle += ANGLE_VEL*dt;
-		} else if (pos[0] < -GameEngine.boardWidth+(size/2)) {
-			pos[0] = -GameEngine.boardWidth+(size/2);
+		} else if (pos[0] < -GameEngine.boardWidth+(mySize/2)) {
+			pos[0] = -GameEngine.boardWidth+(mySize/2);
 			angle += ANGLE_VEL*dt;
 		}
-		if (pos[1] > GameEngine.boardHeight-(size/2)) {
-			pos[1] = GameEngine.boardHeight-(size/2);
+		if (pos[1] > GameEngine.boardHeight-(mySize/2)) {
+			pos[1] = GameEngine.boardHeight-(mySize/2);
 			angle += ANGLE_VEL*dt;
-		} else if (pos[1] < -GameEngine.boardHeight+(size/2)) {
-			pos[1] = -GameEngine.boardHeight+(size/2);
+		} else if (pos[1] < -GameEngine.boardHeight+(mySize/2)) {
+			pos[1] = -GameEngine.boardHeight+(mySize/2);
 			angle += ANGLE_VEL*dt;
 		}
 		setPosition(pos);
@@ -83,13 +83,13 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-size/2, -size/2);
+			gl.glVertex2d(-0.5, -0.5);
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(size/2, -size/2);
+			gl.glVertex2d(0.5, -0.5);
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(size/2, size/2);
+			gl.glVertex2d(0.5, 0.5);
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-size/2, size/2);
+			gl.glVertex2d(-0.5, 0.5);
 		gl.glEnd();
 	}
 

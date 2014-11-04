@@ -1,11 +1,13 @@
+import java.util.HashSet;
+
 import javax.media.opengl.GL2;
-
-
 
 //now instead of the blackhole class handling sucking everything in, they handle it themselves
 	//but this does require that all objects have a blackhole method 
 public class BlackHole extends MovingObject {
 
+	public final static HashSet<BlackHole> ALL_THIS = new HashSet<BlackHole>();
+	
 	private boolean isInert;
 	private int numCount; //number of objects consumed, snakes are weird here
 				//as in NumNumNumNum
@@ -19,6 +21,7 @@ public class BlackHole extends MovingObject {
 		numCount = 0;
 		maxNum = 10;
 		hitPoints = 10;
+		ALL_THIS.add(this);
 	}
 
 	public boolean isFull() {
@@ -28,6 +31,7 @@ public class BlackHole extends MovingObject {
 	public void giveObject() {
 		numCount++;
 		hitPoints += 2;
+		size += 0.1;
 	}
 	
 	public boolean isInert() {
@@ -41,30 +45,18 @@ public class BlackHole extends MovingObject {
 
 	//function handles most of blackhole's things
 	public void destroy() {
-		if (isFull()) {
-			super.destroy();
-			
-			for (int i = 0; i < 20; i++) {
-				//spawn annoying*
-			}
-			
-		}// else if (hitPoints)
-		
-		
-		
-		
-		
+		ALL_THIS.remove(this);
 	}
 	
-	@Override
-	public int score() {
-		if (hitPoints <= 0) {
-			return numCount*100; //some maths on how many objects its pulled in:
-			//the wiki says:   150 + (5/2)N(N+1)
-		} else {
-			return 0;
-		}
-	}
+//	@Override
+//	public int score() {
+//		if (hitPoints <= 0) {
+//			return numCount*100; //some maths on how many objects its pulled in:
+//			//the wiki says:   150 + (5/2)N(N+1)
+//		} else {
+//			return 0;
+//		}
+//	}
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId());

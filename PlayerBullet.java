@@ -1,8 +1,12 @@
+import java.util.HashSet;
+
 import javax.media.opengl.GL2;
 
 
 public class PlayerBullet extends MovingObject {
 
+	public final static HashSet<SimpleSpinner> ALL_THIS = new HashSet<SimpleSpinner>();//not sure actually
+	
 	PlayerBullet(double size, double[] colour) {
 		super(size, colour);
 	}
@@ -35,6 +39,10 @@ public class PlayerBullet extends MovingObject {
 			hasCollided = true;
 		}
 		
+		//this is the class that handles deleting objects when bullets hit them, 
+			//every other class just checks against the same type. This checks EVERYTHING
+		
+		
 		if (hasCollided) {
 			this.destroy();
 		}
@@ -56,10 +64,14 @@ public class PlayerBullet extends MovingObject {
 		gl.glEnd();
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
+	
 
-	@Override
-	public int score() {
-		return 0; //imagine the imbalance of this being worth something
-	}
+//	@Override
+//	public void collision(GameObject o) {
+//		if (o instanceof PlayerBullet || o instanceof Player) {
+//		} else {
+//			this.destroy();
+//		}
+//	}
 
 }

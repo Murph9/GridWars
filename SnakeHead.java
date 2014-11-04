@@ -8,7 +8,8 @@ import javax.media.opengl.GL2;
  */
 public class SnakeHead extends MovingObject implements SnakeObject {
 
-//	private int length; //count of snake objects (including itself, i think, doesn't matter too much)
+	public static final int score = 100;
+	
 	private SnakeObject after; //the next object
 	
 	private double angle; //angle of movement
@@ -97,12 +98,6 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	public SnakeObject getBefore() { return null; }
 	@Override
 	public SnakeObject getAfter() { return after; }
-
-	@Override
-	public int score() {
-		return 100;
-	}
-
 }
 
 

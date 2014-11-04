@@ -1,8 +1,8 @@
 import javax.media.opengl.GL2;
 
-
 public class Shield extends MovingObject {
 
+	public static final int score = 0;
 	private boolean isProtecting;
 	
 	Shield(double size, double[] colour) {
@@ -45,10 +45,5 @@ public class Shield extends MovingObject {
 			gl.glTexCoord2d(0, 1);
 			gl.glVertex2d(-size/2, size/2);
 		gl.glEnd();
-	}
-
-	@Override
-	public int score() {
-		return 0; //can't be killed = 0 points
 	}
 }

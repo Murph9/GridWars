@@ -1,13 +1,18 @@
+
+import java.util.HashSet;
+
 import javax.media.opengl.GL2;
 
 
 public class SimpleSpinner extends MovingObject {
 	
+	public final static HashSet<SimpleSpinner> ALL_THIS = new HashSet<SimpleSpinner>();
 	public int rotSpeed = 180; //if not set
 	
 	SimpleSpinner(double size, double[] colour, int rotationSpeed) {
 		super(size, colour);
 		this.rotSpeed = rotationSpeed;
+		ALL_THIS.add(this);
 	}
 
 	public void update(double dt) {
@@ -35,9 +40,15 @@ public class SimpleSpinner extends MovingObject {
 			pos[1] = -GameEngine.boardHeight+(size/2);
 		}
 		
+		
+		
 		setPosition(pos);
 	}
 	
+	public void destroy() {
+		super.destroy();
+		ALL_THIS.remove(this);
+	}
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SPINNER].getTextureId());
@@ -57,9 +68,14 @@ public class SimpleSpinner extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
-	@Override
-	public int score() {
-		return 25;
-	}
+	//it gets not so 'simplespinner' here (only object in the whole game that bounces)
+//	@Override
+//	public void collision(GameObject o) {
+//		if (o instanceof PlayerBullet) {
+//			this.destroy();
+//		} else if (o instanceof SimpleSpinner) {
+//			
+//		}
+//	}
 
 }

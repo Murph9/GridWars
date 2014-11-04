@@ -175,9 +175,4 @@ public class Player extends MovingObject implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
 
-	@Override
-	public int score() {
-		return 0; //well yeah, player shouldn't really add to the score 
-	}
-
 }

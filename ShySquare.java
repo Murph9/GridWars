@@ -1,17 +1,22 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.media.opengl.GL2;
 
 
 public class ShySquare extends MovingObject {
 
+	public final static HashSet<ShySquare> ALL_THIS = new HashSet<ShySquare>();
+	
+	public static final int score = 100;
+	
 	private float speed = 4;
 	private float dodgeRange = 4;
 	private float dodgeSpeed = 1f;
 	
 	ShySquare(double size, double[] colour) {
 		super(size, colour);
-		
+		ALL_THIS.add(this);
 	}
 
 	@Override
@@ -64,6 +69,10 @@ public class ShySquare extends MovingObject {
 		setPosition(myPos); //set it
 	}
 
+	public void destroy() {
+		super.destroy();
+		ALL_THIS.remove(this);
+	}
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SHY].getTextureId()); //get id of the dot file
@@ -83,11 +92,4 @@ public class ShySquare extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
-	
-	
-	@Override
-	public int score() {
-		return 100;
-	}
-	
 }

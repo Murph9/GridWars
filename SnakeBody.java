@@ -3,6 +3,8 @@ import javax.media.opengl.GL2;
 
 public class SnakeBody extends MovingObject implements SnakeObject {
 
+	public static final int score = 0;
+	
 	private SnakeObject before;
 	private SnakeObject after; //if next == end then this == tail
 	
@@ -75,8 +77,4 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		}
 	}
 
-	@Override
-	public int score() {
-		return 0; //you can't destroy it directly
-	}
 }

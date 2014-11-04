@@ -35,6 +35,7 @@ public class GameObject {
 	    this.colour = new double[]{1,1,1};
 	    
     	ALL_OBJECTS.add(this);
+    	
 	}
     
 	
@@ -104,7 +105,7 @@ public class GameObject {
      * @param gl I don't think you should be using this code and NOT know what this is for
      */
     public void draw(GL2 gl) {
-        gl.glPushMatrix(); //remember it .*.*
+        gl.glPushMatrix(); //remember it ....
         
         //transform to position, draw, then call on children
         gl.glTranslated(myTranslation[0], myTranslation[1], 0);
@@ -120,6 +121,6 @@ public class GameObject {
         			o.draw(gl);
         	}
         }
-        gl.glPopMatrix(); //*.*. then put it back 
+        gl.glPopMatrix(); //.... then put it back 
     }
 }

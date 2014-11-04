@@ -20,5 +20,4 @@ public abstract class MovingObject extends GameObject {
 	//Every subclass must have these methods:
 		//how do i add a private method here?
 	public abstract void update(double dt);
-	public abstract int score();
 }

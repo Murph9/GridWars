@@ -23,7 +23,7 @@ public class TheGame extends JFrame {
 	private FPSAnimator animator;	
 	
 	private Timer timer;
-	private static int TIME_INTERVAL = 500;
+	private static int TIME_INTERVAL = 50;
 	private Random random;
 	
 	private static int boardWidth = 12, boardHeight = 10; //at least 4 please
@@ -36,6 +36,7 @@ public class TheGame extends JFrame {
     private void newEnemy() {
     	int a = random.nextInt(11);
     	MovingObject s = null;
+    	a = 3;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
     		s = new SimpleSpinner(1, GameEngine.PURPLE, -180);
@@ -58,7 +59,7 @@ public class TheGame extends JFrame {
     	case 10:
     		s = new BlackHole(2, GameEngine.RED);
     	}
-    	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
+//    	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
     
     public void init() {

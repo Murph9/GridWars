@@ -1,8 +1,14 @@
+import java.util.HashSet;
+
 import javax.media.opengl.GL2;
 
 
 public class SplitingSquare extends HomingObject {
 	
+	public final static HashSet<SplitingSquare> ALL_THIS = new HashSet<SplitingSquare>();
+	
+	public static final int scoreBig = 50;
+	public static final int scoreSmall = 100; 
 	public static final int HOME_SPEED = 3;
 	private int ORBIT_SPEED = 6;
 	
@@ -24,6 +30,7 @@ public class SplitingSquare extends HomingObject {
 		orbitAngle = angle;
 		orbitRadius = radius;
 		isPosOrbit = rotDirection;
+		ALL_THIS.add(this);
 	}
 	
 	public double getOrbitAngle() {
@@ -63,6 +70,7 @@ public class SplitingSquare extends HomingObject {
 			sC.setPosition(new double[] {t[0]+Math.cos(angle-120)*0.7, t[1]+Math.sin(angle-120)*0.7});
 			sC.hasSplit = true;
 		}
+		ALL_THIS.remove(this);
 	}
 	
 	public void update(double dt) {
@@ -95,14 +103,5 @@ public class SplitingSquare extends HomingObject {
 		gl.glEnd();
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-	}
-
-	@Override
-	public int score() {
-		if (hasSplit) { //is small
-			return 100;
-		} else { //is normal
-			return 50;
-		}
 	}
 }

@@ -1,8 +1,13 @@
+import java.util.HashSet;
+
 import javax.media.opengl.GL2;
 
 
 public class ShieldedClone extends MovingObject {
 
+	public final static HashSet<ShieldedClone> ALL_THIS = new HashSet<ShieldedClone>();
+	
+	public static final int score = 100;
 	private static final int MAX_ANGLE_CHANGE = 120;
 	private double lastAngle;
 	private static int MAX_SPEED = 11;
@@ -14,6 +19,7 @@ public class ShieldedClone extends MovingObject {
 		lastAngle = 0;
 		
 		shield = new Shield(size, colour);
+		ALL_THIS.add(this);
 	}
 
 	@Override
@@ -87,6 +93,7 @@ public class ShieldedClone extends MovingObject {
 	public void destroy() {
 		shield.destroy();
 		super.destroy();
+		ALL_THIS.remove(this);
 	}
 	
 	
@@ -105,11 +112,6 @@ public class ShieldedClone extends MovingObject {
 			gl.glVertex2d(-size/2, size/2);
 		gl.glEnd();
 		
-	}
-
-	@Override
-	public int score() {
-		return 100;
 	}
 
 }

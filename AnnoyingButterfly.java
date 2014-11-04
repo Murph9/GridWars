@@ -1,13 +1,18 @@
+import java.util.HashSet;
+
 import javax.media.opengl.GL2;
 
 
 public class AnnoyingButterfly extends HomingObject {
 
+	public final static HashSet<AnnoyingButterfly> ALL_THIS = new HashSet<AnnoyingButterfly>();
+	
 	public static final int HOME_SPEED = 10;
+	public static final int score = 10;
 	
 	AnnoyingButterfly(double size, double[] colour) {
 		super(size, colour, HOME_SPEED);
-		
+		ALL_THIS.add(this);
 	}
 	
 	public void drawSelf (GL2 gl) {
@@ -28,9 +33,8 @@ public class AnnoyingButterfly extends HomingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
-	@Override
-	public int score() {
-		return 10;
+	public void destroy() {
+		super.destroy();
+		ALL_THIS.remove(this);
 	}
-	
 }

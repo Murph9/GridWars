@@ -16,6 +16,7 @@ Made by Jake Murphy
 - they don't:
   + explode into little pieces 
   + do anything with snakes 
+  + move
 
 ========
 0.22: Actual Collision

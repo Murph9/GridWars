@@ -13,40 +13,34 @@ public abstract class HomingObject extends MovingObject {
 	}
 	
 	public void update(double dt) {
-		double[] myPos = getPosition();
-		myPos[0] += mySpeedX*dt*speed; //add it
-		myPos[1] += mySpeedY*dt*speed;
+		x += dx*dt*speed;
+		y += dy*dt*speed;
 		
-		double[] s = GameEngine.getPlayerPos();
+		double[] p = GameEngine.getPlayerPos();
 
-		mySpeedX = s[0]-myPos[0];
-		mySpeedY = s[1]-myPos[1];
+		dx = p[0]-x;
+		dy = p[1]-y;
 
-		double dist = Math.sqrt(mySpeedX*mySpeedX + mySpeedY*mySpeedY);
+		double dist = Math.sqrt(dx*dx + dy*dy);
 		if (dist != 0) { //divide by zero errors are bad
-			mySpeedX /= dist;
-			mySpeedY /= dist; //now they are normalised
+			dx /= dist;
+			dy /= dist; //now they are normalised
 		}
 		
-		//please future me don't try to add border collisions again, homing objets will NEVER hit the side.
-			//just think about it (and if they do they can have that code themselves
-		
-		if (myPos[0] > GameEngine.boardWidth-(mySize/2)) {
-			mySpeedX = GameEngine.boardWidth-(mySize/2);
-		} else if (myPos[0] < -GameEngine.boardWidth+(mySize/2)) {
-			mySpeedX = 0;
-			myPos[0] = -GameEngine.boardWidth+(mySize/2);
+		if (x > GameEngine.boardWidth-(size/2)) {
+			dx = GameEngine.boardWidth-(size/2);
+		} else if (x < -GameEngine.boardWidth+(size/2)) {
+			dx = 0;
+			x = -GameEngine.boardWidth+(size/2);
 		}
 		
-		if (myPos[1] > GameEngine.boardHeight-(mySize/2)) {
-			mySpeedY = 0;
-			myPos[1] = GameEngine.boardHeight-(mySize/2);
-		} else if (myPos[1] < -GameEngine.boardHeight+(mySize/2)) {
-			mySpeedY = 0;
-			myPos[1] = -GameEngine.boardHeight+(mySize/2);
+		if (y > GameEngine.boardHeight-(size/2)) {
+			dy = 0;
+			y = GameEngine.boardHeight-(size/2);
+		} else if (y < -GameEngine.boardHeight+(size/2)) {
+			dy = 0;
+			y = -GameEngine.boardHeight+(size/2);
 		}
-		
-		setPosition(myPos); //set it
 	}
 }
 

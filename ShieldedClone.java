@@ -24,11 +24,10 @@ public class ShieldedClone extends MovingObject {
 
 	@Override
 	public void update(double dt) {
-		double[] pos = getPosition();
 		
 		//do rotation stuff
 		double[] playerPos = GameEngine.getPlayerPos();
-		double angleToPlayer = Math.toDegrees(Math.atan2((playerPos[1]-pos[1]), (playerPos[0]-pos[0])));
+		double angleToPlayer = Math.toDegrees(Math.atan2((playerPos[1]-y), (playerPos[0]-x)));
 
 		lastAngle = lastAngle % 360;
 		
@@ -42,51 +41,48 @@ public class ShieldedClone extends MovingObject {
 				lastAngle += MAX_ANGLE_CHANGE*dt;
 			}
 			
-			mySpeedX /= 1.015; //simulate drag if not trying to move forward
-			mySpeedY /= 1.015;
+			dx /= 1.02; //simulate drag if not trying to move forward
+			dy /= 1.02;
 
 		} else { //normal works so far
-			if (normDiff < MAX_ANGLE_CHANGE/2) {//move forward because you are close
-				mySpeedX = Math.cos(Math.toRadians(lastAngle));
-				mySpeedY = Math.sin(Math.toRadians(lastAngle));
+			if (normDiff < MAX_ANGLE_CHANGE/2) {//move forward because you are close to look at player
+				dx = Math.cos(Math.toRadians(lastAngle));
+				dy = Math.sin(Math.toRadians(lastAngle));
 			} else {
 				lastAngle = angleToPlayer;
 			}
 		}
 
-		
 		if (normDiff > MAX_ANGLE_CHANGE*1.5*dt) { //decide whether shield is on or off
 			shield.setIfActive(false);
 		} else {
 			shield.setIfActive(true);
 		}
 		
-		setRotation(lastAngle);
-		shield.setRotation(lastAngle);
+		angle = lastAngle;
+		shield.angle = lastAngle;
 		
 		//bounce off walls now
-		if (pos[0] > GameEngine.boardWidth-(mySize/2)) { 
-			mySpeedX = -mySpeedX;
-			pos[0] = GameEngine.boardWidth-(mySize/2);
-		} else if (pos[0] < -GameEngine.boardWidth+(mySize/2)) {
-			mySpeedX = -mySpeedX;
-			pos[0] = -GameEngine.boardWidth+(mySize/2);
+		if (x > GameEngine.boardWidth-(size/2)) { 
+			dx = -dx;
+			x = GameEngine.boardWidth-(size/2);
+		} else if (x < -GameEngine.boardWidth+(size/2)) {
+			dx = -dx;
+			x = -GameEngine.boardWidth+(size/2);
 		}
 		
-		if (pos[1] > GameEngine.boardHeight-(mySize/2)) {
-			mySpeedY = -mySpeedY;
-			pos[1] = GameEngine.boardHeight-(mySize/2);
-		} else if (pos[1] < -GameEngine.boardHeight+(mySize/2)) {
-			mySpeedY = -mySpeedY;
-			pos[1] = -GameEngine.boardHeight+(mySize/2);
+		if (y > GameEngine.boardHeight-(size/2)) {
+			dy = -dy;
+			y = GameEngine.boardHeight-(size/2);
+		} else if (y < -GameEngine.boardHeight+(size/2)) {
+			dy = -dy;
+			y = -GameEngine.boardHeight+(size/2);
 		}
 		
-		pos[0] += mySpeedX*dt*MAX_SPEED;
-		pos[1] += mySpeedY*dt*MAX_SPEED;
-		setPosition(pos);
-		
-		double[] shieldPos = new double[]{pos[0]+Math.cos(Math.toRadians(lastAngle))*0.8, pos[1]+Math.sin(Math.toRadians(lastAngle))*0.8};
-		shield.setPosition(shieldPos);
+		x += dx*dt*MAX_SPEED;
+		y += dy*dt*MAX_SPEED;
+		shield.x = x+Math.cos(Math.toRadians(lastAngle))*0.8;
+		shield.y = y+Math.sin(Math.toRadians(lastAngle))*0.8;
 	}
 	
 	
@@ -94,6 +90,7 @@ public class ShieldedClone extends MovingObject {
 		shield.destroy();
 		super.destroy();
 		ALL_THIS.remove(this);
+		GameEngine.score.addScore(score);
 	}
 	
 	
@@ -101,17 +98,10 @@ public class ShieldedClone extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.PLAYER].getTextureId());
 		
 		gl.glColor3d(colour[0], colour[1], colour[2]);
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-0.5, -0.5);
-			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(0.5, -0.5);
-			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(0.5, 0.5);
-			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-0.5, 0.5);
-		gl.glEnd();
+
+		Helper.square(gl);
 		
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
 }

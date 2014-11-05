@@ -31,14 +31,13 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	public void destroy() { //destroy properly (and down the line)
 		super.destroy();
 		after.destroy();
+		GameEngine.score.addScore(score);
 	}
 	
 	
 	public void update(double dt) {
-		double[] pos = getPosition(); //we are the head
-		
-		pos[0] += Math.cos(Math.toRadians(angle))*dt*MAX_SPEED;
-		pos[1] += Math.sin(Math.toRadians(angle))*dt*MAX_SPEED;
+		x += Math.cos(Math.toRadians(angle))*dt*MAX_SPEED;
+		y += Math.sin(Math.toRadians(angle))*dt*MAX_SPEED;
 		
 		if (curAngleChange) { //pick a direction 
 			angle += ANGLE_VEL*dt; //change in the angle
@@ -58,21 +57,20 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		setRotation(angle);
 		
 		//wall collision
-		if (pos[0] > GameEngine.boardWidth-(mySize/2)) {
-			pos[0] = GameEngine.boardWidth-(mySize/2);
+		if (x > GameEngine.boardWidth-(size/2)) {
+			x = GameEngine.boardWidth-(size/2);
 			angle += ANGLE_VEL*dt;
-		} else if (pos[0] < -GameEngine.boardWidth+(mySize/2)) {
-			pos[0] = -GameEngine.boardWidth+(mySize/2);
-			angle += ANGLE_VEL*dt;
-		}
-		if (pos[1] > GameEngine.boardHeight-(mySize/2)) {
-			pos[1] = GameEngine.boardHeight-(mySize/2);
-			angle += ANGLE_VEL*dt;
-		} else if (pos[1] < -GameEngine.boardHeight+(mySize/2)) {
-			pos[1] = -GameEngine.boardHeight+(mySize/2);
+		} else if (x < -GameEngine.boardWidth+(size/2)) {
+			x = -GameEngine.boardWidth+(size/2);
 			angle += ANGLE_VEL*dt;
 		}
-		setPosition(pos);
+		if (y > GameEngine.boardHeight-(size/2)) {
+			y = GameEngine.boardHeight-(size/2);
+			angle += ANGLE_VEL*dt;
+		} else if (y < -GameEngine.boardHeight+(size/2)) {
+			y = -GameEngine.boardHeight+(size/2);
+			angle += ANGLE_VEL*dt;
+		}
 
 		after.update(dt); //will always exist
 	}
@@ -81,16 +79,9 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SNAKEHEAD].getTextureId());
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-0.5, -0.5);
-			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(0.5, -0.5);
-			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(0.5, 0.5);
-			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-0.5, 0.5);
-		gl.glEnd();
+		Helper.square(gl);
+		
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
 

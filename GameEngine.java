@@ -89,7 +89,7 @@ public class GameEngine implements GLEventListener {
 		//Draw the text
 		renderer.beginRendering(drawable.getWidth(), drawable.getHeight(), true);
 		renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
-		renderer.draw("Score: "+score+"   Time:  "+(myTime-startTime)/1000+"   Lives:  "+lives+"   Multiplier:  "+multiplier, 10, drawable.getHeight()-22); //x,y = 10,10
+		renderer.draw("Score: "+score.getScore()+"   Time:  "+(myTime-startTime)/1000+"   Lives:  "+lives+"   Multiplier:  "+multiplier, 10, drawable.getHeight()-22); //x,y = 10,10
 		renderer.endRendering();
 	}
 

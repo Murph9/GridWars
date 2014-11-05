@@ -31,7 +31,7 @@ public class BlackHole extends MovingObject {
 	public void giveObject() {
 		numCount++;
 		hitPoints += 2;
-		mySize += 0.1;
+		size += 0.1;
 	}
 	
 	public boolean isInert() {
@@ -62,16 +62,9 @@ public class BlackHole extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId());
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-0.5, -0.5);
-			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(0.5, -0.5);
-			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(0.5, 0.5);
-			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-0.5, 0.5);
-		gl.glEnd();
+		Helper.square(gl);
+		
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
 }

@@ -20,71 +20,58 @@ public class ShySquare extends MovingObject {
 
 	@Override
 	public void update(double dt) {
-		double[] myPos = getPosition();
-		myPos[0] += mySpeedX*dt*speed;
-		myPos[1] += mySpeedY*dt*speed;
+		x += dx*dt*speed;
+		y += dy*dt*speed;
 		
 		double[] s = GameEngine.getPlayerPos();
 
-		mySpeedX = s[0]-myPos[0];
-		mySpeedY = s[1]-myPos[1];
+		dx = s[0]-x;
+		dy = s[1]-y;
 
-		double dist = Math.sqrt(mySpeedX*mySpeedX + mySpeedY*mySpeedY);
+		double dist = Math.sqrt(dx*dx + dy*dy);
 		if (dist != 0) { //divide by zero errors are bad
-			mySpeedX /= dist;
-			mySpeedY /= dist; //now they are normalised
+			dx /= dist;
+			dy /= dist; //now they are normalised
 		}
 
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(PlayerBullet.ALL_THIS);
 
 		for (GameObject o: objects) {
-			double[] bullPos = o.getPosition();
-			double distance = (myPos[0] - bullPos[0])*(myPos[0] - bullPos[0]) + (myPos[1] - bullPos[1])*(myPos[1] - bullPos[1]);
-			if (distance < dodgeRange) {
-				mySpeedX += (myPos[0]-bullPos[0])*dodgeSpeed/(distance);
-				mySpeedY += (myPos[1]-bullPos[1])*dodgeSpeed/(distance);//yes its some random number
+			double distance = (x - o.x)*(x - o.x) + (y - o.y)*(y - o.y);
+			if (distance < dodgeRange && distance != 0) {
+				dx += (x-o.x)*dodgeSpeed/(distance);
+				dy += (y-o.y)*dodgeSpeed/(distance);
 			}
 		}
 		
-		
-		if (myPos[0] > GameEngine.boardWidth-(mySize/2)) {
-			mySpeedX = 0; //no bounce
-			myPos[0] = GameEngine.boardWidth-(mySize/2);
-		} else if (myPos[0] < -GameEngine.boardWidth+(mySize/2)) {
-			mySpeedX = 0;
-			myPos[0] = -GameEngine.boardWidth+(mySize/2);
+		if (x > GameEngine.boardWidth-(size/2)) {
+			dx = 0; //no bounce
+			x = GameEngine.boardWidth-(size/2);
+		} else if (x < -GameEngine.boardWidth+(size/2)) {
+			dx = 0;
+			x = -GameEngine.boardWidth+(size/2);
 		}
 		
-		if (myPos[1] > GameEngine.boardHeight-(mySize/2)) {
-			mySpeedY = 0;
-			myPos[1] = GameEngine.boardHeight-(mySize/2);
-		} else if (myPos[1] < -GameEngine.boardHeight+(mySize/2)) {
-			mySpeedY = 0;
-			myPos[1] = -GameEngine.boardHeight+(mySize/2);
+		if (y > GameEngine.boardHeight-(size/2)) {
+			dy = 0;
+			y = GameEngine.boardHeight-(size/2);
+		} else if (y < -GameEngine.boardHeight+(size/2)) {
+			dy = 0;
+			y = -GameEngine.boardHeight+(size/2);
 		}
-		
-		setPosition(myPos); //set it
 	}
 
 	public void destroy() {
 		super.destroy();
 		ALL_THIS.remove(this);
+		GameEngine.score.addScore(score);
 	}
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SHY].getTextureId()); //get id of the dot file
 		
     	gl.glColor3d(colour[0], colour[1], colour[2]);
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-0.5, -0.5);
-			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(0.5, -0.5);
-			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(0.5, 0.5);
-			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-0.5, 0.5);
-		gl.glEnd();
+		Helper.square(gl);
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}

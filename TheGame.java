@@ -36,10 +36,10 @@ public class TheGame extends JFrame {
     private void newEnemy() {
     	int a = random.nextInt(12);
     	MovingObject s = null;
+    	a = 5;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
     		s = new SimpleSpinner(1, GameEngine.PURPLE);
-    		s.setSpeed(random.nextDouble(), random.nextDouble());
     		break;
     	case 3: case 4:
     		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);

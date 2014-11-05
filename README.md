@@ -7,7 +7,7 @@ Made by Jake Murphy
 ========
 
 0.22: Actual Collision
-
+- has been written
 
 ========
 
@@ -21,8 +21,8 @@ Made by Jake Murphy
 ========
 0.2: Scoring/Snakes/ShySquare/Annoying
 - added a rewritten collision system that functions exactly the same (still needs fixing)
-- Better Scoring (with values taken from the speedrun wiki)
-- added the 2 simple enemies butterfly and circle (Note: they move exactly the same as homingsquare)
+- Better Scoring (with values taken from the speedrun-wiki)
+- added the 2 simple enemies butterfly and circle (Note: they move exactly the same as homingSquare)
 - added a early version of the ShySquare (needs a little smoothing)
 - fixed snakes to be better looking
 

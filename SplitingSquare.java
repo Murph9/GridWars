@@ -42,9 +42,9 @@ public class SplitingSquare extends HomingObject {
 	
 	public double[] getCollisionPosition() { //because this object rotates about a point that moves
 		if (hasSplit) {
-			double[] temp = getPosition();
-			temp[0] = temp[0] + Math.cos(orbitAngle)*orbitRadius;
-			temp[1] = temp[1] + Math.sin(orbitAngle)*orbitRadius;
+			double[] temp = new double[2];
+			temp[0] = x + Math.cos(orbitAngle)*orbitRadius;
+			temp[1] = y + Math.sin(orbitAngle)*orbitRadius;
 			return temp;
 		} else {
 			return super.getPosition();
@@ -55,20 +55,23 @@ public class SplitingSquare extends HomingObject {
 	public void destroy() {
 		super.destroy();
 		if (!hasSplit) {
-			double[] t = this.getCollisionPosition();
 			double angle = this.getOrbitAngle();
 			
 			SplitingSquare sA = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, false);
-			sA.setPosition(new double[] {t[0]+Math.cos(angle+60)*0.7, t[1]+Math.sin(angle+60)*0.7});
+			sA.setPosition(new double[] {x+Math.cos(angle+60)*0.7, y+Math.sin(angle+60)*0.7});
 			sA.hasSplit = true;
 			
 			SplitingSquare sB = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
-			sB.setPosition(new double[] {t[0]+Math.cos(angle-30)*0.7, t[1]+Math.sin(angle-30)*0.7});
+			sB.setPosition(new double[] {x+Math.cos(angle-30)*0.7, y+Math.sin(angle-30)*0.7});
 			sB.hasSplit = true;
 			
 			SplitingSquare sC = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
-			sC.setPosition(new double[] {t[0]+Math.cos(angle-120)*0.7, t[1]+Math.sin(angle-120)*0.7});
+			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.7, y+Math.sin(angle-120)*0.7});
 			sC.hasSplit = true;
+			
+			GameEngine.score.addScore(scoreBig);
+		} else {
+			GameEngine.score.addScore(scoreSmall);
 		}
 		ALL_THIS.remove(this);
 	}
@@ -91,17 +94,8 @@ public class SplitingSquare extends HomingObject {
 			gl.glTranslated(Math.cos(orbitAngle)*orbitRadius, Math.sin(orbitAngle)*orbitRadius, 0);
 		}
     	gl.glColor3d(colour[0], colour[1], colour[2]);
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glTexCoord2d(0, 0);
-			gl.glVertex2d(-0.5, -0.5);
-			gl.glTexCoord2d(1, 0);
-			gl.glVertex2d(0.5, -0.5);
-			gl.glTexCoord2d(1, 1);
-			gl.glVertex2d(0.5, 0.5);
-			gl.glTexCoord2d(0, 1);
-			gl.glVertex2d(-0.5, 0.5);
-		gl.glEnd();
-		
+    	Helper.square(gl);
+    	
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 }

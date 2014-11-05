@@ -16,35 +16,34 @@ public class GameObject {
 	// the root of the scene tree
 	public final static GameObject ROOT = new GameObject();
 	
-	protected double myRotation;
-	protected double mySize;
-	protected double[] myTranslation;
+	protected double angle;
+	protected double size;
+	protected double x;
+	protected double y;
 	
 	protected double[] colour;
 	
 	GameObject() {
-		myRotation = 0;
-		mySize = 1;
-	    myTranslation = new double[2];
-	    myTranslation[0] = 0;
-	    myTranslation[1] = 0;
+		angle = 0;
+		size = 1;
+	    x = 0;
+	    y = 0;
 	    
 	    this.colour = new double[]{1,1,1};
-	    
     	ALL_OBJECTS.add(this);
 	}
     
 	
 	public double getRotation() {
-        return myRotation;
+        return angle;
     }
     public double getSize() {
-        return mySize;
+        return size;
     }
     public double[] getPosition() {
         double[] t = new double[2];
-        t[0] = myTranslation[0];
-        t[1] = myTranslation[1];
+        t[0] = x;
+        t[1] = y;
         return t;
     }
     public double[] getColour() {
@@ -65,14 +64,14 @@ public class GameObject {
     }
     
 	public void setRotation(double rot) {
-        myRotation = rot;
+        angle = rot;
     }
     public void setSize(double scale) {
-        mySize = scale;
+        size = scale;
     }
     public void setPosition(double[] translate) {
-    	myTranslation[0] = translate[0];
-    	myTranslation[1] = translate[1];
+    	x = translate[0];
+    	y = translate[1];
     }
     public void setColour(double[] inColour) {
     	colour[0] = inColour[0];
@@ -100,9 +99,9 @@ public class GameObject {
         gl.glPushMatrix(); //remember it ....
         
         //transform to position, draw, then call on children
-        gl.glTranslated(myTranslation[0], myTranslation[1], 0);
-        gl.glRotated(this.myRotation, 0, 0, 1); //because 2D, everything rotates about the z axis
-        gl.glScaled(this.mySize, this.mySize, 1);
+        gl.glTranslated(this.x, this.y, 0);
+        gl.glRotated(this.angle, 0, 0, 1); //because 2D, everything rotates about the z axis
+        gl.glScaled(this.size, this.size, 1);
         
         drawSelf(gl);
         

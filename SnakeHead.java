@@ -9,13 +9,14 @@ import javax.media.opengl.GL2;
 public class SnakeHead extends MovingObject implements SnakeObject {
 
 	public static final int score = 100;
+	public static final int MAX_SPEED = 4;
 	
 	private SnakeObject after; //the next object
 	
 	private double angle; //angle of movement
 	private boolean curAngleChange = true;
 	private int curChangeRate = 0;
-	private static int ANGLE_VEL = 40;
+	private static int ANGLE_VEL = 90;
 	
 	SnakeHead(double size, double[] colour, int length) {
 		super(size, colour);
@@ -39,23 +40,6 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		x += Math.cos(Math.toRadians(angle))*dt*MAX_SPEED;
 		y += Math.sin(Math.toRadians(angle))*dt*MAX_SPEED;
 		
-		if (curAngleChange) { //pick a direction 
-			angle += ANGLE_VEL*dt; //change in the angle
-		} else {
-			angle -= ANGLE_VEL*dt;
-		}
-		angle = angle % 360; //clamp (because bad things happen otherwise)
-		
-		if (curChangeRate == 0) {
-			Random r = new Random();
-			curAngleChange = r.nextInt(2) == 0;
-			curChangeRate = r.nextInt(100);
-		} else {
-			curChangeRate--;
-		}
-
-		setRotation(angle);
-		
 		//wall collision
 		if (x > GameEngine.boardWidth-(size/2)) {
 			x = GameEngine.boardWidth-(size/2);
@@ -72,6 +56,25 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 			angle += ANGLE_VEL*dt;
 		}
 
+		if (curAngleChange) { //pick a direction 
+			angle += ANGLE_VEL*dt; //change in the angle
+		} else {
+			angle -= ANGLE_VEL*dt;
+		}
+		angle = angle % 360; //clamp (because bad things happen otherwise)
+		
+		if (curChangeRate == 0) {
+			Random r = new Random();
+			curAngleChange = r.nextInt(2) == 0;
+			curChangeRate = r.nextInt(60);
+		} else {
+			curChangeRate--;
+		}
+
+		setRotation(angle);
+		
+		blackHole();
+		
 		after.update(dt); //will always exist
 	}
 	

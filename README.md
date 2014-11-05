@@ -6,6 +6,18 @@ Made by Jake Murphy
 
 ========
 
+0.23: BlackHoles
+- they now: 
+  + eat things
+  + suck things
+  + push bullets away (not balanced I might add) 
+  + die
+  + grow
+- they don't:
+  + explode into little pieces 
+  + do anything with snakes 
+
+========
 0.22: Actual Collision
 - has been written
 

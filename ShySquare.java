@@ -11,7 +11,7 @@ public class ShySquare extends MovingObject {
 	
 	private float speed = 4;
 	private float dodgeRange = 4;
-	private float dodgeSpeed = 1f;
+	private float dodgeSpeed = 1.5f;
 	
 	ShySquare(double size, double[] colour) {
 		super(size, colour);
@@ -22,27 +22,6 @@ public class ShySquare extends MovingObject {
 	public void update(double dt) {
 		x += dx*dt*speed;
 		y += dy*dt*speed;
-		
-		double[] s = GameEngine.getPlayerPos();
-
-		dx = s[0]-x;
-		dy = s[1]-y;
-
-		double dist = Math.sqrt(dx*dx + dy*dy);
-		if (dist != 0) { //divide by zero errors are bad
-			dx /= dist;
-			dy /= dist; //now they are normalised
-		}
-
-		ArrayList<GameObject> objects = new ArrayList<GameObject>(PlayerBullet.ALL_THIS);
-
-		for (GameObject o: objects) {
-			double distance = (x - o.x)*(x - o.x) + (y - o.y)*(y - o.y);
-			if (distance < dodgeRange && distance != 0) {
-				dx += (x-o.x)*dodgeSpeed/(distance);
-				dy += (y-o.y)*dodgeSpeed/(distance);
-			}
-		}
 		
 		if (x > GameEngine.boardWidth-(size/2)) {
 			dx = 0; //no bounce
@@ -59,6 +38,42 @@ public class ShySquare extends MovingObject {
 			dy = 0;
 			y = -GameEngine.boardHeight+(size/2);
 		}
+		
+		blackHole();
+		
+		
+		
+		double[] spos = GameEngine.getPlayerPos();
+		dx += (spos[0]-x)/2;
+		dy += (spos[1]-y)/2;
+
+		ArrayList<GameObject> objects = new ArrayList<GameObject>(PlayerBullet.ALL_THIS);
+
+		for (GameObject o: objects) {
+			double distance = (x - o.x)*(x - o.x) + (y - o.y)*(y - o.y);
+			if (distance < dodgeRange && distance != 0) {
+				dx += (x-o.x)*dodgeSpeed/(distance);
+				dy += (y-o.y)*dodgeSpeed/(distance);
+			}
+		}
+		
+		for (ShySquare s: ShySquare.ALL_THIS) {
+			if (!s.equals(this)) { //because that would be silly
+				double distX = s.x - x;
+				double distY = s.y - y;
+				if ((distX*distX) + (distY*distY) < (size*s.size)) {
+					dx -= Helper.sgn(distX);
+					dy -= Helper.sgn(distY);
+				}
+			}
+		}
+		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0) { //divide by zero errors are bad
+			dx /= speed;
+			dy /= speed; //now they are normalised
+		}
+		
 	}
 
 	public void destroy() {

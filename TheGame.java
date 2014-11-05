@@ -36,12 +36,11 @@ public class TheGame extends JFrame {
     private void newEnemy() {
     	int a = random.nextInt(12);
     	MovingObject s = null;
-    	a = 5;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
     		s = new SimpleSpinner(1, GameEngine.PURPLE);
     		break;
-    	case 3: case 4:
+    	case 3: case 4: case 11:
     		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);
     		break;
     	case 5: case 6:
@@ -55,8 +54,7 @@ public class TheGame extends JFrame {
     		break;
     	case 9: case 10:
     		s = new ShySquare(1, GameEngine.GREEN);
-    	case 11:
-    		s = new BlackHole(2, GameEngine.RED);
+    		break;
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
@@ -71,6 +69,9 @@ public class TheGame extends JFrame {
         camera.setSize(Math.max(boardHeight + 1, boardWidth - 4)); //these numbers are just so that it always fits on screen
         
         random = new Random();
+        
+        BlackHole b = new BlackHole(1, GameEngine.RED);
+        b.setPosition(new double[]{2,2});
         
         GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);

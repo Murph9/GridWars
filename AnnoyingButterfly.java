@@ -7,26 +7,32 @@ public class AnnoyingButterfly extends HomingObject {
 
 	public final static ArrayList<AnnoyingButterfly> ALL_THIS = new ArrayList<AnnoyingButterfly>();
 	
-	public static final int HOME_SPEED = 10;
+	public static final int MAX_SPEED = 10;
 	public static final int score = 10;
 	
 	AnnoyingButterfly(double size, double[] colour) {
-		super(size, colour, HOME_SPEED);
+		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);
 	}
 	
 	public void update(double dt) {
 		super.update(dt);
-		
+	
 		for (AnnoyingButterfly s: AnnoyingButterfly.ALL_THIS) {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
 				double distY = s.y - y;
 				if ((distX*distX) + (distY*distY) < (size*size)+(s.size*s.size)) {
-					dx -= Helper.sgn(distX);
-					dy -= Helper.sgn(distY);
+					dx -= Helper.sgn(distX)/2;
+					dy -= Helper.sgn(distY)/2;
 				}
 			}
+		}
+		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+			dx /= speed;
+			dy /= speed; //now they are normalised
 		}
 	}
 	

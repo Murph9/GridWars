@@ -52,18 +52,28 @@ public class PlayerBullet extends MovingObject {
 				continue; //nothing, can't hit these things
 			} else if (o instanceof BlackHole) {
 				//special stuff (reflecting off their field)
+				BlackHole h = (BlackHole) o;
+				double distx = h.x - x;
+				double disty = h.y - y;
+				double dist = Math.sqrt(distx*distx + disty*disty);
+				
+				if (dist < BlackHole.SUCK_RADIUS/2) {
+					dx -= (h.size*8-dist)*0.05*distx/dist;
+					dy -= (h.size*8-dist)*0.05*disty/dist;
+					
+					if (dist < h.size/2) {
+						destroy();
+						h.destroy();
+					}
+				}
 				continue;
 			} else {
-				double distX = o.x - x;
-				double distY = o.y - y;
+				double[] pos = o.getCollisionPosition();
+				double distX = pos[0] - x;
+				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size*size)/2 + (o.size*o.size)/2)) {
 					this.destroy();
-					if (o instanceof SnakeBody) {
-					} else if (o instanceof Shield) {
-						Shield s = (Shield) o;
-						if (!s.getActive()) {
-							o.destroy();
-						}
+					if (o instanceof SnakeBody || o instanceof Shield) {
 					} else {
 						o.destroy();
 					}

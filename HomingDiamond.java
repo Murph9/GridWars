@@ -7,11 +7,11 @@ public class HomingDiamond extends HomingObject {
 	
 	public final static ArrayList<HomingDiamond> ALL_THIS = new ArrayList<HomingDiamond>();
 	
-	public static final int HOME_SPEED = 5;
+	public static final int MAX_SPEED = 5;
 	public static final int score = 50;
 	
 	HomingDiamond(double size, double[] colour) {
-		super(size, colour, HOME_SPEED);
+		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);
 	}
 	
@@ -23,10 +23,16 @@ public class HomingDiamond extends HomingObject {
 				double distX = d.x - x;
 				double distY = d.y - y;
 				if ((distX*distX) + (distY*distY) < (size*size)+(d.size*d.size)) {
-					dx -= Helper.sgn(distX);
-					dy -= Helper.sgn(distY);
+					dx -= Helper.sgn(distX)/2;
+					dy -= Helper.sgn(distY)/2;
 				}
 			}
+		}
+		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+			dx /= speed;
+			dy /= speed; //now they are normalised
 		}
 	}
 	

@@ -2,6 +2,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 import javax.swing.Timer;
@@ -61,54 +62,81 @@ public class Player extends MovingObject implements KeyListener {
 	}
 
 	public void update(double dt) {
-		double[] pos = getPosition();
-		
 		//movement stuff
-		pos[0] += dx*dt*MAX_SPEED; //add it
-    	pos[1] += dy*dt*MAX_SPEED;
+		x += dx*dt*MAX_SPEED; //add it
+    	y += dy*dt*MAX_SPEED;
 		
     	//border collision stuff
-		if (pos[0] > GameEngine.boardWidth-(size/2)) {
+		if (x > GameEngine.boardWidth-(size/2)) {
 			dx = 0;
-			pos[0] = GameEngine.boardWidth-(size/2);
-		} else if (pos[0] < -GameEngine.boardWidth+(size/2)) {
+			x = GameEngine.boardWidth-(size/2);
+		} else if (x < -GameEngine.boardWidth+(size/2)) {
 			dx = 0;
-			pos[0] = -GameEngine.boardWidth+(size/2);
+			x = -GameEngine.boardWidth+(size/2);
 		}
 		
-		if (pos[1] > GameEngine.boardHeight-(size/2)) {
+		if (y > GameEngine.boardHeight-(size/2)) {
 			dy = 0;
-			pos[1] = GameEngine.boardHeight-(size/2);
-		} else if (pos[1] < -GameEngine.boardHeight+(size/2)) {
+			y = GameEngine.boardHeight-(size/2);
+		} else if (y < -GameEngine.boardHeight+(size/2)) {
 			dy = 0;
-			pos[1] = -GameEngine.boardHeight+(size/2);
+			y = -GameEngine.boardHeight+(size/2);
 		}
-		
-		setPosition(pos);
 		
 		//do rotation stuff
 		double[] s = GameEngine.getMousePos();
-		double angle = Math.toDegrees(Math.atan2((s[1]-pos[1]), (s[0]-pos[0])));
+		double angle = Math.toDegrees(Math.atan2((s[1]-y), (s[0]-x)));
 		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
 		setRotation(angle);
 		
 		//do accel (for nextTime stuff)
-		if(xPosAccel) { dx = 1; }
-		else if(xNegAccel) { dx = -1; }
-		else { dx /= DRAG; }
-		if(yPosAccel) { dy = 1; }
-		else if(yNegAccel) { dy = -1; }
-		else { dy /= DRAG; }
+		if		(xPosAccel) { dx = 1; }
+		else if	(xNegAccel) { dx = -1; }
+		else 				{ dx /= DRAG; }
 		
-		if (xPosAccel || xNegAccel || yPosAccel || yNegAccel) {
-			double dist = Math.sqrt(dx*dx + dy*dy);
-	    	if (dist != 0) { //divide by zero errors are bad
-	    		dx /= dist;
-	    		dy /= dist; //now they are normalised
-	    	}
+		if		(yPosAccel) { dy = 1; }
+		else if	(yNegAccel) { dy = -1; }
+		else 				{ dy /= DRAG; }
+		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+    	if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+    		dx /= speed;
+    		dy /= speed; //now they are normalised
+    	}
+		
+    	blackHole();
+    	
+    	speed = Math.sqrt(dx*dx + dy*dy);
+    	if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+    		dx /= speed;
+    		dy /= speed; //now they are normalised
+    	}
+	}
+	
+	public void blackHole() {
+		//does things (that every object does, so do it in here)
+		ArrayList<BlackHole> objects = new ArrayList<BlackHole>(BlackHole.ALL_THIS);
+		
+		for (BlackHole h: objects) {
+			if (h.isInert()) {
+				continue;
+			}
+			double distx = h.x - x;
+			double disty = h.y - y;
+			double dist = Math.sqrt(distx*distx + disty*disty);
+			
+			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
+				dx += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*distx*0.02/dist;
+				dy += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*disty*0.02/dist;
+				
+				if (dist < size*h.size/2) {
+					//bad things.. (like, i died and the such)
+					System.out.print(".");
+				}
+			}
 		}
 	}
-
+	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.PLAYER].getTextureId());
 		

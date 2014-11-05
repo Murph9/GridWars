@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 public abstract class MovingObject extends GameObject {
 
@@ -17,8 +19,29 @@ public abstract class MovingObject extends GameObject {
 		return new double[]{dx, dy};
 	}
 	
+	
 	public void blackHole() {
 		//does things (that every object does, so do it in here)
+		ArrayList<BlackHole> objects = new ArrayList<BlackHole>(BlackHole.ALL_THIS);
+		
+		for (BlackHole h: objects) {
+			if (h.isInert()) {
+				continue;
+			}
+			double distx = h.x - x;
+			double disty = h.y - y;
+			double dist = Math.sqrt(distx*distx + disty*disty);
+			
+			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
+				dx += (h.size*BlackHole.SUCK_RADIUS-dist+2)*2*distx/dist;
+				dy += (h.size*BlackHole.SUCK_RADIUS-dist+2)*2*disty/dist;
+				
+				if (dist < size*h.size/2) {
+					destroy();
+					h.giveObject();
+				}
+			}
+		}
 	}
 	
 	//Every subclass must have these methods:

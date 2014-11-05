@@ -9,7 +9,7 @@ public class SplitingSquare extends HomingObject {
 	
 	public static final int scoreBig = 50;
 	public static final int scoreSmall = 100; 
-	public static final int HOME_SPEED = 3;
+	public static final int MAX_SPEED = 3;
 	private int ORBIT_SPEED = 6;
 	
 	private boolean hasSplit;
@@ -25,7 +25,7 @@ public class SplitingSquare extends HomingObject {
 	 * And the radius is how big of a circle it rotates about the centre
 	 */
 	SplitingSquare(double size, double[] colour, double angle, double radius, boolean rotDirection) {
-		super(size, colour, SplitingSquare.HOME_SPEED);
+		super(size, colour, SplitingSquare.MAX_SPEED);
 		hasSplit = false;
 		orbitAngle = angle;
 		orbitRadius = radius;
@@ -78,12 +78,30 @@ public class SplitingSquare extends HomingObject {
 	
 	public void update(double dt) {
 		super.update(dt);
+		
 		if (hasSplit) {
 			if (isPosOrbit) {
 				orbitAngle += dt*ORBIT_SPEED;
 			} else {
 				orbitAngle -= dt*ORBIT_SPEED;
 			}
+		}
+		
+		for (SplitingSquare s: SplitingSquare.ALL_THIS) {
+			if (!s.equals(this)) { //because that would be silly
+				double distX = s.x - x;
+				double distY = s.y - y;
+				if ((distX*distX) + (distY*distY) < (size*s.size)) {
+					dx -= Helper.sgn(distX);
+					dy -= Helper.sgn(distY);
+				}
+			}
+		}
+		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+			dx /= speed;
+			dy /= speed; //now they are normalised
 		}
 	}
 

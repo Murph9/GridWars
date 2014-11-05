@@ -3,7 +3,7 @@ import javax.media.opengl.GL2;
 
 public class Helper {
 	
-	public static final double SIZE_MUL = 0.707107; // 1 /sqrt(2)
+//	public static final double SIZE_MUL = 0.707107; // 1 /sqrt(2)
 
 	public static int sgn(int a) {
 		if (a > 0) return 1;
@@ -29,4 +29,5 @@ public class Helper {
 			gl.glVertex2d(-0.5, 0.5);
 		gl.glEnd();
 	}
+	
 }

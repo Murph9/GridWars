@@ -5,6 +5,19 @@ Well the git description should do, its a GridWars clone.
 Made by Jake Murphy
 
 ========
+Structure of the project:
+
+GameEngine:
+- 
+TheGame:
+- 
+GameObject:
+- 
+OtherObjects:
+- 
+Player:
+- 
+========
 
 0.23: BlackHoles
 - they now: 

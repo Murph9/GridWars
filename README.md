@@ -2,7 +2,7 @@ GridWars
 ========
 
 Well the git description should do, its a GridWars clone.
-Made by Jake Murphy
+Made by Jake Murphy 0447024028
 
 ========
 
@@ -16,8 +16,13 @@ Player - Button listener and moves by itself, is a GameObject
 ========
 
 
-0.23.5:
-- They now do everything except for themselves (so no moving yet).
+0.24: Various:
+- Blackholes now move and explode
+- Snakes now get eaten and the body parts don't do weird things
+- Some files were renamed
+- Self collision is now handled using the method called selfCol()
+  + of which the homing objects' versions have been fixed
+- Fix bullet rotation and other selfCol() s
 
 ========
 

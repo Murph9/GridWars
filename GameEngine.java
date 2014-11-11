@@ -47,7 +47,7 @@ public class GameEngine implements GLEventListener {
 	
 	////Colours
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
-			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, BLUE = {0,0,1,0.5}, ORANGE = {1,0.6,0,0.5},
+			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, BLUE = {0.2,0.2,1,0.5}, ORANGE = {1,0.6,0,0.5},
 			REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 	
 	public GameEngine(Camera camera, int width, int height) {

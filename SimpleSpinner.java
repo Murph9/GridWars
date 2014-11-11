@@ -26,24 +26,19 @@ public class SimpleSpinner extends MovingObject {
 		
 		angle += dt*rotSpeed;
 		
-		if (x > GameEngine.boardWidth-(size/2)) {
-			dx = -dx;
-			x = GameEngine.boardWidth-(size/2);
-		} else if (x < -GameEngine.boardWidth+(size/2)) {
-			dx = -dx;
-			x = -GameEngine.boardWidth+(size/2);
-		}
-		
-		if (y > GameEngine.boardHeight-(size/2)) {
-			dy = -dy;
-			y = GameEngine.boardHeight-(size/2);
-		} else if (y < -GameEngine.boardHeight+(size/2)) {
-			dy = -dy;
-			y = -GameEngine.boardHeight+(size/2);
-		}
+		Helper.keepInside(this, Helper.BOUNCE);
 		
 		blackHole();
+		selfCol();
 		
+		double speed = Math.sqrt(dx*dx+dy*dy);
+		if (speed != 0 && speed > myMaxSpeed) {
+			dx /= speed;
+			dy /= speed;
+		}
+	}
+	
+	public void selfCol() {
 		for (SimpleSpinner s: SimpleSpinner.ALL_THIS) {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
@@ -53,12 +48,6 @@ public class SimpleSpinner extends MovingObject {
 					dy -= Helper.sgn(distY);
 				}
 			}
-		}
-		
-		double speed = Math.sqrt(dx*dx+dy*dy);
-		if (speed != 0 && speed > myMaxSpeed) {
-			dx /= speed;
-			dy /= speed;
 		}
 	}
 	

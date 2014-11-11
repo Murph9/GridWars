@@ -5,7 +5,7 @@ import javax.media.opengl.GL2;
 
 public class PlayerBullet extends MovingObject {
 
-	public final static ArrayList<PlayerBullet> ALL_THIS = new ArrayList<PlayerBullet>();//not sure actually
+	public final static ArrayList<PlayerBullet> ALL_THIS = new ArrayList<PlayerBullet>();
 	
 	PlayerBullet(double size, double[] colour) {
 		super(size, colour);
@@ -18,6 +18,7 @@ public class PlayerBullet extends MovingObject {
 
 		boolean hasCollided = false;
 		
+		//can't use the helper function here );
 		if (x > GameEngine.boardWidth-(size/2)) {
 			dx = -dx;
 			x = GameEngine.boardWidth-(size/2);
@@ -43,7 +44,11 @@ public class PlayerBullet extends MovingObject {
 			return;
 		}
 		
-		//this is the class that handles deleting objects when bullets hit them, 
+		selfCol();
+	}
+	
+	public void selfCol() {
+			//this is the class that handles deleting objects when bullets hit them, 
 			//every other class just checks against the same type. This checks EVERYTHING, yes everything
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
@@ -57,16 +62,14 @@ public class PlayerBullet extends MovingObject {
 				double disty = h.y - y;
 				double dist = Math.sqrt(distx*distx + disty*disty);
 				
-				if (dist < BlackHole.SUCK_RADIUS/2) {
+				if (dist < BlackHole.SUCK_RADIUS/2 && !h.isInert()) {
 					dx -= (h.size*8-dist)*0.05*distx/dist;
 					dy -= (h.size*8-dist)*0.05*disty/dist;
-					
-					if (dist < h.size/2) {
-						destroy();
-						h.destroy();
-					}
 				}
-				continue;
+				if (dist < h.size/2) {
+					destroy();
+					h.destroy();
+				}
 			} else {
 				double[] pos = o.getCollisionPosition();
 				double distX = pos[0] - x;
@@ -81,7 +84,6 @@ public class PlayerBullet extends MovingObject {
 				}
 			}
 		}
-		
 	}
 	
 	public void drawSelf(GL2 gl) {

@@ -66,22 +66,7 @@ public class Player extends MovingObject implements KeyListener {
 		x += dx*dt*MAX_SPEED; //add it
     	y += dy*dt*MAX_SPEED;
 		
-    	//border collision stuff
-		if (x > GameEngine.boardWidth-(size/2)) {
-			dx = 0;
-			x = GameEngine.boardWidth-(size/2);
-		} else if (x < -GameEngine.boardWidth+(size/2)) {
-			dx = 0;
-			x = -GameEngine.boardWidth+(size/2);
-		}
-		
-		if (y > GameEngine.boardHeight-(size/2)) {
-			dy = 0;
-			y = GameEngine.boardHeight-(size/2);
-		} else if (y < -GameEngine.boardHeight+(size/2)) {
-			dy = 0;
-			y = -GameEngine.boardHeight+(size/2);
-		}
+    	Helper.keepInside(this, Helper.SPLAT);
 		
 		//do rotation stuff
 		double[] s = GameEngine.getMousePos();
@@ -111,6 +96,10 @@ public class Player extends MovingObject implements KeyListener {
     		dx /= speed;
     		dy /= speed; //now they are normalised
     	}
+	}
+	
+	public void selfCol() {
+		//does nothing in this class
 	}
 	
 	public void blackHole() {

@@ -13,7 +13,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 
 //not sure whether this file or GameEngine/other should handle the 
-	// actual position and speed of the spawning objects 
+	// actual position of the spawning objects 
 
 public class TheGame extends JFrame {
 	//contains main and all that jazz
@@ -40,7 +40,7 @@ public class TheGame extends JFrame {
     	case 0: case 1: case 2: //more common = yay
     		s = new SimpleSpinner(1, GameEngine.PURPLE);
     		break;
-    	case 3: case 4: case 11:
+    	case 3: case 4:
     		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);
     		break;
     	case 5: case 6:
@@ -55,6 +55,8 @@ public class TheGame extends JFrame {
     	case 9: case 10:
     		s = new ShySquare(1, GameEngine.GREEN);
     		break;
+    	case 11:
+    		s = new BlackHole(1, GameEngine.RED);
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
@@ -69,9 +71,6 @@ public class TheGame extends JFrame {
         camera.setSize(Math.max(boardHeight + 1, boardWidth - 4)); //these numbers are just so that it always fits on screen
         
         random = new Random();
-        
-        BlackHole b = new BlackHole(1, GameEngine.RED);
-        b.setPosition(new double[]{2,2});
         
         GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);

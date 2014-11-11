@@ -19,13 +19,17 @@ public abstract class MovingObject extends GameObject {
 		return new double[]{dx, dy};
 	}
 	
+	public abstract void selfCol();
 	
+	
+	/**This function edits the x, y, dx and dy values of the object its called on, be careful.
+	 */
 	public void blackHole() {
 		//does things (that every object does, so do it in here)
 		ArrayList<BlackHole> objects = new ArrayList<BlackHole>(BlackHole.ALL_THIS);
 		
 		for (BlackHole h: objects) {
-			if (h.isInert()) {
+			if (h.isInert() || h.equals(this)) { //just incase a black hole targets itself..
 				continue;
 			}
 			double distx = h.x - x;
@@ -36,15 +40,15 @@ public abstract class MovingObject extends GameObject {
 				dx += (h.size*BlackHole.SUCK_RADIUS-dist+2)*2*distx/dist;
 				dy += (h.size*BlackHole.SUCK_RADIUS-dist+2)*2*disty/dist;
 				
-				if (dist < size*h.size/2) {
+				if (dist < size*h.size/2 && !(this instanceof BlackHole)) {
 					destroy();
-					h.giveObject();
+					h.giveObject(distx, disty);
 				}
 			}
 		}
 	}
 	
-	//Every subclass must have these methods:
+	//Every subclass must have this method:
 		//how do i add a private method here?
 	public abstract void update(double dt);
 }

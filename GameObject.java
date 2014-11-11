@@ -4,11 +4,7 @@ import java.util.LinkedList;
 import javax.media.opengl.GL2;
 
 
-//Types of GameObjects(1)
-//(1)-> abstract Moving Object(2)
-//(2)-> abstract Homing Object(3)
-
-//lots of others...
+//see README.me
 public class GameObject {
 
 	public final static LinkedList<GameObject> ALL_OBJECTS = new LinkedList<GameObject>();

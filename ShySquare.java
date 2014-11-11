@@ -23,25 +23,9 @@ public class ShySquare extends MovingObject {
 		x += dx*dt*speed;
 		y += dy*dt*speed;
 		
-		if (x > GameEngine.boardWidth-(size/2)) {
-			dx = 0; //no bounce
-			x = GameEngine.boardWidth-(size/2);
-		} else if (x < -GameEngine.boardWidth+(size/2)) {
-			dx = 0;
-			x = -GameEngine.boardWidth+(size/2);
-		}
-		
-		if (y > GameEngine.boardHeight-(size/2)) {
-			dy = 0;
-			y = GameEngine.boardHeight-(size/2);
-		} else if (y < -GameEngine.boardHeight+(size/2)) {
-			dy = 0;
-			y = -GameEngine.boardHeight+(size/2);
-		}
+		Helper.keepInside(this, Helper.SPLAT);
 		
 		blackHole();
-		
-		
 		
 		double[] spos = GameEngine.getPlayerPos();
 		dx += (spos[0]-x)/2;
@@ -57,6 +41,17 @@ public class ShySquare extends MovingObject {
 			}
 		}
 		
+		selfCol();
+		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0) { //divide by zero errors are bad
+			dx /= speed;
+			dy /= speed; //now they are normalised
+		}
+		
+	}
+
+	public void selfCol() {
 		for (ShySquare s: ShySquare.ALL_THIS) {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
@@ -67,15 +62,8 @@ public class ShySquare extends MovingObject {
 				}
 			}
 		}
-		
-		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0) { //divide by zero errors are bad
-			dx /= speed;
-			dy /= speed; //now they are normalised
-		}
-		
 	}
-
+	
 	public void destroy() {
 		super.destroy();
 		ALL_THIS.remove(this);

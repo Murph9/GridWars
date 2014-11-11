@@ -9,32 +9,39 @@ public class BlackHole extends MovingObject {
 	public static final ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
 	public static final int SUCK_RADIUS = 8;
 	
-	private boolean isInert;
-	private int numCount; //number of objects consumed, snakes are weird here
-				//as in NumNumNumNum
+	public static final int MAX_SPEED = 2; //yeah kinda slow
 	
-	private int maxNum;
+	private boolean isInert;
+	private int numCount; //number of objects consumed
+				//as in NumNumNumNum (eating)
+	
+	private int maxNum; //before explosion
 	private int hitPoints;
 	
 	BlackHole(double size, double[] colour) {
 		super(size, colour);
 		isInert = true;
 		numCount = 0;
-		maxNum = 100;
+		maxNum = 30;
 		hitPoints = 20;
 		ALL_THIS.add(this);
+		
+		dx = 0;
+		dy = 0;
 	}
 
 	public boolean isFull() {
 		return numCount > maxNum;
 	}
 	
-	public void giveObject() {
+	public void giveObject(double x, double y) {
+		dx += x;//(numCount+15); //because mass
+		dy += y;//(numCount+15);
 		numCount++;
 		hitPoints += 2;
 		size += 0.02;
 		if (numCount > maxNum) {
-			actuallyDestroy();
+			actuallyDestroy(false);
 		}
 	}
 	
@@ -43,26 +50,59 @@ public class BlackHole extends MovingObject {
 	
 	@Override
 	public void update(double dt) {
-		//not moving (for now)
+		x += dx*dt;
+		y += dy*dt;
+		
+//		dx /= 1.02; //big things drag still
+//		dy /= 1.02;
+		
+		Helper.keepInside(this, Helper.BOUNCE);
+		
+		blackHole();
+		selfCol();
+		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > MAX_SPEED) {
+			dx *= MAX_SPEED/speed;
+			dy *= MAX_SPEED/speed;
+		}
+	}
+	
+	public void selfCol() {
+		for (BlackHole s: BlackHole.ALL_THIS) {
+			if (!s.equals(this)) { //because that would be silly
+				double distX = s.x - x;
+				double distY = s.y - y;
+				if ((distX*distX) + (distY*distY) < (size*size)+(s.size*s.size)) {
+					dx -= Helper.sgn(distX)/2;
+					dy -= Helper.sgn(distY)/2;
+				}
+			}
+		}
 	}
 
-	//function handles most of blackhole's things
+	//function handles destroying things into itself
 	public void destroy() {
 		isInert = false;
 		hitPoints--;
 		size -= 0.01;
 		if (hitPoints <= 0) {
-			actuallyDestroy();
+			actuallyDestroy(true);
 		}
 	}
 	
-	private void actuallyDestroy() {
+	//handles actually dying
+	private void actuallyDestroy(boolean wasShot) {
 		super.destroy();
 		ALL_THIS.remove(this);
-		for (int i = 0; i < numCount; i++) {
-//			AnnoyingButterfly a = new AnnoyingButterfly(0.6, GameEngine.BLUE);
+		if (wasShot) { //then add score
+			GameEngine.score.addScore(150 + (5/2)*numCount*(numCount+1));			
+		} else { //then explode
+			for (int i = 0; i < 20; i++) {
+				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);
+				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
+			}
 		}
-		GameEngine.score.addScore(1); //the wiki says: 150 + (5/2)N(N+1)
 	}
 	
 	public void drawSelf(GL2 gl) {
@@ -75,7 +115,7 @@ public class BlackHole extends MovingObject {
 		
 		Helper.square(gl);
 		
-		gl.glScaled(8,8,1);
+		gl.glScaled(8,8,1); //draw bigger helper circle
 		Helper.square(gl);
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);

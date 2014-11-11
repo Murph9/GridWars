@@ -15,31 +15,26 @@ public class HomingDiamond extends HomingObject {
 		ALL_THIS.add(this);
 	}
 	
-	public void update(double dt) {
-		super.update(dt);
-		
+	//this works perfectly:, copy this if you need good collision of objects (not bouncing) 
+	public void selfCol() {
 		for (HomingDiamond d: HomingDiamond.ALL_THIS) {
 			if (!d.equals(this)) { //because that would be silly
 				double distX = d.x - x;
 				double distY = d.y - y;
-				if ((distX*distX) + (distY*distY) < (size*size)+(d.size*d.size)) {
-					dx -= Helper.sgn(distX)/2;
-					dy -= Helper.sgn(distY)/2;
+				double dist = (distX*distX) + (distY*distY);
+				if (dist < 0.5*((size*size)+(d.size*d.size))) {
+					dx -= Helper.sgn(distX)/(12*Math.sqrt(dist)); //try changing 12 for good effect
+					dy -= Helper.sgn(distY)/(12*Math.sqrt(dist));
 				}
 			}
-		}
-		
-		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
-			dx /= speed;
-			dy /= speed; //now they are normalised
 		}
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.DIAMOND].getTextureId()); //get id of the dot file
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.DIAMOND].getTextureId());
 		
     	gl.glColor3d(colour[0], colour[1], colour[2]);
+    	
     	Helper.square(gl);
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);

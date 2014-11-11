@@ -12,7 +12,9 @@ public class Shield extends MovingObject {
 
 	@Override
 	public void update(double dt) {
-		//not sure yet, actually not sure it has to do anything
+	}
+	
+	public void selfCol() {
 	}
 	
 	public double[] getCollisionPosition() { //if its

@@ -37,24 +37,10 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	
 	
 	public void update(double dt) {
-		x += Math.cos(Math.toRadians(angle))*dt*MAX_SPEED;
-		y += Math.sin(Math.toRadians(angle))*dt*MAX_SPEED;
+		x += dx*dt;
+		y += dy*dt;
 		
-		//wall collision
-		if (x > GameEngine.boardWidth-(size/2)) {
-			x = GameEngine.boardWidth-(size/2);
-			angle += ANGLE_VEL*dt;
-		} else if (x < -GameEngine.boardWidth+(size/2)) {
-			x = -GameEngine.boardWidth+(size/2);
-			angle += ANGLE_VEL*dt;
-		}
-		if (y > GameEngine.boardHeight-(size/2)) {
-			y = GameEngine.boardHeight-(size/2);
-			angle += ANGLE_VEL*dt;
-		} else if (y < -GameEngine.boardHeight+(size/2)) {
-			y = -GameEngine.boardHeight+(size/2);
-			angle += ANGLE_VEL*dt;
-		}
+		Helper.keepInside(this, Helper.SPLAT);
 
 		if (curAngleChange) { //pick a direction 
 			angle += ANGLE_VEL*dt; //change in the angle
@@ -70,12 +56,23 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		} else {
 			curChangeRate--;
 		}
-
 		setRotation(angle);
+		dx = Math.cos(Math.toRadians(angle))*MAX_SPEED;
+		dy = Math.sin(Math.toRadians(angle))*MAX_SPEED;
 		
 		blackHole();
 		
-		after.update(dt); //will always exist
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0) {
+			dx *= MAX_SPEED/speed;
+			dy *= MAX_SPEED/speed;
+		}
+		
+		after.update(dt); //will always exist (at least on head)
+	}
+	
+	public void selfCol() {
+		//snakes do NOT collide
 	}
 	
 	public void drawSelf(GL2 gl) {

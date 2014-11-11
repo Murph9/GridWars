@@ -40,22 +40,32 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		
 		double angle = Math.toDegrees(Math.atan2((beforePos[1]-y), (beforePos[0]-x)));
 		double beforeAngle = before.getRotation();
+		if (angle > beforeAngle +180) { //if on the other side of the spectrum make it closer
+			beforeAngle += 360;
+		}
+		if (beforeAngle > angle +180) {
+			angle += 360;
+		}
 		setRotation((angle+beforeAngle)/2);
 		
-		double dist = (x-beforePos[0])*(x-beforePos[0]) + (y-beforePos[1])*(y-beforePos[1]);
+		double dist = (dir[0])*(dir[0]) + (dir[1])*(dir[1]);
 		
-		if (dist > 2*size*size) {
+		if (dist > 16*size*size) {
 			x = beforePos[0];
 			y = beforePos[1];
 		} else if (dist > 0.7*size*size) {
-			x -= dir[0]*dt*MAX_SPEED;
-			y -= dir[1]*dt*MAX_SPEED;
+			x -= dir[0]*dt*Math.sqrt(dist)*MAX_SPEED;
+			y -= dir[1]*dt*Math.sqrt(dist)*MAX_SPEED;
 		}
 		
 		if (after != null) {
 			after.update(dt);
 		}
-}
+	}
+	
+	public void selfCol() {
+		//nothing, snakes don't really have a problem with each other
+	}
 	
 	
 	public void drawSelf(GL2 gl) {

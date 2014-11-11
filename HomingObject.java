@@ -16,32 +16,23 @@ public abstract class HomingObject extends MovingObject {
 		x += dx*dt*MAX_SPEED;
 		y += dy*dt*MAX_SPEED;
 		
-		if (x > GameEngine.boardWidth-(size/2)) {
-			dx = 0;
-			x = GameEngine.boardWidth-(size/2);
-		} else if (x < -GameEngine.boardWidth+(size/2)) {
-			dx = 0;
-			x = -GameEngine.boardWidth+(size/2);
-		}
-		
-		if (y > GameEngine.boardHeight-(size/2)) {
-			dy = 0;
-			y = GameEngine.boardHeight-(size/2);
-		} else if (y < -GameEngine.boardHeight+(size/2)) {
-			dy = 0;
-			y = -GameEngine.boardHeight+(size/2);
-		}
+		Helper.keepInside(this, Helper.SPLAT);
 		
 		blackHole();
+		selfCol();
 		
-		double[] p = GameEngine.getPlayerPos();
-		dx += p[0]-x;
-		dy += p[1]-y;
+		double[] a = new double[]{GameEngine.getPlayerPos()[0]-x,GameEngine.getPlayerPos()[1]-y};
+		
+		double dist = a[0]*a[0] + a[1]*a[1];
+		if (dist != 0) {
+			dx += a[0]/dist;
+			dy += a[1]/dist;
+		}
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0) {
+		if (speed != 0) { //divide by zero errors are bad
 			dx /= speed;
-			dy /= speed; //now they are normalised
+			dy /= speed; //now they are normalised yay
 		}
 	}
 }

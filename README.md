@@ -6,12 +6,18 @@ Made by Jake Murphy
 
 ========
 
-Structure of the project.
-GameEngine - 
-TheGame - 
-GameObject - 
-OtherObjects - 
-Player - 
+Structure of the project:
+GameEngine - Makes sure everything is drawn an updated
+TheGame - Is the interface of the project (can be interchanged with other TheGame's so far)
+GameObject - The base object class, every objects hierarchy is handled in this file
+OtherObjects - All enemies basically, all handle what happens when they collide
+Player - Button listener and moves by itself, is a GameObject
+
+========
+
+
+0.23.5:
+- They now do everything except for themselves (so no moving yet).
 
 ========
 

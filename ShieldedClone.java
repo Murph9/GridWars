@@ -28,33 +28,24 @@ public class ShieldedClone extends MovingObject {
 		y += dy*dt*MAX_SPEED;
 		shield.x = x+Math.cos(Math.toRadians(lastAngle))*0.8;
 		shield.y = y+Math.sin(Math.toRadians(lastAngle))*0.8;
+
+		//now bounces off walls
+		Helper.keepInside(this, Helper.BOUNCE);
 		
-		//bounce off walls now
-		if (x > GameEngine.boardWidth-(size/2)) { 
-			dx = -dx;
-			x = GameEngine.boardWidth-(size/2);
-		} else if (x < -GameEngine.boardWidth+(size/2)) {
-			dx = -dx;
-			x = -GameEngine.boardWidth+(size/2);
-		}
-		
-		if (y > GameEngine.boardHeight-(size/2)) {
-			dy = -dy;
-			y = GameEngine.boardHeight-(size/2);
-		} else if (y < -GameEngine.boardHeight+(size/2)) {
-			dy = -dy;
-			y = -GameEngine.boardHeight+(size/2);
-		}
-		
-		blackHole();
 		moveToPlayer(dt);
-		
+		blackHole(); //note the order is reversed here.
+		selfCol();
+
 		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0) {
+		speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > MAX_SPEED) {
 			dx /= speed;
 			dy /= speed;
 		}
 		
+	}
+	
+	public void selfCol() {
 		for (ShieldedClone s: ShieldedClone.ALL_THIS) {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
@@ -65,13 +56,6 @@ public class ShieldedClone extends MovingObject {
 				}
 			}
 		}
-		
-		speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0 && speed > MAX_SPEED) {
-			dx /= speed;
-			dy /= speed;
-		}
-		
 	}
 	
 	private void moveToPlayer(double dt) {
@@ -110,8 +94,6 @@ public class ShieldedClone extends MovingObject {
 			shield.setIfActive(true);
 		}
 		
-		dx /= 8; //to prioritise blackhole() over this
-		dy /= 8;
 	}
 	
 	public void destroy() {

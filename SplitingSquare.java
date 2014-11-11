@@ -78,6 +78,7 @@ public class SplitingSquare extends HomingObject {
 	
 	public void update(double dt) {
 		super.update(dt);
+		selfCol();
 		
 		if (hasSplit) {
 			if (isPosOrbit) {
@@ -87,6 +88,14 @@ public class SplitingSquare extends HomingObject {
 			}
 		}
 		
+		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+			dx /= speed;
+			dy /= speed; //now they are normalised
+		}
+	}
+	
+	public void selfCol() {
 		for (SplitingSquare s: SplitingSquare.ALL_THIS) {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
@@ -96,12 +105,6 @@ public class SplitingSquare extends HomingObject {
 					dy -= Helper.sgn(distY);
 				}
 			}
-		}
-		
-		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
-			dx /= speed;
-			dy /= speed; //now they are normalised
 		}
 	}
 

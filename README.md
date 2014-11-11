@@ -22,7 +22,7 @@ Player - Button listener and moves by itself, is a GameObject
 - Some files were renamed
 - Self collision is now handled using the method called selfCol()
   + of which the homing objects' versions have been fixed
-- Fix bullet rotation and other selfCol() s
+- Todo: Fix bullet rotation and other selfCol() s
 
 ========
 

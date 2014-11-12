@@ -32,7 +32,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	public void destroy() { //destroy properly (and down the line)
 		super.destroy();
 		after.destroy();
-		GameEngine.score.addScore(score);
+		GameEngine.curGame.addScore(score);
 	}
 	
 	

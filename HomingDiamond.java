@@ -43,6 +43,6 @@ public class HomingDiamond extends HomingObject {
 	public void destroy() {
 		super.destroy();
 		ALL_THIS.remove(this);
-		GameEngine.score.addScore(score);
+		GameEngine.curGame.addScore(score);
 	}
 }

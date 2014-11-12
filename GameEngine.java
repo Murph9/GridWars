@@ -21,10 +21,7 @@ public class GameEngine implements GLEventListener {
 	public static final Random rand = new Random(); 
 			//just because ease of use, for specific games, might be given a seed
 	
-	public static Score score;
-	private	int lives;
-	private int multiplier;
-	
+	public static GameData curGame;
 	
 	public static int boardWidth = 12, 
 				boardHeight = 10; //at least 4 please
@@ -53,9 +50,7 @@ public class GameEngine implements GLEventListener {
 	public GameEngine(Camera camera, int width, int height) {
 		startTime = System.currentTimeMillis();
 		myCamera = camera;
-		score = new Score();
-		lives = 3;
-		multiplier = 1;
+		curGame = new GameData();
 		boardWidth = width;
 		boardHeight = height;
 	}
@@ -89,7 +84,7 @@ public class GameEngine implements GLEventListener {
 		//Draw the text
 		renderer.beginRendering(drawable.getWidth(), drawable.getHeight(), true);
 		renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
-		renderer.draw("Score: "+score.getScore()+"   Time:  "+(myTime-startTime)/1000+"   Lives:  "+lives+"   Multiplier:  "+multiplier, 10, drawable.getHeight()-22); //x,y = 10,10
+		renderer.draw("Score: "+curGame.score+"   Time:  "+(myTime-startTime)/1000+"   Lives:  "+curGame.lives+"   Multiplier:  "+curGame.multi, 10, drawable.getHeight()-22); //x,y = 10,10
 		renderer.endRendering();
 	}
 
@@ -157,17 +152,44 @@ public class GameEngine implements GLEventListener {
 
 	//nice small class so the other functions can call it
 	
-	class Score {
+	class GameData {
 		private int score;
+		private int lives;
+		private int multi;
+		
+		private int numBullets;
+		private double bullSpeed;
+		
+		GameData() {
+			score = 0;
+			lives = 3;
+			multi = 1;
+			
+			numBullets = 4;
+			bullSpeed = 1; //how to change the bullet speed
+		}
 		
 		public void addScore(int add) {
-			if (add >= 0) { //say yes
-				score += add;
+			if (add >= 0) { //please don't give a negative
+				score += add*multi;
 			}
-			
 		}
-		public int getScore() {
-			return score;
+		
+		public void lostLife() {
+			lives--;
+			numBullets = Math.max(2, numBullets-1);
+		}
+		
+		public void setMulti(int mul) {
+			multi = mul;
+		}
+
+		public double getBulMul() {
+			return bullSpeed;
+		}
+
+		public int getBulCount() {
+			return numBullets;
 		}
 	}
 }

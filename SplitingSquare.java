@@ -69,9 +69,9 @@ public class SplitingSquare extends HomingObject {
 			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.7, y+Math.sin(angle-120)*0.7});
 			sC.hasSplit = true;
 			
-			GameEngine.score.addScore(scoreBig);
+			GameEngine.curGame.addScore(scoreBig);
 		} else {
-			GameEngine.score.addScore(scoreSmall);
+			GameEngine.curGame.addScore(scoreSmall);
 		}
 		ALL_THIS.remove(this);
 	}
@@ -100,9 +100,10 @@ public class SplitingSquare extends HomingObject {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
 				double distY = s.y - y;
-				if ((distX*distX) + (distY*distY) < (size*s.size)) {
-					dx -= Helper.sgn(distX);
-					dy -= Helper.sgn(distY);
+				double dist = distX*distX + distY*distY;
+				if (dist < (size*size + s.size*s.size)) {
+					dx -= Helper.sgn(distX)/(12*Math.sqrt(dist));
+					dy -= Helper.sgn(distY)/(12*Math.sqrt(dist));
 				}
 			}
 		}

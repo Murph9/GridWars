@@ -22,8 +22,8 @@ public class HomingButterfly extends HomingObject {
 				double distY = d.y - y;
 				double dist = (distX*distX) + (distY*distY);
 				if (dist < 0.5*((size*size)+(d.size*d.size))) {
-					dx -= Helper.sgn(distX)/(8*Math.sqrt(dist));
-					dy -= Helper.sgn(distY)/(8*Math.sqrt(dist));
+					dx -= Helper.sgn(distX)/(12*Math.sqrt(dist));
+					dy -= Helper.sgn(distY)/(12*Math.sqrt(dist));
 				}
 			}
 		}
@@ -42,6 +42,6 @@ public class HomingButterfly extends HomingObject {
 	public void destroy() {
 		super.destroy();
 		ALL_THIS.remove(this);
-		GameEngine.score.addScore(score);
+		GameEngine.curGame.addScore(score);
 	}
 }

@@ -50,14 +50,15 @@ public class ShieldedClone extends MovingObject {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
 				double distY = s.y - y;
-				if ((distX*distX) + (distY*distY) < (size*size)+(s.size*s.size)) {
-					dx -= Helper.sgn(distX)/2;
-					dy -= Helper.sgn(distY)/2;
+				double dist = (distX*distX) + (distY*distY);
+				if (dist < 0.5*(size*size)+(s.size*s.size)) {
+					dx -= Helper.sgn(distX)/(12*Math.sqrt(dist));
+					dy -= Helper.sgn(distY)/(12*Math.sqrt(dist));
 				}
 			}
 		}
 	}
-	
+
 	private void moveToPlayer(double dt) {
 		//do rotation stuff
 		double[] playerPos = GameEngine.getPlayerPos();
@@ -100,7 +101,7 @@ public class ShieldedClone extends MovingObject {
 		shield.destroy();
 		super.destroy();
 		ALL_THIS.remove(this);
-		GameEngine.score.addScore(score);
+		GameEngine.curGame.addScore(score);
 	}
 	
 	

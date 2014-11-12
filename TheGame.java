@@ -12,8 +12,7 @@ import javax.swing.Timer;
 import com.jogamp.opengl.util.FPSAnimator;
 
 
-//not sure whether this file or GameEngine/other should handle the 
-	// actual position of the spawning objects 
+//not sure whether this file or GameEngine should handle the actual position of the spawning objects 
 
 public class TheGame extends JFrame {
 	//contains main and all that jazz
@@ -23,10 +22,10 @@ public class TheGame extends JFrame {
 	private FPSAnimator animator;	
 	
 	private Timer timer;
-	private static int TIME_INTERVAL = 500;
+	private static int TIME_INTERVAL = 250; //500 is the best so far
 	private Random random;
 	
-	private static int boardWidth = 12, boardHeight = 10; //at least 4 please
+	private static int boardWidth = 14, boardHeight = 10; //at least 4 please
 	
     public static void main(String[] args) {
 		TheGame system = new TheGame();

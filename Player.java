@@ -39,26 +39,88 @@ public class Player extends MovingObject implements KeyListener {
 		
 	}
 	
-	private void newBullet() { //creats a PlayerBullet
-		MovingObject b1 = new PlayerBullet(0.4, GameEngine.YELLOW);
-		MovingObject b2 = new PlayerBullet(0.4, GameEngine.YELLOW);
+	private void newBullet() { //creats PlayerBullets, large
+		int num = GameEngine.curGame.getBulCount();
+		double speed = MAX_SPEED*GameEngine.curGame.getBulMul();
+		
+		switch(num) {
+		case 2:
+			MovingObject b1 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b2 = new PlayerBullet(0.35, GameEngine.YELLOW);
 
-		double[] myPos = getPosition();
-		double angle = getRotation();
-		
-		double[] temp = new double[2];
+			//position
+			b1.x = Math.cos(Math.toRadians(angle+20))*size/2 + x;
+			b1.y = Math.sin(Math.toRadians(angle+20))*size/2 + y;
+			
+			b2.x = Math.cos(Math.toRadians(angle-20))*size/2 + x;
+			b2.y = Math.sin(Math.toRadians(angle-20))*size/2 + y;
+			
+			//velocity
+			b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+3)))*speed;
+			b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+3)))*speed;
+			
+			b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-3)))*speed;
+			b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-3)))*speed;
+			break;
+		case 3:
+			MovingObject b3 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b4 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b5 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			
+			b3.x = Math.cos(Math.toRadians(angle+30))*size/2 + x;
+			b3.y = Math.sin(Math.toRadians(angle+30))*size/2 + y;
 
-		temp[0] = (Math.cos(Math.toRadians(angle))*size/2 + myPos[0]);
-		temp[1] = (Math.sin(Math.toRadians(angle))*size/2 + myPos[1]);
+			b4.x = Math.cos(Math.toRadians(angle))*size/2 + x;
+			b4.y = Math.sin(Math.toRadians(angle))*size/2 + y;
+			
+			b5.x = Math.cos(Math.toRadians(angle-30))*size/2 + x;
+			b5.y = Math.sin(Math.toRadians(angle-30))*size/2 + y;
+			
+			//velocity
+			b3.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
+			b3.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
+			
+			b4.dx = (dx/2+2*Math.cos(Math.toRadians(angle)))*speed;
+			b4.dy = (dy/2+2*Math.sin(Math.toRadians(angle)))*speed;
+			
+			b5.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
+			b5.dy = (dy/2+2*Math.sin(Math.toRadians(angle-5)))*speed;
+			break;
+		case 4:
+			MovingObject b6 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b7 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b8 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b9 = new PlayerBullet(0.35, GameEngine.YELLOW);
+
+			//position
+			b6.x = Math.cos(Math.toRadians(angle+15))*size/2 + x;
+			b6.y = Math.sin(Math.toRadians(angle+15))*size/2 + y;
+			
+			b7.x = Math.cos(Math.toRadians(angle-15))*size/2 + x;
+			b7.y = Math.sin(Math.toRadians(angle-15))*size/2 + y;
+			
+			b8.x = Math.cos(Math.toRadians(angle+25))*size/2 + x;
+			b8.y = Math.sin(Math.toRadians(angle+25))*size/2 + y;
+			
+			b9.x = Math.cos(Math.toRadians(angle-25))*size/2 + x;
+			b9.y = Math.sin(Math.toRadians(angle-25))*size/2 + y;
+			
+			//velocity
+			b6.dx = (dx/2+2*Math.cos(Math.toRadians(angle+2)))*speed;
+			b6.dy = (dy/2+2*Math.sin(Math.toRadians(angle+2)))*speed;
+			
+			b7.dx = (dx/2+2*Math.cos(Math.toRadians(angle-2)))*speed;
+			b7.dy = (dy/2+2*Math.sin(Math.toRadians(angle-2)))*speed;
+			
+			b8.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
+			b8.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
+			
+			b9.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
+			b9.dy = (dy/2+2*Math.sin(Math.toRadians(angle-5)))*speed;
+			break;
+		}
 		
-		b1.setPosition(new double[] {Math.cos(Math.toRadians(angle+30))*size/2 + myPos[0], Math.sin(Math.toRadians(angle+20))*size/2 + myPos[1]});
-		b2.setPosition(new double[] {Math.cos(Math.toRadians(angle-30))*size/2 + myPos[0], Math.sin(Math.toRadians(angle-20))*size/2 + myPos[1]});
 		
-		b1.setRotation(getRotation());
-		b2.setRotation(getRotation()); //yay
-		
-		b1.setSpeed((dx/2+2*Math.cos(Math.toRadians(angle)))*MAX_SPEED, (dy/2+2*Math.sin(Math.toRadians(angle))*MAX_SPEED));
-		b2.setSpeed((dx/2+2*Math.cos(Math.toRadians(angle)))*MAX_SPEED, (dy/2+2*Math.sin(Math.toRadians(angle))*MAX_SPEED));
 	}
 
 	public void update(double dt) {
@@ -90,6 +152,7 @@ public class Player extends MovingObject implements KeyListener {
     	}
 		
     	blackHole();
+    	selfCol();
     	
     	speed = Math.sqrt(dx*dx + dy*dy);
     	if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
@@ -99,7 +162,40 @@ public class Player extends MovingObject implements KeyListener {
 	}
 	
 	public void selfCol() {
-		//does nothing in this class
+		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
+		
+		for (GameObject o: objects) {
+			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof Shield) {
+				continue; //nothing, can't hit these things
+			} else {
+				double[] pos = o.getCollisionPosition();
+				double distX = pos[0] - x;
+				double distY = pos[1] - y;
+				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
+					destroyAll();
+				}
+			}
+		}
+	}
+	
+	private void destroyAll() {
+		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
+		for (GameObject o: objects) {
+			if (o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT)) {
+				continue;
+			}
+			if (o instanceof SplitingSquare) {
+				SplitingSquare s = (SplitingSquare) o;
+				s.setSplitStatus();
+			}
+			if (o instanceof BlackHole) {
+				BlackHole b = (BlackHole) o;
+				BlackHole.ALL_THIS.remove(b);
+				GameObject.ALL_OBJECTS.remove(b);
+			}
+			o.destroy();
+		}
+		GameEngine.curGame.lostLife();
 	}
 	
 	public void blackHole() {
@@ -115,8 +211,8 @@ public class Player extends MovingObject implements KeyListener {
 			double dist = Math.sqrt(distx*distx + disty*disty);
 			
 			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
-				dx += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*distx*0.02/dist;
-				dy += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*disty*0.02/dist;
+				dx += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*distx*0.013/dist;
+				dy += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*disty*0.013/dist;
 				
 				if (dist < size*h.size/2) {
 					//bad things.. (like, i died and the such)

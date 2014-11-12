@@ -16,7 +16,9 @@ public class PlayerBullet extends MovingObject {
 		x += dx*dt;
 		y += dy*dt;
 
-		boolean hasCollided = false;
+		angle = Math.toDegrees(Math.atan2(dy, dx));
+		
+		boolean hasCollided = false; //wall collision
 		
 		//can't use the helper function here );
 		if (x > GameEngine.boardWidth-(size/2)) {
@@ -74,7 +76,7 @@ public class PlayerBullet extends MovingObject {
 				double[] pos = o.getCollisionPosition();
 				double distX = pos[0] - x;
 				double distY = pos[1] - y;
-				if ((distX*distX) + (distY*distY) < ((size*size)/2 + (o.size*o.size)/2)) {
+				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
 					this.destroy();
 					if (o instanceof SnakeBody || o instanceof Shield) {
 					} else {

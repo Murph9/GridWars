@@ -18,6 +18,8 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		} else {
 			after = null;
 		}
+		x = Integer.MAX_VALUE;
+		y = Integer.MAX_VALUE;
 	}
 	
 	public void destroy() {

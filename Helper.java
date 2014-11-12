@@ -12,12 +12,12 @@ public class Helper {
 	public static int sgn(int a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return 0;
+		else return GameEngine.rand.nextInt(2)*2 -1; //i was trying to make it move when it didn't want to;
 	}
 	public static double sgn(double a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return 0;//GameEngine.rand.nextDouble()*2 -1; //i was trying to make it move when it didn't want to
+		else return GameEngine.rand.nextDouble()*2 -1; //i was trying to make it move when it didn't want to
 	}
 	
 	

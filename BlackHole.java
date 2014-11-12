@@ -29,10 +29,6 @@ public class BlackHole extends MovingObject {
 		dx = 0;
 		dy = 0;
 	}
-
-	public boolean isFull() {
-		return numCount > maxNum;
-	}
 	
 	public void giveObject(double x, double y) {
 		dx += x;//(numCount+15); //because mass
@@ -53,15 +49,21 @@ public class BlackHole extends MovingObject {
 		x += dx*dt;
 		y += dy*dt;
 		
-//		dx /= 1.02; //big things drag still
-//		dy /= 1.02;
+		dx /= 1.02; //big things drag still
+		dy /= 1.02;
 		
 		Helper.keepInside(this, Helper.BOUNCE);
 		
 		blackHole();
-		selfCol();
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > MAX_SPEED) {
+			dx /= speed;
+			dy /= speed;
+		}
+		selfCol();
+		
+		speed = Math.sqrt(dx*dx + dy*dy);
 		if (speed != 0 && speed > MAX_SPEED) {
 			dx *= MAX_SPEED/speed;
 			dy *= MAX_SPEED/speed;
@@ -73,9 +75,10 @@ public class BlackHole extends MovingObject {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
 				double distY = s.y - y;
-				if ((distX*distX) + (distY*distY) < (size*size)+(s.size*s.size)) {
-					dx -= Helper.sgn(distX)/2;
-					dy -= Helper.sgn(distY)/2;
+				double dist = distX*distX + distY*distY;
+				if (dist < (size*size)+(s.size*s.size)) {
+					dx -= Helper.sgn(distX)/(Math.sqrt(dist));
+					dy -= Helper.sgn(distY)/(Math.sqrt(dist));
 				}
 			}
 		}
@@ -95,9 +98,10 @@ public class BlackHole extends MovingObject {
 	private void actuallyDestroy(boolean wasShot) {
 		super.destroy();
 		ALL_THIS.remove(this);
+		
 		if (wasShot) { //then add score
-			GameEngine.score.addScore(150 + (5/2)*numCount*(numCount+1));			
-		} else { //then explode
+			GameEngine.curGame.addScore(150 + (5/2)*numCount*(numCount+1));			
+		} else { // or explode
 			for (int i = 0; i < 20; i++) {
 				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);
 				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
@@ -113,9 +117,6 @@ public class BlackHole extends MovingObject {
 			gl.glColor3d(colour[0], colour[1], colour[2]);
 		}
 		
-		Helper.square(gl);
-		
-		gl.glScaled(8,8,1); //draw bigger helper circle
 		Helper.square(gl);
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);

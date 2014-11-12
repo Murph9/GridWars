@@ -84,7 +84,8 @@ public class GameEngine implements GLEventListener {
 		//Draw the text
 		renderer.beginRendering(drawable.getWidth(), drawable.getHeight(), true);
 		renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
-		renderer.draw("Score: "+curGame.score+"   Time:  "+(myTime-startTime)/1000+"   Lives:  "+curGame.lives+"   Multiplier:  "+curGame.multi, 10, drawable.getHeight()-22); //x,y = 10,10
+		renderer.draw("S:" + curGame.score+" | L:"+curGame.lives+ " | B: " + curGame.bombCount +
+				" | x"+curGame.multi +" | Time:  "+(myTime-startTime)/1000, 10, drawable.getHeight()-22);
 		renderer.endRendering();
 	}
 
@@ -153,20 +154,23 @@ public class GameEngine implements GLEventListener {
 	//nice small class so the other functions can call it
 	
 	class GameData {
+		private final double SPEED_INC = 0.2;
+		
 		private int score;
 		private int lives;
 		private int multi;
+		private int bombCount; //don't really have a mouse listener for that...
 		
-		private int numBullets;
-		private double bullSpeed;
+		private int bulletCount;
+		private double bulletSpeed;
 		
 		GameData() {
 			score = 0;
 			lives = 3;
 			multi = 1;
-			
-			numBullets = 4;
-			bullSpeed = 1; //how to change the bullet speed
+			bombCount = 2;
+			bulletCount = 4;
+			bulletSpeed = 1; //how to change the bullet speed
 		}
 		
 		public void addScore(int add) {
@@ -177,19 +181,38 @@ public class GameEngine implements GLEventListener {
 		
 		public void lostLife() {
 			lives--;
-			numBullets = Math.max(2, numBullets-1);
+			bulletSpeed = Math.max(1, bulletSpeed-SPEED_INC); //set minimum bullet speed to be 1
+			bulletCount = Math.max(2, bulletCount-1); //set min bullet count to be 2
 		}
 		
-		public void setMulti(int mul) {
-			multi = mul;
+		public void incBulletSpeed() {
+			bulletSpeed += SPEED_INC;
+		}
+		public void incBulletCount() {
+			if (bulletCount > 3) {
+				score += 2000; //in the gridwars wiki
+			} else {
+				bulletCount++;
+			}
+		}
+		
+		public void incBombCount() {
+			bombCount++;
+		}
+		public void incLives() {
+			lives++;
+		}
+		
+		public void addMultiplier(int in) {
+			multi = in;
 		}
 
-		public double getBulMul() {
-			return bullSpeed;
+		public double getBulletSpeed() {
+			return bulletSpeed;
 		}
 
 		public int getBulCount() {
-			return numBullets;
+			return bulletCount;
 		}
 	}
 }

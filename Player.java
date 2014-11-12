@@ -41,7 +41,7 @@ public class Player extends MovingObject implements KeyListener {
 	
 	private void newBullet() { //creats PlayerBullets, large
 		int num = GameEngine.curGame.getBulCount();
-		double speed = MAX_SPEED*GameEngine.curGame.getBulMul();
+		double speed = MAX_SPEED*GameEngine.curGame.getBulletSpeed();
 		
 		switch(num) {
 		case 2:

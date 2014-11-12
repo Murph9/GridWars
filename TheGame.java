@@ -34,7 +34,8 @@ public class TheGame extends JFrame {
     
     private void newEnemy() {
     	int a = random.nextInt(12);
-    	MovingObject s = null;
+    	GameObject s = null;
+    	
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
     		s = new SimpleSpinner(1, GameEngine.PURPLE);
@@ -71,6 +72,16 @@ public class TheGame extends JFrame {
         
         random = new Random();
         
+        GameObject o1 = new PowerUp(PowerUp.BOMB, 4, 4);
+        GameObject o2 = new PowerUp(PowerUp.BOUNCY, 3, 5);
+        GameObject o3 = new PowerUp(PowerUp.FASTER, 2, 6);
+        GameObject o4 = new PowerUp(PowerUp.LIFE, 4, 0);
+        GameObject o5 = new PowerUp(PowerUp.MORE, 0, 4);
+        GameObject o6 = new PowerUp(PowerUp.REAR_SHOT, -1, -4);
+        GameObject o7 = new PowerUp(PowerUp.SIDE_SHOT, 4, -4);
+        GameObject o8 = new PowerUp(PowerUp.SUPER, -4, -4);
+        GameObject o9 = new PowerUp(PowerUp.TEMP_SHIELD, -4, -1);
+        
         GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);
         border.setSize(1); //just incase it stopped being 1
@@ -87,7 +98,7 @@ public class TheGame extends JFrame {
         
         ActionListener taskPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				newEnemy();
+//				newEnemy();
 			}
 		};
 		this.timer = new Timer(TIME_INTERVAL, taskPerformer);

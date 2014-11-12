@@ -41,7 +41,7 @@ public class PlayerBullet extends MovingObject {
 			hasCollided = true;
 		}
 
-		if (hasCollided) {
+		if (hasCollided && !GameEngine.curGame.ifBouncyShot()) {
 			this.destroy();
 			return;
 		}
@@ -77,7 +77,9 @@ public class PlayerBullet extends MovingObject {
 				double distX = pos[0] - x;
 				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
-					this.destroy();
+					if (!GameEngine.curGame.ifSuperShot()) {
+						this.destroy();
+					}
 					if (o instanceof SnakeBody || o instanceof Shield) {
 					} else {
 						o.destroy();
@@ -92,6 +94,14 @@ public class PlayerBullet extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BULLET].getTextureId());
 		
     	gl.glColor3d(colour[0], colour[1], colour[2]);
+    	if (GameEngine.curGame.ifBouncyShot()) {
+    		gl.glColor3d(GameEngine.GREEN[0], GameEngine.GREEN[1], GameEngine.GREEN[2]);
+    	}
+
+    	if (GameEngine.curGame.ifSuperShot()) {
+    		gl.glColor3d(GameEngine.RED[0], GameEngine.RED[1], GameEngine.RED[2]);
+    	}
+
     	Helper.square(gl);
 		
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);

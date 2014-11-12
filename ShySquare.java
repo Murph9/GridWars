@@ -9,9 +9,9 @@ public class ShySquare extends MovingObject {
 	
 	public static final int score = 100;
 	
-	private float speed = 4;
+	private static final int MAX_SPEED = 4;
 	private float dodgeRange = 4;
-	private float dodgeSpeed = 1.5f;
+	private float dodgeSpeed = 2.5f;
 	
 	ShySquare(double size, double[] colour) {
 		super(size, colour);
@@ -20,35 +20,39 @@ public class ShySquare extends MovingObject {
 
 	@Override
 	public void update(double dt) {
-		x += dx*dt*speed;
-		y += dy*dt*speed;
+		x += dx*dt*MAX_SPEED;
+		y += dy*dt*MAX_SPEED;
 		
 		Helper.keepInside(this, Helper.SPLAT);
-		
-		blackHole();
 		
 		double[] spos = GameEngine.getPlayerPos();
 		dx += (spos[0]-x)/2;
 		dy += (spos[1]-y)/2;
 
-		ArrayList<GameObject> objects = new ArrayList<GameObject>(PlayerBullet.ALL_THIS);
-
-		for (GameObject o: objects) {
-			double distance = (x - o.x)*(x - o.x) + (y - o.y)*(y - o.y);
-			if (distance < dodgeRange && distance != 0) {
-				dx += (x-o.x)*dodgeSpeed/(distance);
-				dy += (y-o.y)*dodgeSpeed/(distance);
-			}
-		}
-		
-		selfCol();
+		blackHole();
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0) { //divide by zero errors are bad
+		if (speed != 0 && speed > 1) { //divide by zero errors are bad
 			dx /= speed;
 			dy /= speed; //now they are normalised
 		}
+
+		ArrayList<GameObject> objects = new ArrayList<GameObject>(PlayerBullet.ALL_THIS);
+		for (GameObject o: objects) {
+			double distance = (x - o.x)*(x - o.x) + (y - o.y)*(y - o.y);
+			if (distance < dodgeRange && distance != 0) {
+				dx += (x-o.x)/(distance);
+				dy += (y-o.y)/(distance);
+			}
+		}
 		
+		speed = Math.sqrt(dx*dx + dy*dy);
+		if (speed != 0 && speed > dodgeSpeed) {
+			dx /= speed;
+			dy /= speed;
+		}
+		
+		selfCol();
 	}
 
 	public void selfCol() {

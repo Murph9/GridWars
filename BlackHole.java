@@ -31,8 +31,8 @@ public class BlackHole extends MovingObject {
 	}
 	
 	public void giveObject(double x, double y) {
-		dx += x;//(numCount+15); //because mass
-		dy += y;//(numCount+15);
+		dx += x/2;//(numCount+15);
+		dy += y/2;//(numCount+15);
 		numCount++;
 		hitPoints += 2;
 		size += 0.02;

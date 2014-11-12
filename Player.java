@@ -44,23 +44,36 @@ public class Player extends MovingObject implements KeyListener {
 		double speed = MAX_SPEED*GameEngine.curGame.getBulletSpeed();
 		
 		switch(num) {
+		case 4:
+			MovingObject b0a = new PlayerBullet(0.35, GameEngine.YELLOW);
+				b0a.x = Math.cos(Math.toRadians(angle+40))*size/2 + x;
+				b0a.y = Math.sin(Math.toRadians(angle+40))*size/2 + y;
+				
+				b0a.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
+				b0a.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
+
+			MovingObject b0b = new PlayerBullet(0.35, GameEngine.YELLOW);
+				b0b.x = Math.cos(Math.toRadians(angle-40))*size/2 + x;
+				b0b.y = Math.sin(Math.toRadians(angle-40))*size/2 + y;
+				
+				b0b.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
+				b0b.dy = (dy/2+2*Math.sin(Math.toRadians(angle-5)))*speed;
+				
+			//note the lack of break; here, important (if it was more than 4 i would have a formula)
 		case 2:
 			MovingObject b1 = new PlayerBullet(0.35, GameEngine.YELLOW);
+				b1.x = Math.cos(Math.toRadians(angle+20))*size/2 + x;
+				b1.y = Math.sin(Math.toRadians(angle+20))*size/2 + y;
+				
+				b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+3)))*speed;
+				b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+3)))*speed;
+			
 			MovingObject b2 = new PlayerBullet(0.35, GameEngine.YELLOW);
-
-			//position
-			b1.x = Math.cos(Math.toRadians(angle+20))*size/2 + x;
-			b1.y = Math.sin(Math.toRadians(angle+20))*size/2 + y;
-			
-			b2.x = Math.cos(Math.toRadians(angle-20))*size/2 + x;
-			b2.y = Math.sin(Math.toRadians(angle-20))*size/2 + y;
-			
-			//velocity
-			b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+3)))*speed;
-			b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+3)))*speed;
-			
-			b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-3)))*speed;
-			b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-3)))*speed;
+				b2.x = Math.cos(Math.toRadians(angle-20))*size/2 + x;
+				b2.y = Math.sin(Math.toRadians(angle-20))*size/2 + y;
+				
+				b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-3)))*speed;
+				b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-3)))*speed;
 			break;
 		case 3:
 			MovingObject b3 = new PlayerBullet(0.35, GameEngine.YELLOW);
@@ -86,41 +99,33 @@ public class Player extends MovingObject implements KeyListener {
 			b5.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
 			b5.dy = (dy/2+2*Math.sin(Math.toRadians(angle-5)))*speed;
 			break;
-		case 4:
-			MovingObject b6 = new PlayerBullet(0.35, GameEngine.YELLOW);
-			MovingObject b7 = new PlayerBullet(0.35, GameEngine.YELLOW);
-			MovingObject b8 = new PlayerBullet(0.35, GameEngine.YELLOW);
-			MovingObject b9 = new PlayerBullet(0.35, GameEngine.YELLOW);
-
-			//position
-			b6.x = Math.cos(Math.toRadians(angle+15))*size/2 + x;
-			b6.y = Math.sin(Math.toRadians(angle+15))*size/2 + y;
-			
-			b7.x = Math.cos(Math.toRadians(angle-15))*size/2 + x;
-			b7.y = Math.sin(Math.toRadians(angle-15))*size/2 + y;
-			
-			b8.x = Math.cos(Math.toRadians(angle+25))*size/2 + x;
-			b8.y = Math.sin(Math.toRadians(angle+25))*size/2 + y;
-			
-			b9.x = Math.cos(Math.toRadians(angle-25))*size/2 + x;
-			b9.y = Math.sin(Math.toRadians(angle-25))*size/2 + y;
-			
-			//velocity
-			b6.dx = (dx/2+2*Math.cos(Math.toRadians(angle+2)))*speed;
-			b6.dy = (dy/2+2*Math.sin(Math.toRadians(angle+2)))*speed;
-			
-			b7.dx = (dx/2+2*Math.cos(Math.toRadians(angle-2)))*speed;
-			b7.dy = (dy/2+2*Math.sin(Math.toRadians(angle-2)))*speed;
-			
-			b8.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
-			b8.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
-			
-			b9.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
-			b9.dy = (dy/2+2*Math.sin(Math.toRadians(angle-5)))*speed;
-			break;
 		}
 		
 		
+		if (GameEngine.curGame.ifRearShot()) {
+			MovingObject b12 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			b12.x = -Math.cos(Math.toRadians(angle))*size/2 + x;
+			b12.y = -Math.sin(Math.toRadians(angle))*size/2 + y;
+			
+			b12.dx = (dx/2-2*Math.cos(Math.toRadians(angle)))*speed;
+			b12.dy = (dy/2-2*Math.sin(Math.toRadians(angle)))*speed;
+		}
+		
+		if (GameEngine.curGame.ifSideShot()) {
+			MovingObject b12 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			b12.x = Math.cos(Math.toRadians(angle+90))*size/2 + x;
+			b12.y = Math.sin(Math.toRadians(angle+90))*size/2 + y;
+			
+			b12.dx = (dx/2+2*Math.cos(Math.toRadians(angle+90)))*speed;
+			b12.dy = (dy/2+2*Math.sin(Math.toRadians(angle+90)))*speed;
+			
+			MovingObject b13 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			b13.x = Math.cos(Math.toRadians(angle-90))*size/2 + x;
+			b13.y = Math.sin(Math.toRadians(angle-90))*size/2 + y;
+			
+			b13.dx = (dx/2+2*Math.cos(Math.toRadians(angle-90)))*speed;
+			b13.dy = (dy/2+2*Math.sin(Math.toRadians(angle-90)))*speed;
+		}
 	}
 
 	public void update(double dt) {
@@ -161,7 +166,13 @@ public class Player extends MovingObject implements KeyListener {
     	}
 	}
 	
+	/**In this class it is for checking if a life is going to be lost 
+	 * rather than pushing on other similar objects.
+	 */
 	public void selfCol() {
+		if (GameEngine.curGame.ifTempShield()) {
+			return; //because we are done here
+		}
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
 		for (GameObject o: objects) {
@@ -228,6 +239,15 @@ public class Player extends MovingObject implements KeyListener {
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		Helper.square(gl);
 		
+		if (GameEngine.curGame.ifTempShield()) { //shield is active, UGLY PLEASE FIX
+			gl.glPushMatrix();
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId());
+			
+			gl.glScaled(2, 2, 1);
+			Helper.square(gl);
+			
+			gl.glPopMatrix();
+		}
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		
 		double[] s = GameEngine.getMousePos();

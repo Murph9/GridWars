@@ -12,11 +12,13 @@ public class PowerUp extends GameObject {
 	public static final int BOMB = 2;
 	public static final int LIFE = 3;
 	
-	public static final int SIDE_SHOOT = 4;
-	public static final int BACK_SHOOT = 5;
+	public static final int SIDE_SHOT = 4;
+	public static final int REAR_SHOT = 5;
 	
-	public static final int SUPER = 6;
-	public static final int BOUNCY = 7;
+	public static final int TEMP_SHIELD = 6;
+	
+	public static final int SUPER = 7;
+	public static final int BOUNCY = 8;
 	
 	private int type;
 	
@@ -38,30 +40,40 @@ public class PowerUp extends GameObject {
 			GameEngine.curGame.incBombCount();		break;
 		case LIFE:
 			GameEngine.curGame.incLives();			break;
-		case SIDE_SHOOT:
-//			GameEngine.curGame.incBulletSpeed();	break;
-		case BACK_SHOOT:
-//			GameEngine.curGame.incBulletSpeed();	break;
+		case SIDE_SHOT:
+			GameEngine.curGame.gotSideShot();		break;
+		case REAR_SHOT:
+			GameEngine.curGame.gotRearShot();		break;
+		case TEMP_SHIELD:
+			GameEngine.curGame.gotShield();			break;
+		case SUPER:
+			GameEngine.curGame.gotSuperShot();		break;
+		case BOUNCY:
+			GameEngine.curGame.gotBouncyShot();		break;
 		}
 	}
 	
 	public void drawSelf(GL2 gl) {
-//		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId()); //get id of the dot file
 		switch (type) {
 		case FASTER:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId()); 	break; //e.g.
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_SPEED].getTextureId()); 	break;
 		case MORE:
-			GameEngine.curGame.incBulletCount();	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BULLET].getTextureId()); 	break;
 		case BOMB:
-			GameEngine.curGame.incBombCount();		break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BOMB].getTextureId()); 	break;
 		case LIFE:
-			GameEngine.curGame.incLives();			break;
-		case SIDE_SHOOT:
-//			GameEngine.curGame.incBulletSpeed();	break;
-		case BACK_SHOOT:
-//			GameEngine.curGame.incBulletSpeed();	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_LIFE].getTextureId()); 	break;
+		case SIDE_SHOT:
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SIDE_SHOT].getTextureId()); 		break;
+		case REAR_SHOT:
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.REAR_SHOT].getTextureId()); 		break;
+		case TEMP_SHIELD:
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.TEMP_SHIELD].getTextureId()); 	break;
+		case SUPER:
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SUPER_SHOT].getTextureId()); 	break;
+		case BOUNCY:
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BOUNCY_SHOT].getTextureId()); 	break;
 		}
-		
 		
     	gl.glColor3d(colour[0], colour[1], colour[2]);
 

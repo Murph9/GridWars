@@ -2,13 +2,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 import javax.swing.Timer;
 
 
-public class Player extends MovingObject implements KeyListener {
+public class Player extends MovingObject implements KeyListener, MouseListener {
 
 	public static double MAX_SPEED = 7;
 	
@@ -186,7 +188,7 @@ public class Player extends MovingObject implements KeyListener {
 					if (o instanceof PowerUp) {
 						o.destroy();
 					} else {
-						GameEngine.killALL();
+						GameEngine.killAll();
 						GameEngine.curGame.lostLife();
 					}
 				}
@@ -239,7 +241,7 @@ public class Player extends MovingObject implements KeyListener {
 		double[] myPos = getPosition();
 		gl.glRotated(-getRotation(), 0, 0, 1);
 		
-		gl.glLineStipple(1, (short)0xAA); // # [1]
+		gl.glLineStipple(1, (short)0xAA); //google obviously
 		gl.glEnable(GL2.GL_LINE_STIPPLE);
 		gl.glBegin(GL2.GL_LINES); //helpful line
 			gl.glVertex2d(0,0);
@@ -283,5 +285,24 @@ public class Player extends MovingObject implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		if (arg0.getButton() == MouseEvent.BUTTON3) {
+			GameEngine.curGame.useBomb();
+		}
+	}
 
 }

@@ -54,11 +54,18 @@ public class GameState {
 		}
 	}
 	
+	public void useBomb() {
+		if (bombCount > 0) {
+			bombCount--;
+			GameEngine.killAll();
+		}
+	}
+	
 	public void lostLife() {
 		lives--;
 		bulletSpeed = Math.max(1, bulletSpeed-SPEED_INC); //set minimum bullet speed to be 1
 		bulletCount = Math.max(2, bulletCount-1); //set min bullet count to be 2
-		isShield = 1; //set temp shield (for 1 sec) so you don't die really quick
+		isShield = 3; //set temp shield (for 1 sec) so you don't die really quick
 		
 		isSideBullets = 0;
 		isRearBullets = 0;

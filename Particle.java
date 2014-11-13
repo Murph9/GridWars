@@ -6,7 +6,7 @@ public class Particle extends MovingObject {
 	private double decayTimer;
 	private double speed;
 	
-	Particle(double size, double[] colour, double x, double y, double dx, double dy) {
+	Particle(double size, double[] colour, double x, double y, double dx, double dy, double time) {
 		super(size, colour);
 		this.x = x;
 		this.y = y;
@@ -14,7 +14,7 @@ public class Particle extends MovingObject {
 		this.dy = dy;
 		this.angle = Math.atan2(dy, dx);
 		speed = 1; //whatever
-		decayTimer = 1;
+		decayTimer = time;
 	}
 
 	@Override

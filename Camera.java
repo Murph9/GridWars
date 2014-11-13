@@ -27,8 +27,8 @@ public class Camera extends GameObject {
     public void update (double dt) { //thought causing
 //    	double[] pos = GameEngine.getPlayerPos();
     	double[] myPos = getPosition();
-//    	myPos[0] = (pos[0])/2;
-//    	myPos[1] = (pos[1])/2;
+//    	myPos[0] = (pos[0])/3; //to feel move like a game here
+//    	myPos[1] = (pos[1])/3;
     	setPosition(myPos);
     }
     

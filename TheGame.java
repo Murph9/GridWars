@@ -92,6 +92,7 @@ public class TheGame extends JFrame {
         this.myPanel.addKeyListener(GameEngine.player);
         this.myPanel.addMouseMotionListener(Mouse.theMouse);
         this.myPanel.addMouseListener(Mouse.theMouse);
+        this.myPanel.addMouseListener(GameEngine.player);
         this.myPanel.setFocusable(true);
         this.myPanel.requestFocus();
         

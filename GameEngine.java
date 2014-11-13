@@ -150,7 +150,7 @@ public class GameEngine implements GLEventListener {
 	public void dispose(GLAutoDrawable drawable) { }
 	
 	
-	public static void killALL() {
+	public static void killAll() {
 		LinkedList<GameObject> n = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
 		for (GameObject o: n) {
 			if (o instanceof Player || o instanceof Border || o instanceof Camera || o instanceof PowerUp || o.equals(GameObject.ROOT)) {
@@ -159,41 +159,21 @@ public class GameEngine implements GLEventListener {
 			}
 		}
 		
-		ArrayList<GameObject> temp = new ArrayList<GameObject>(BlackHole.ALL_THIS);
-		for (GameObject o: n) {
-			BlackHole.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(ConnectedTriangle.ALL_THIS);
-		for (GameObject o: n) {
-			ConnectedTriangle.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(HomingButterfly.ALL_THIS);
-		for (GameObject o: n) {
-			HomingButterfly.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(HomingDiamond.ALL_THIS);
-		for (GameObject o: n) {
-			HomingDiamond.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(PlayerBullet.ALL_THIS);
-		for (GameObject o: n) {
-			PlayerBullet.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(ShieldedClone.ALL_THIS);
-		for (GameObject o: n) {
-			ShieldedClone.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(ShySquare.ALL_THIS);
-		for (GameObject o: n) {
-			ShySquare.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(SimpleSpinner.ALL_THIS);
-		for (GameObject o: n) {
-			SimpleSpinner.ALL_THIS.remove(o);
-		}
-		temp = new ArrayList<GameObject>(SplitingSquare.ALL_THIS);
-		for (GameObject o: n) {
-			SplitingSquare.ALL_THIS.remove(o);
+		BlackHole.ALL_THIS.clear();
+		ConnectedTriangle.ALL_THIS.clear();
+		HomingButterfly.ALL_THIS.clear();
+		HomingDiamond.ALL_THIS.clear();
+		PlayerBullet.ALL_THIS.clear();
+		ShieldedClone.ALL_THIS.clear();
+		ShySquare.ALL_THIS.clear();
+		SimpleSpinner.ALL_THIS.clear();
+		SplitingSquare.ALL_THIS.clear();
+		
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 20; j++) {
+				GameObject p = new Particle(1, GameEngine.WHITE, playerPos[0]+Math.cos(360*j/20), playerPos[1]+Math.sin(360*j/20), 
+						GameEngine.rand.nextDouble()*Math.cos(360*i/20)*50, GameEngine.rand.nextDouble()*Math.sin(360*i/20)*50 , GameEngine.rand.nextDouble()*0.7 + 0.2);
+			}
 		}
 	}
 }

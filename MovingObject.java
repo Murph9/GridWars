@@ -19,6 +19,16 @@ public abstract class MovingObject extends GameObject {
 		return new double[]{dx, dy};
 	}
 	
+	public void destroy() {
+		super.destroy();
+		if (! (this instanceof Particle)) {
+			int offset = GameEngine.rand.nextInt(180);
+			for (int i = 0; i < 8; i++) {
+				GameObject p = new Particle(1, colour, x, y, GameEngine.rand.nextDouble()*Math.cos(offset + 360*i/8)*8 + dx/2,GameEngine.rand.nextDouble()*Math.sin(offset + 360*i/8)*8 + dy/2);	
+			}
+		}
+	}
+	
 	/**This function edits the x, y, dx and dy values of the object its called on, be careful.
 	 */
 	public void blackHole() {
@@ -44,7 +54,6 @@ public abstract class MovingObject extends GameObject {
 			}
 		}
 	}
-	
 	//Every subclass must have this method:
 		//how do i add a private method here?
 	public abstract void update(double dt);

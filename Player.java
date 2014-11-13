@@ -62,18 +62,18 @@ public class Player extends MovingObject implements KeyListener {
 			//note the lack of break; here, important (if it was more than 4 i would have a formula)
 		case 2:
 			MovingObject b1 = new PlayerBullet(0.35, GameEngine.YELLOW);
-				b1.x = Math.cos(Math.toRadians(angle+20))*size/2 + x;
-				b1.y = Math.sin(Math.toRadians(angle+20))*size/2 + y;
+				b1.x = Math.cos(Math.toRadians(angle+12))*size/2 + x;
+				b1.y = Math.sin(Math.toRadians(angle+12))*size/2 + y;
 				
-				b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+3)))*speed;
-				b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+3)))*speed;
+				b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+2)))*speed;
+				b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+2)))*speed;
 			
 			MovingObject b2 = new PlayerBullet(0.35, GameEngine.YELLOW);
-				b2.x = Math.cos(Math.toRadians(angle-20))*size/2 + x;
-				b2.y = Math.sin(Math.toRadians(angle-20))*size/2 + y;
+				b2.x = Math.cos(Math.toRadians(angle-12))*size/2 + x;
+				b2.y = Math.sin(Math.toRadians(angle-12))*size/2 + y;
 				
-				b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-3)))*speed;
-				b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-3)))*speed;
+				b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-2)))*speed;
+				b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-2)))*speed;
 			break;
 		case 3:
 			MovingObject b3 = new PlayerBullet(0.35, GameEngine.YELLOW);
@@ -176,7 +176,7 @@ public class Player extends MovingObject implements KeyListener {
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
 		for (GameObject o: objects) {
-			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof Shield) {
+			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof Shield || o instanceof Particle) {
 				continue; //nothing, can't hit these things
 			} else {
 				double[] pos = o.getCollisionPosition();

@@ -55,7 +55,7 @@ public class PlayerBullet extends MovingObject {
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
 		for (GameObject o: objects) {
-			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof PowerUp) {
+			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof PowerUp || o instanceof Particle) {
 				continue; //nothing, can't hit these things
 			} else if (o instanceof BlackHole) {
 				//special stuff (reflecting off their field)

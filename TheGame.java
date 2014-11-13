@@ -35,7 +35,6 @@ public class TheGame extends JFrame {
     private void newEnemy() {
     	int a = random.nextInt(13);
     	GameObject s = null;
-//    	a = 12;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
     		s = new SimpleSpinner(1, GameEngine.PURPLE);    		break;

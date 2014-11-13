@@ -68,14 +68,11 @@ public class ConnectedTriangle extends MovingObject {
 			blackHole();
 		} else {
 			double[] a = new double[]{partner.x-x,partner.y-y};
-			double dist = a[0]*a[0] + a[1]*a[1] + 0.0001;
-			if (dist > size*size*4 + partner.size*partner.size*4) {
-				dx += a[0]/dist;
-				dy += a[1]/dist;
-			} else if (dist < size*size*4 + partner.size*partner.size*4) {
-				dx -= a[0]/dist;
-				dy -= a[1]/dist;
-			}
+			double dist = a[0]*a[0] + a[1]*a[1] + 0.0001; //no divide by zero for me
+			
+			double b = size*size*4 + partner.size*partner.size*4;
+			dx += a[0]*(dist - b)/1000; //change if you want it to do normal things
+			dy += a[1]*(dist - b)/1000;
 		}
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
@@ -118,7 +115,7 @@ public class ConnectedTriangle extends MovingObject {
 		if (partner != null) {
 			gl.glPushMatrix();
 			gl.glRotated(-angle, 0, 0, 1);
-			gl.glColor3d(strength*colour[0], strength*colour[1], strength*colour[2]);
+			gl.glColor3d(0.2+(double)strength/15, 0.2+(double)strength/15, 0.2+(double)strength/15);
 			gl.glBegin(GL2.GL_LINES);
 				gl.glVertex2d(0,0);
 				gl.glVertex2d(partner.x-x, partner.y-y);				

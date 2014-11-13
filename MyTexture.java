@@ -18,13 +18,13 @@ public class MyTexture {
 	private boolean mipMapEnabled = true;
 	private int[] textureID = new int[1];
 	
-	public MyTexture(GL2 gl, String fileName,String extension) {
-		this(gl,fileName,extension,true);
+	public MyTexture(GL2 gl, String fileName) {
+		this(gl,fileName,true);
 	}
 	
 	//Create a texture from a file. Make sure the file has a width and height
 	//that is a power of 2
-	public MyTexture(GL2 gl, String fileName, String extension, boolean mipmaps) {
+	public MyTexture(GL2 gl, String fileName, boolean mipmaps) {
 		mipMapEnabled = mipmaps;
 		TextureData data = null;
 		try {

@@ -40,7 +40,7 @@ public class Player extends MovingObject implements KeyListener {
 	}
 	
 	private void newBullet() { //creats PlayerBullets, large
-		int num = GameEngine.curGame.getBulCount();
+		int num = GameEngine.curGame.getBulletCount();
 		double speed = MAX_SPEED*GameEngine.curGame.getBulletSpeed();
 		
 		switch(num) {
@@ -183,30 +183,15 @@ public class Player extends MovingObject implements KeyListener {
 				double distX = pos[0] - x;
 				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
-					destroyAll();
+					if (o instanceof PowerUp) {
+						o.destroy();
+					} else {
+						GameEngine.killALL();
+						GameEngine.curGame.lostLife();
+					}
 				}
 			}
 		}
-	}
-	
-	private void destroyAll() {
-		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
-		for (GameObject o: objects) {
-			if (o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT)) {
-				continue;
-			}
-			if (o instanceof SplitingSquare) {
-				SplitingSquare s = (SplitingSquare) o;
-				s.setSplitStatus();
-			}
-			if (o instanceof BlackHole) {
-				BlackHole b = (BlackHole) o;
-				BlackHole.ALL_THIS.remove(b);
-				GameObject.ALL_OBJECTS.remove(b);
-			}
-			o.destroy();
-		}
-		GameEngine.curGame.lostLife();
 	}
 	
 	public void blackHole() {

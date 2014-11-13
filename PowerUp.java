@@ -6,22 +6,21 @@ import javax.media.opengl.GL2;
  */
 public class PowerUp extends GameObject {
 
-	public static final int FASTER = 0;
-	public static final int MORE = 1;
+	public static final int SHOT_SPEED = 0;
+	public static final int SHOT_COUNT = 1;
 	
-	public static final int BOMB = 2;
-	public static final int LIFE = 3;
+	public static final int EXTRA_BOMB = 2;
+	public static final int EXTRA_LIFE = 3;
 	
 	public static final int SIDE_SHOT = 4;
 	public static final int REAR_SHOT = 5;
 	
 	public static final int TEMP_SHIELD = 6;
 	
-	public static final int SUPER = 7;
-	public static final int BOUNCY = 8;
+	public static final int SUPER_SHOT = 7;
+	public static final int BOUNCY_SHOT = 8;
 	
 	private int type;
-	
 	
 	PowerUp (int type, double x, double y) {
 		this.type = type;
@@ -32,13 +31,13 @@ public class PowerUp extends GameObject {
 	public void destroy() {
 		super.destroy();
 		switch (type) {
-		case FASTER:
+		case SHOT_SPEED:
 			GameEngine.curGame.incBulletSpeed();	break;
-		case MORE:
+		case SHOT_COUNT:
 			GameEngine.curGame.incBulletCount();	break;
-		case BOMB:
+		case EXTRA_BOMB:
 			GameEngine.curGame.incBombCount();		break;
-		case LIFE:
+		case EXTRA_LIFE:
 			GameEngine.curGame.incLives();			break;
 		case SIDE_SHOT:
 			GameEngine.curGame.gotSideShot();		break;
@@ -46,22 +45,22 @@ public class PowerUp extends GameObject {
 			GameEngine.curGame.gotRearShot();		break;
 		case TEMP_SHIELD:
 			GameEngine.curGame.gotShield();			break;
-		case SUPER:
+		case SUPER_SHOT:
 			GameEngine.curGame.gotSuperShot();		break;
-		case BOUNCY:
+		case BOUNCY_SHOT:
 			GameEngine.curGame.gotBouncyShot();		break;
 		}
 	}
 	
 	public void drawSelf(GL2 gl) {
 		switch (type) {
-		case FASTER:
+		case SHOT_SPEED:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_SPEED].getTextureId()); 	break;
-		case MORE:
+		case SHOT_COUNT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BULLET].getTextureId()); 	break;
-		case BOMB:
+		case EXTRA_BOMB:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BOMB].getTextureId()); 	break;
-		case LIFE:
+		case EXTRA_LIFE:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_LIFE].getTextureId()); 	break;
 		case SIDE_SHOT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SIDE_SHOT].getTextureId()); 		break;
@@ -69,9 +68,9 @@ public class PowerUp extends GameObject {
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.REAR_SHOT].getTextureId()); 		break;
 		case TEMP_SHIELD:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.TEMP_SHIELD].getTextureId()); 	break;
-		case SUPER:
+		case SUPER_SHOT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SUPER_SHOT].getTextureId()); 	break;
-		case BOUNCY:
+		case BOUNCY_SHOT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BOUNCY_SHOT].getTextureId()); 	break;
 		}
 		

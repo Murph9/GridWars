@@ -21,13 +21,9 @@ public abstract class HomingObject extends MovingObject {
 		blackHole();
 		selfCol();
 		
-		double[] a = new double[]{GameEngine.getPlayerPos()[0]-x,GameEngine.getPlayerPos()[1]-y};
-		
-		double dist = a[0]*a[0] + a[1]*a[1];
-		if (dist != 0) {
-			dx += a[0]/dist;
-			dy += a[1]/dist;
-		}
+		double[] playerPos = GameEngine.getPlayerPos();
+		dx += (playerPos[0]-x)/2;
+		dy += (playerPos[1]-y)/2;
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
 		if (speed != 0) { //divide by zero errors are bad

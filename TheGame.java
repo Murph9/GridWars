@@ -22,7 +22,7 @@ public class TheGame extends JFrame {
 	private FPSAnimator animator;	
 	
 	private Timer timer;
-	private static int TIME_INTERVAL = 250; //500 is the best so far
+	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
 	private Random random;
 	
 	private static int boardWidth = 14, boardHeight = 10; //at least 4 please
@@ -33,30 +33,26 @@ public class TheGame extends JFrame {
 	}
     
     private void newEnemy() {
-    	int a = random.nextInt(12);
+    	int a = random.nextInt(13);
     	GameObject s = null;
-    	
+//    	a = 12;
     	switch (a) {
     	case 0: case 1: case 2: //more common = yay
-    		s = new SimpleSpinner(1, GameEngine.PURPLE);
-    		break;
+    		s = new SimpleSpinner(1, GameEngine.PURPLE);    		break;
     	case 3: case 4:
-    		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);
-    		break;
+    		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);   		break;
     	case 5: case 6:
-    		s = new SplitingSquare(1, GameEngine.RED, 0, 1, true);
-    		break;
+    		s = new SplitingSquare(1, GameEngine.RED, 0, 1, true);	break;
     	case 7:
-    		s = new ShieldedClone(1.1, GameEngine.ORANGE);
-    		break;
+    		s = new ShieldedClone(1.1, GameEngine.ORANGE);    		break;
     	case 8:
-    		s = new SnakeHead(0.8, GameEngine.YELLOW, 18);
-    		break;
+    		s = new SnakeHead(0.8, GameEngine.YELLOW, 18);    		break;
     	case 9: case 10:
-    		s = new ShySquare(1, GameEngine.GREEN);
-    		break;
+    		s = new ShySquare(1, GameEngine.GREEN);		    		break;
     	case 11:
-    		s = new BlackHole(1, GameEngine.RED);
+    		s = new BlackHole(1, GameEngine.RED);		    		break;
+    	case 12:
+    		s = new ConnectedTriangle(1, GameEngine.ORANGE, null); 	break;
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
@@ -71,16 +67,6 @@ public class TheGame extends JFrame {
         camera.setSize(Math.max(boardHeight + 1, boardWidth - 4)); //these numbers are just so that it always fits on screen
         
         random = new Random();
-        
-        GameObject o1 = new PowerUp(PowerUp.BOMB, 4, 4);
-        GameObject o2 = new PowerUp(PowerUp.BOUNCY, 3, 5);
-        GameObject o3 = new PowerUp(PowerUp.FASTER, 2, 6);
-        GameObject o4 = new PowerUp(PowerUp.LIFE, 4, 0);
-        GameObject o5 = new PowerUp(PowerUp.MORE, 0, 4);
-        GameObject o6 = new PowerUp(PowerUp.REAR_SHOT, -1, -4);
-        GameObject o7 = new PowerUp(PowerUp.SIDE_SHOT, 4, -4);
-        GameObject o8 = new PowerUp(PowerUp.SUPER, -4, -4);
-        GameObject o9 = new PowerUp(PowerUp.TEMP_SHIELD, -4, -1);
         
         GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);
@@ -98,7 +84,7 @@ public class TheGame extends JFrame {
         
         ActionListener taskPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-//				newEnemy();
+				newEnemy();
 			}
 		};
 		this.timer = new Timer(TIME_INTERVAL, taskPerformer);

@@ -55,18 +55,18 @@ public class PlayerBullet extends MovingObject {
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
 		for (GameObject o: objects) {
-			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT)) {
+			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof PowerUp) {
 				continue; //nothing, can't hit these things
 			} else if (o instanceof BlackHole) {
 				//special stuff (reflecting off their field)
 				BlackHole h = (BlackHole) o;
 				double distx = h.x - x;
 				double disty = h.y - y;
-				double dist = Math.sqrt(distx*distx + disty*disty);
+				double dist = Math.sqrt(distx*distx + disty*disty) + 0.0001;
 				
 				if (dist < BlackHole.SUCK_RADIUS/2 && !h.isInert()) {
-					dx -= (h.size*8-dist)*0.05*distx/dist;
-					dy -= (h.size*8-dist)*0.05*disty/dist;
+					dx -= (h.size*8-dist)*0.045*distx/dist;
+					dy -= (h.size*8-dist)*0.045*disty/dist;
 				}
 				if (dist < h.size/2) {
 					destroy();

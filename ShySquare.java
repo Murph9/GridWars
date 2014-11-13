@@ -60,7 +60,7 @@ public class ShySquare extends MovingObject {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
 				double distY = s.y - y;
-				double dist = distX*distX + distY*distY;
+				double dist = distX*distX + distY*distY + 0.0001;
 				if (dist < 0.5*(size*size + s.size*s.size)) {
 					dx -= Helper.sgn(distX)/(2+Math.sqrt(dist));
 					dy -= Helper.sgn(distY)/(2+Math.sqrt(dist));

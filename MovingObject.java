@@ -19,9 +19,6 @@ public abstract class MovingObject extends GameObject {
 		return new double[]{dx, dy};
 	}
 	
-	public abstract void selfCol();
-	
-	
 	/**This function edits the x, y, dx and dy values of the object its called on, be careful.
 	 */
 	public void blackHole() {
@@ -51,4 +48,5 @@ public abstract class MovingObject extends GameObject {
 	//Every subclass must have this method:
 		//how do i add a private method here?
 	public abstract void update(double dt);
+	public abstract void selfCol();
 }

@@ -20,7 +20,7 @@ public class HomingSeeker extends HomingObject {
 			if (!d.equals(this)) { //because that would be silly
 				double distX = d.x - x;
 				double distY = d.y - y;
-				double dist = (distX*distX) + (distY*distY);
+				double dist = (distX*distX) + (distY*distY) + 0.0001;
 				if (dist < 0.5*((size*size)+(d.size*d.size))) {
 					dx -= Helper.sgn(distX)/(12*Math.sqrt(dist));
 					dy -= Helper.sgn(distY)/(12*Math.sqrt(dist));

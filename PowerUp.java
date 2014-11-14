@@ -6,19 +6,11 @@ import javax.media.opengl.GL2;
  */
 public class PowerUp extends GameObject {
 
-	public static final int SHOT_SPEED = 0;
-	public static final int SHOT_COUNT = 1;
-	
-	public static final int EXTRA_BOMB = 2;
-	public static final int EXTRA_LIFE = 3;
-	
-	public static final int SIDE_SHOT = 4;
-	public static final int REAR_SHOT = 5;
-	
+	public static final int SHOT_SPEED = 0, SHOT_COUNT = 1;
+	public static final int EXTRA_BOMB = 2, EXTRA_LIFE = 3;
+	public static final int SIDE_SHOT = 4, REAR_SHOT = 5;
 	public static final int TEMP_SHIELD = 6;
-	
-	public static final int SUPER_SHOT = 7;
-	public static final int BOUNCY_SHOT = 8;
+	public static final int SUPER_SHOT = 7, BOUNCY_SHOT = 8;
 	
 	private int type;
 	

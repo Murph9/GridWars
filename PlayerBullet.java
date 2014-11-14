@@ -76,7 +76,7 @@ public class PlayerBullet extends MovingObject {
 				double[] pos = o.getCollisionPosition();
 				double distX = pos[0] - x;
 				double distY = pos[1] - y;
-				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
+				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.getSize()/2)*(o.getSize()/2))) {
 					if (!GameEngine.curGame.ifSuperShot()) {
 						this.destroy();
 					}

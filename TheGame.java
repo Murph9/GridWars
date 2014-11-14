@@ -68,6 +68,9 @@ public class TheGame extends JFrame {
         camera.setSize(Math.max(boardHeight + 1, boardWidth - 4)); //these numbers are just so that it always fits on screen
         
         random = new Random();
+        GameObject o = new Spawner(250, 2, Spawner.DIAMOND);
+        o.x = 3;
+        o.y = 3;
         
         GameEngine.player = new Player(1, GameEngine.WHITE);
         Border border = new Border(boardWidth, boardHeight);
@@ -85,7 +88,7 @@ public class TheGame extends JFrame {
         
         ActionListener taskPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				newEnemy();
+//				newEnemy();
 			}
 		};
 		this.timer = new Timer(TIME_INTERVAL, taskPerformer);

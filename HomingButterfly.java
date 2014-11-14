@@ -28,6 +28,9 @@ public class HomingButterfly extends HomingObject {
 			}
 		}
 	}
+	public void blackhole() {
+		//don't think it actually does anything in this
+	}
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BUTTERFLY].getTextureId()); //get id of the dot file

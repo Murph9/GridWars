@@ -22,10 +22,16 @@ public abstract class MovingObject extends GameObject {
 	public void destroy() {
 		super.destroy();
 		if (! (this instanceof Particle)) {
-			int offset = GameEngine.rand.nextInt(180);
-			for (int i = 0; i < 8; i++) {
-				GameObject p = new Particle(1, colour, x, y, GameEngine.rand.nextDouble()*Math.cos(offset + 360*i/8)*8 + dx/2,
-						GameEngine.rand.nextDouble()*Math.sin(offset + 360*i/8)*8 + dy/2, GameEngine.rand.nextDouble()*0.7 + 0.2);	
+			if (this instanceof PlayerBullet) {
+				int offset = GameEngine.rand.nextInt(180);
+				for (int i = 0; i < 4; i++) {
+					GameObject p = new Particle(1, colour, x, y, GameEngine.rand.nextDouble()*Math.cos(offset + 360*i/4)*8 + dx/2,
+							GameEngine.rand.nextDouble()*Math.sin(offset + 360*i/4)*8 + dy/2, GameEngine.rand.nextDouble()*0.7 + 0.2);	
+				}
+			} else {
+				for (int i = 0; i < 8; i++) {
+					GameObject p = new Particle(2, colour, x, y, Math.cos(i*360/8)*16, Math.sin(i*360/8)*16, 1);	
+				}
 			}
 		}
 	}

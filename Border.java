@@ -14,6 +14,7 @@ public class Border extends GameObject {
 	
 	public void drawSelf(GL2 gl) {
 		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+		gl.glLineWidth(1);
 		
 		gl.glColor3d(0.3, 0.3, 0.3);
 		gl.glBegin(GL2.GL_LINES);

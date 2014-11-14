@@ -14,6 +14,8 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 //not sure whether this file or GameEngine should handle the actual position of the spawning objects 
 
+//idea for different spanning states, like only clones .....
+
 public class TheGame extends JFrame {
 	//contains main and all that jazz
 	private static final long serialVersionUID = 1L;
@@ -90,9 +92,11 @@ public class TheGame extends JFrame {
 		this.timer.start();
         
         this.myPanel.addKeyListener(GameEngine.player);
+        this.myPanel.addMouseListener(GameEngine.player);
+        
         this.myPanel.addMouseMotionListener(Mouse.theMouse);
         this.myPanel.addMouseListener(Mouse.theMouse);
-        this.myPanel.addMouseListener(GameEngine.player);
+        
         this.myPanel.setFocusable(true);
         this.myPanel.requestFocus();
         

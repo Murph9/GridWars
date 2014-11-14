@@ -64,9 +64,9 @@ public class PlayerBullet extends MovingObject {
 				double disty = h.y - y;
 				double dist = Math.sqrt(distx*distx + disty*disty) + 0.0001;
 				
-				if (dist < BlackHole.SUCK_RADIUS/2 && !h.isInert()) {
-					dx -= (h.size*8-dist)*0.045*distx/dist;
-					dy -= (h.size*8-dist)*0.045*disty/dist;
+				if (dist < BlackHole.SUCK_RADIUS/4 && !h.isInert()) {
+					dx -= distx/(dist*4);
+					dy -= disty/(dist*4);
 				}
 				if (dist < h.size/2) {
 					destroy();

@@ -48,15 +48,15 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		switch(num) {
 		case 4:
 			MovingObject b0a = new PlayerBullet(0.35, GameEngine.YELLOW);
-				b0a.x = Math.cos(Math.toRadians(angle+40))*size/2 + x;
-				b0a.y = Math.sin(Math.toRadians(angle+40))*size/2 + y;
+				b0a.x = Math.cos(Math.toRadians(angle+40))*size/4 + x;
+				b0a.y = Math.sin(Math.toRadians(angle+40))*size/4 + y;
 				
 				b0a.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
 				b0a.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
 
 			MovingObject b0b = new PlayerBullet(0.35, GameEngine.YELLOW);
-				b0b.x = Math.cos(Math.toRadians(angle-40))*size/2 + x;
-				b0b.y = Math.sin(Math.toRadians(angle-40))*size/2 + y;
+				b0b.x = Math.cos(Math.toRadians(angle-40))*size/4 + x;
+				b0b.y = Math.sin(Math.toRadians(angle-40))*size/4 + y;
 				
 				b0b.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
 				b0b.dy = (dy/2+2*Math.sin(Math.toRadians(angle-5)))*speed;
@@ -64,15 +64,15 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			//note the lack of break; here, important (if it was more than 4 i would have a formula)
 		case 2:
 			MovingObject b1 = new PlayerBullet(0.35, GameEngine.YELLOW);
-				b1.x = Math.cos(Math.toRadians(angle+12))*size/2 + x;
-				b1.y = Math.sin(Math.toRadians(angle+12))*size/2 + y;
+				b1.x = Math.cos(Math.toRadians(angle+10))*size/4 + x;
+				b1.y = Math.sin(Math.toRadians(angle+10))*size/4 + y;
 				
 				b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+2)))*speed;
 				b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+2)))*speed;
 			
 			MovingObject b2 = new PlayerBullet(0.35, GameEngine.YELLOW);
-				b2.x = Math.cos(Math.toRadians(angle-12))*size/2 + x;
-				b2.y = Math.sin(Math.toRadians(angle-12))*size/2 + y;
+				b2.x = Math.cos(Math.toRadians(angle-10))*size/4 + x;
+				b2.y = Math.sin(Math.toRadians(angle-10))*size/4 + y;
 				
 				b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-2)))*speed;
 				b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-2)))*speed;
@@ -82,14 +82,14 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			MovingObject b4 = new PlayerBullet(0.35, GameEngine.YELLOW);
 			MovingObject b5 = new PlayerBullet(0.35, GameEngine.YELLOW);
 			
-			b3.x = Math.cos(Math.toRadians(angle+30))*size/2 + x;
-			b3.y = Math.sin(Math.toRadians(angle+30))*size/2 + y;
+			b3.x = Math.cos(Math.toRadians(angle+30))*size/4 + x;
+			b3.y = Math.sin(Math.toRadians(angle+30))*size/4 + y;
 
-			b4.x = Math.cos(Math.toRadians(angle))*size/2 + x;
-			b4.y = Math.sin(Math.toRadians(angle))*size/2 + y;
+			b4.x = Math.cos(Math.toRadians(angle))*size/4 + x;
+			b4.y = Math.sin(Math.toRadians(angle))*size/4 + y;
 			
-			b5.x = Math.cos(Math.toRadians(angle-30))*size/2 + x;
-			b5.y = Math.sin(Math.toRadians(angle-30))*size/2 + y;
+			b5.x = Math.cos(Math.toRadians(angle-30))*size/4 + x;
+			b5.y = Math.sin(Math.toRadians(angle-30))*size/4 + y;
 			
 			//velocity
 			b3.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
@@ -153,7 +153,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		else 				{ dy /= DRAG; }
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
-    	if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+    	if (speed != 0 && speed > 1) { //divide by zero errors are bad
     		dx /= speed;
     		dy /= speed; //now they are normalised
     	}
@@ -162,7 +162,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
     	selfCol();
     	
     	speed = Math.sqrt(dx*dx + dy*dy);
-    	if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+    	if (speed != 0 && speed > 1) { //divide by zero errors are bad
     		dx /= speed;
     		dy /= speed; //now they are normalised
     	}

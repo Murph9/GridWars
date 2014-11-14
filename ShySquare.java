@@ -10,7 +10,7 @@ public class ShySquare extends MovingObject {
 	public static final int score = 100;
 	
 	private static final int MAX_SPEED = 4;
-	private float dodgeRange = 4;
+	private float dodgeRange = 8;
 	private float dodgeSpeed = 2.5f;
 	
 	ShySquare(double size, double[] colour) {

@@ -28,6 +28,9 @@ public class HomingSeeker extends HomingObject {
 			}
 		}
 	}
+	public void blackhole() {
+		//don't think it actually does anything in this
+	}
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId()); //get id of the dot file

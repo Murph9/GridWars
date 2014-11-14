@@ -5,7 +5,7 @@
 public class GameState {
 	
 	private final double SPEED_INC = 0.2;
-	private final double POWERUP_LENGTH = 2;
+	private final double POWERUP_LENGTH = 15; //apparently 15 seconds
 	
 	private double isShield;
 	private double isSideBullets;
@@ -33,7 +33,7 @@ public class GameState {
 		score = 0;
 		lives = 3;
 		multi = 1;
-		bombCount = 2;
+		bombCount = 3;
 		bulletCount = 4;
 		bulletSpeed = 1; //how to change the bullet speed
 	}

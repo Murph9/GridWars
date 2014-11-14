@@ -38,7 +38,7 @@ public class ShieldedClone extends MovingObject {
 
 		double speed = Math.sqrt(dx*dx + dy*dy);
 		speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0 && speed > MAX_SPEED) {
+		if (speed != 0 && speed > 1) {
 			dx /= speed;
 			dy /= speed;
 		}
@@ -50,7 +50,7 @@ public class ShieldedClone extends MovingObject {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
 				double distY = s.y - y;
-				double dist = (distX*distX) + (distY*distY) + 0.0001;
+				double dist = (distX*distX) + (distY*distY) + 0.001; //yeah...
 				if (dist < 0.5*(size*size)+(s.size*s.size)) {
 					dx -= Helper.sgn(distX)/(12*Math.sqrt(dist));
 					dy -= Helper.sgn(distY)/(12*Math.sqrt(dist));

@@ -6,8 +6,11 @@ public class Particle extends MovingObject {
 	private double decayTimer;
 	private double speed;
 	
-	Particle(double size, double[] colour, double x, double y, double dx, double dy, double time) {
-		super(size, colour);
+	private double thickness;
+	
+	Particle(double thickness, double[] colour, double x, double y, double dx, double dy, double time) {
+		super(1, colour);
+		this.thickness = thickness;
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
@@ -62,10 +65,12 @@ public class Particle extends MovingObject {
 	public void drawSelf(GL2 gl) {
 		gl.glColor3d(colour[0], colour[1], colour[2]);
 		
+		gl.glLineWidth((float)thickness);
 		gl.glBegin(GL2.GL_LINES);
 			gl.glVertex2d(0,0);
-			gl.glVertex2d(0.05, 0.05);
+			gl.glVertex2d(Math.cos(angle)*0.2, Math.sin(angle)*0.2);
 		gl.glEnd();
+		gl.glLineWidth(1);
 	}
 
 }

@@ -89,7 +89,7 @@ public class SplitingSquare extends HomingObject {
 		}
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0 && speed > MAX_SPEED) { //divide by zero errors are bad
+		if (speed != 0 && speed > 1) { //divide by zero errors are bad
 			dx /= speed;
 			dy /= speed; //now they are normalised
 		}

@@ -7,7 +7,7 @@ import javax.media.opengl.GL2;
 public class BlackHole extends MovingObject {
 
 	public static final ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
-	public static final int SUCK_RADIUS = 8;
+	public static final int SUCK_RADIUS = 4;
 	
 	public static final int MAX_SPEED = 2; //yeah kinda slow
 	
@@ -46,8 +46,8 @@ public class BlackHole extends MovingObject {
 	
 	@Override
 	public void update(double dt) {
-		x += dx*dt;
-		y += dy*dt;
+		x += dx*dt*MAX_SPEED;
+		y += dy*dt*MAX_SPEED;
 		
 		dx /= 1.02; //big things drag still
 		dy /= 1.02;
@@ -57,14 +57,14 @@ public class BlackHole extends MovingObject {
 		blackHole();
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0 && speed > MAX_SPEED) {
+		if (speed != 0 && speed > 1) {
 			dx /= speed;
 			dy /= speed;
 		}
 		selfCol();
 		
 		speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0 && speed > MAX_SPEED) {
+		if (speed != 0 && speed > 1) {
 			dx *= MAX_SPEED/speed;
 			dy *= MAX_SPEED/speed;
 		}

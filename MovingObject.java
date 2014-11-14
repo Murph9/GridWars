@@ -25,12 +25,20 @@ public abstract class MovingObject extends GameObject {
 			if (this instanceof PlayerBullet) {
 				int offset = GameEngine.rand.nextInt(180);
 				for (int i = 0; i < 4; i++) {
-					GameObject p = new Particle(1, colour, x, y, GameEngine.rand.nextDouble()*Math.cos(offset + 360*i/4)*8 + dx/2,
-							GameEngine.rand.nextDouble()*Math.sin(offset + 360*i/4)*8 + dy/2, GameEngine.rand.nextDouble()*0.7 + 0.2);	
+					MovingObject p = new Particle(2, colour, GameEngine.rand.nextDouble()*0.7 + 0.2);
+					p.x = x;
+					p.y = y;
+					p.dx = GameEngine.rand.nextDouble()*Math.cos(offset + 360*i/4)*8 + dx/2;
+					p.dy = GameEngine.rand.nextDouble()*Math.sin(offset + 360*i/4)*8 + dy/2;
 				}
 			} else {
+				int offset = GameEngine.rand.nextInt(180);
 				for (int i = 0; i < 8; i++) {
-					GameObject p = new Particle(2, colour, x, y, Math.cos(i*360/8)*16, Math.sin(i*360/8)*16, 1);	
+					MovingObject p = new Particle(2, this.colour, 1);
+					p.x = x;
+					p.y = y;
+					p.dx = Math.cos(offset+i*360/8)*16*GameEngine.rand.nextDouble();
+					p.dy = Math.sin(offset+i*360/8)*16*GameEngine.rand.nextDouble();
 				}
 			}
 		}

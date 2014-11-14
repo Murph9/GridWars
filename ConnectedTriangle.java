@@ -110,9 +110,15 @@ public class ConnectedTriangle extends MovingObject {
 		}
 
 		Helper.square(gl);
+		if (partner != null) {
+			gl.glPushMatrix();
+			gl.glRotated(60,0,0,1);
+			Helper.square(gl);
+			gl.glPopMatrix();
+		}
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		
-		if (partner != null) {
+		if (partner != null) { //yes i know this will draw it twice, im fine with that
 			gl.glPushMatrix();
 			gl.glRotated(-angle, 0, 0, 1);
 			gl.glColor3d(0.2+(double)strength/15, 0.2+(double)strength/15, 0.2+(double)strength/15);

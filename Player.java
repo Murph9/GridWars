@@ -38,7 +38,6 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		};
 		this.timer = new Timer(100, taskPerformer);
 		this.timer.start();
-		
 	}
 	
 	private void newBullet() { //creats PlayerBullets, large
@@ -47,14 +46,14 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		switch(num) {
 		case 4:
-			MovingObject b0a = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b0a = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
 				b0a.x = Math.cos(Math.toRadians(angle+40))*size/4 + x;
 				b0a.y = Math.sin(Math.toRadians(angle+40))*size/4 + y;
 				
 				b0a.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
 				b0a.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
 
-			MovingObject b0b = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b0b = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
 				b0b.x = Math.cos(Math.toRadians(angle-40))*size/4 + x;
 				b0b.y = Math.sin(Math.toRadians(angle-40))*size/4 + y;
 				
@@ -63,14 +62,14 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 				
 			//note the lack of break; here, important (if it was more than 4 i would have a formula)
 		case 2:
-			MovingObject b1 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b1 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
 				b1.x = Math.cos(Math.toRadians(angle+10))*size/4 + x;
 				b1.y = Math.sin(Math.toRadians(angle+10))*size/4 + y;
 				
 				b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+2)))*speed;
 				b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+2)))*speed;
 			
-			MovingObject b2 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b2 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
 				b2.x = Math.cos(Math.toRadians(angle-10))*size/4 + x;
 				b2.y = Math.sin(Math.toRadians(angle-10))*size/4 + y;
 				
@@ -78,9 +77,9 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 				b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-2)))*speed;
 			break;
 		case 3:
-			MovingObject b3 = new PlayerBullet(0.35, GameEngine.YELLOW);
-			MovingObject b4 = new PlayerBullet(0.35, GameEngine.YELLOW);
-			MovingObject b5 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b3 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
+			MovingObject b4 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
+			MovingObject b5 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
 			
 			b3.x = Math.cos(Math.toRadians(angle+30))*size/4 + x;
 			b3.y = Math.sin(Math.toRadians(angle+30))*size/4 + y;
@@ -134,6 +133,16 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		//movement stuff
 		x += dx*dt*MAX_SPEED; //add it
     	y += dy*dt*MAX_SPEED;
+    	
+    	//tail (with maths to come)
+    	MovingObject q = new Particle(2, GameEngine.BLUE, 1);
+    	q.x = x; q.dx = -dx*10*(GameEngine.rand.nextDouble()*2) - 1;
+    	q.y = y; q.dy = -dy*10*(GameEngine.rand.nextDouble()*2) - 1;
+    	MovingObject r = new Particle(2, GameEngine.BLUE, 1);
+    	r.x = x; r.dx = -dx*10*(GameEngine.rand.nextDouble()*2) - 1;
+    	r.y = y; r.dy = -dy*10*(GameEngine.rand.nextDouble()*2) - 1;
+//    	MovingObject r = new Particle(2, GameEngine.BLUE, 1);
+//    	r.dx = dx; r.dy = dy;
 		
     	Helper.keepInside(this, Helper.SPLAT);
 		
@@ -169,7 +178,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	}
 	
 	/**In this class it is for checking if a life is going to be lost 
-	 * rather than pushing on other similar objects.
+	 * rather than pushing on other similar objects like all the other selfCol()
 	 */
 	public void selfCol() {
 		if (GameEngine.curGame.ifTempShield()) {
@@ -211,11 +220,6 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
 				dx += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*distx*0.013/dist;
 				dy += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*disty*0.013/dist;
-				
-				if (dist < size*h.size/2) {
-					//bad things.. (like, i died and the such)
-					System.out.print(".");
-				}
 			}
 		}
 	}

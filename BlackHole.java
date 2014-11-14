@@ -49,8 +49,17 @@ public class BlackHole extends MovingObject {
 		x += dx*dt*MAX_SPEED;
 		y += dy*dt*MAX_SPEED;
 		
-		dx /= 1.02; //big things drag still
-		dy /= 1.02;
+		//particle effects yay
+//		for (int i = 0; i < 6; i++) //maybe balance with size?
+		if (!isInert) {
+			MovingObject a = new Particle(2, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 0.3);
+			a.x = x;
+			a.y = y;
+			a.dx = (GameEngine.rand.nextDouble()*2-1)*10 + dx;
+			a.dy = (GameEngine.rand.nextDouble()*2-1)*10 + dy;
+		}
+		
+		
 		
 		Helper.keepInside(this, Helper.BOUNCE);
 		
@@ -77,8 +86,8 @@ public class BlackHole extends MovingObject {
 				double distY = s.y - y;
 				double dist = distX*distX + distY*distY + 0.0001;
 				if (dist < (size*size)+(s.size*s.size)) {
-					dx -= Helper.sgn(distX)/(Math.sqrt(dist));
-					dy -= Helper.sgn(distY)/(Math.sqrt(dist));
+					dx -= Helper.sgn(distX)/(2*Math.sqrt(dist));
+					dy -= Helper.sgn(distY)/(2*Math.sqrt(dist));
 				}
 			}
 		}
@@ -100,7 +109,7 @@ public class BlackHole extends MovingObject {
 		ALL_THIS.remove(this);
 		
 		if (wasShot) { //then add score
-			GameEngine.curGame.addScore(150 + (5/2)*numCount*(numCount+1));			
+			GameEngine.curGame.addScore(150 + (5/2)*numCount*(numCount+1));
 		} else { // or explode
 			for (int i = 0; i < 20; i++) {
 				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);

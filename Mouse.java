@@ -81,7 +81,6 @@ public class Mouse extends MouseAdapter {
 		if (myMouse != null) {
 			int x = myMouse.getX();
 			int y = myMouse.getY();
-
 			GLU glu = new GLU();
 			/* note viewport[3] is height of window in pixels */
 			y = myViewport[3] - y - 1;

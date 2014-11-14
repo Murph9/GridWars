@@ -10,15 +10,15 @@ public class ShieldedClone extends MovingObject {
 	public static final int score = 100;
 	private static final int MAX_ANGLE_CHANGE = 120;
 	private double lastAngle;
-	private static int MAX_SPEED = 7;
+	private static int MAX_SPEED = 6;
 	
 	private Shield shield;
 	
 	ShieldedClone(double size, double[] colour) {
-		super(size*0.9, colour);
+		super(size, colour);
 		lastAngle = 0;
 		
-		shield = new Shield(size, colour);
+		shield = new Shield(size*1.2, colour);
 		ALL_THIS.add(this);
 	}
 

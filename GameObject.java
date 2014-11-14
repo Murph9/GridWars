@@ -25,7 +25,7 @@ public class GameObject {
 	    x = 0;
 	    y = 0;
 	    
-	    this.colour = new double[]{1,1,1};
+	    this.colour = new double[]{1,1,1}; //just in case don't want no 'null's confusing things
     	ALL_OBJECTS.add(this);
 	}
     

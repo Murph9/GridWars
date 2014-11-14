@@ -26,7 +26,7 @@ public abstract class HomingObject extends MovingObject {
 		dy += (playerPos[1]-y)/2;
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
-		if (speed != 0) { //divide by zero errors are bad
+		if (speed != 0 && speed > 1) { //divide by zero errors are bad
 			dx /= speed;
 			dy /= speed; //now they are normalised yay
 		}

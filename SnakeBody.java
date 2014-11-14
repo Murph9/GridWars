@@ -10,7 +10,7 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 	
 	//this is kind of recursive (with length reducing each time)
 	SnakeBody(double size, double[] colour, SnakeObject before, int length) {
-		super(size, colour);
+		super(size, GameEngine.BROWN);
 		this.before = before;
 		
 		if (length > 0) {
@@ -72,7 +72,7 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SNAKEBODY].getTextureId());
-		gl.glColor3d(GameEngine.BROWN[0], GameEngine.BROWN[1], GameEngine.BROWN[2]);
+		gl.glColor3d(colour[0], colour[1], colour[2]);
 		Helper.square(gl);
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}

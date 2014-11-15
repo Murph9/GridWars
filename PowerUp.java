@@ -20,8 +20,8 @@ public class PowerUp extends GameObject {
 		this.y = y;
 	}
 	
-	public void destroy() {
-		super.destroy();
+	public void kill() { //really should never gives points directly
+		super.amHit(false);
 		switch (type) {
 		case SHOT_SPEED:
 			GameEngine.curGame.incBulletSpeed();	break;

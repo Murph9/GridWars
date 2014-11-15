@@ -7,15 +7,14 @@ public class ShySquare extends MovingObject {
 
 	public final static ArrayList<ShySquare> ALL_THIS = new ArrayList<ShySquare>();
 	
-	public static final int score = 100;
-	
 	private static final int MAX_SPEED = 4;
-	private float dodgeRange = 8;
+	private float dodgeRange = 6;
 	private float dodgeSpeed = 3f;
 	
 	ShySquare(double size, double[] colour) {
 		super(size, colour);
 		ALL_THIS.add(this);
+		score = 100;
 	}
 
 	@Override
@@ -69,10 +68,9 @@ public class ShySquare extends MovingObject {
 		}
 	}
 	
-	public void destroy() {
-		super.destroy();
+	public void amHit(boolean isPoints) {
+		super.amHit(isPoints);
 		ALL_THIS.remove(this);
-		GameEngine.curGame.addScore(score);
 	}
 	
 	public void drawSelf(GL2 gl) {

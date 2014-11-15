@@ -13,7 +13,7 @@ public class Particle extends MovingObject {
 		super(1, colour);
 		this.thickness = thickness;
 		speed = 1;
-		decayTimer = time;
+		decayTimer = GameEngine.rand.nextDouble()*time + 0.3;
 		inOrbit = false;
 	}
 
@@ -42,12 +42,12 @@ public class Particle extends MovingObject {
 		}
 		if (!inOrbit) {
 			decayTimer -= dt;
-			dx /= 1.1;
-			dy /= 1.1;
+			dx /= 1.07; //what drag should i have
+			dy /= 1.07;
 		}
 		
 		if (decayTimer <= 0) {
-			destroy();
+			amHit(false);
 		}
 		
 		blackHole();

@@ -8,7 +8,6 @@ import javax.media.opengl.GL2;
  */
 public class SnakeHead extends MovingObject implements SnakeObject {
 
-	public static final int score = 100;
 	public static final int MAX_SPEED = 4;
 	
 	private SnakeObject after; //the next object
@@ -20,7 +19,8 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	
 	SnakeHead(double size, double[] colour, int length) {
 		super(size, colour);
-
+		score = 100;
+		
 		this.angle = 0;
 		if (length < 10) {
 			length = 10; //set minimum length to be 10, just because they look funny otherwise
@@ -29,10 +29,9 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		after = new SnakeBody(size*0.8, colour, this, length);
 	}
 	
-	public void destroy() { //destroy properly (and down the line)
-		super.destroy();
-		after.destroy();
-		GameEngine.curGame.addScore(score);
+	public void amHit(boolean ifPoints) {
+		super.amHit(ifPoints);
+		after.amHit(false); //no body gives points
 	}
 	
 	

@@ -6,13 +6,12 @@ import javax.media.opengl.GL2;
 public class HomingDiamond extends HomingObject {
 	
 	public final static ArrayList<HomingDiamond> ALL_THIS = new ArrayList<HomingDiamond>();
-	
 	public static final int MAX_SPEED = 5;
-	public static final int score = 50;
 	
 	HomingDiamond(double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);
+		score = 50;
 	}
 	
 	//this works perfectly:, copy this if you need good collision of objects (not bouncing) 
@@ -40,9 +39,8 @@ public class HomingDiamond extends HomingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 	
-	public void destroy() {
-		super.destroy();
+	public void amHit(boolean ifPoints) {
+		super.amHit(ifPoints);
 		ALL_THIS.remove(this);
-		GameEngine.curGame.addScore(score);
 	}
 }

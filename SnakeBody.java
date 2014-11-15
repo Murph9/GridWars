@@ -22,10 +22,10 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		y = Integer.MAX_VALUE;
 	}
 	
-	public void destroy() {
-		super.destroy();
+	public void amHit(boolean isPoints) {
+		super.amHit(false); //never gives points
 		if (after != null) {
-			after.destroy();
+			after.amHit(false); //still never gives points
 		}
 	}
 	

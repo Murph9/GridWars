@@ -4,7 +4,6 @@ import javax.media.opengl.GL2;
 public class Spawner extends GameObject {
 	
 	public static final int SQUARE = 0, DIAMOND = 1, TRIANGLE = 2, SPLITTER = 3, SEEKER = 4;
-	public static final int score = 300;
 	
 	private int health; //hits remaining and size of the larger shape
 	private double countDown; //count down until next spawn
@@ -17,6 +16,8 @@ public class Spawner extends GameObject {
 		countDown = rate;
 		this.rate = rate;
 		this.type = type;
+		
+		score = 300; //don't really know, i think its just worth double? [could be triple]
 	}
 	
 	public double getSize() {
@@ -48,11 +49,10 @@ public class Spawner extends GameObject {
 	}
 	
 	
-	public void destroy() {
+	public void amHit(boolean isPoints) {
 		health--;
 		if (health < 0) {
-			super.destroy();
-			GameEngine.curGame.addScore(score);
+			super.amHit(isPoints);
 		}
 	}
 	

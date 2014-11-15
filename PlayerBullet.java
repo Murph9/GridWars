@@ -42,7 +42,7 @@ public class PlayerBullet extends MovingObject {
 		}
 
 		if (hasCollided && !GameEngine.curGame.ifBouncyShot()) {
-			this.destroy();
+			this.amHit(false);
 			return;
 		}
 		
@@ -69,8 +69,8 @@ public class PlayerBullet extends MovingObject {
 					dy -= disty/(dist*4);
 				}
 				if (dist < h.size/2) {
-					destroy();
-					h.destroy();
+					amHit(false);
+					h.amHit();
 				}
 			} else {
 				double[] pos = o.getCollisionPosition();
@@ -78,16 +78,21 @@ public class PlayerBullet extends MovingObject {
 				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.getSize()/2)*(o.getSize()/2))) {
 					if (!GameEngine.curGame.ifSuperShot()) {
-						this.destroy();
+						this.amHit(false);
 					}
 					if (o instanceof SnakeBody || o instanceof Shield) {
 					} else {
-						o.destroy();
+						o.amHit(true);
 					}
 					break;
 				}
 			}
 		}
+	}
+
+	public void amHit(boolean isPoints) { //never gives points
+		super.amHit(false);
+		ALL_THIS.remove(this);
 	}
 	
 	public void drawSelf(GL2 gl) {
@@ -105,9 +110,5 @@ public class PlayerBullet extends MovingObject {
     	Helper.square(gl);
 		
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-	}
-	public void destroy() {
-		super.destroy();
-		ALL_THIS.remove(this);
 	}
 }

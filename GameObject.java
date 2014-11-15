@@ -18,6 +18,7 @@ public class GameObject {
 	protected double y;
 	
 	protected double[] colour;
+	protected int score;
 	
 	GameObject() {
 		angle = 0;
@@ -27,9 +28,10 @@ public class GameObject {
 	    
 	    this.colour = new double[]{1,1,1}; //just in case don't want no 'null's confusing things
     	ALL_OBJECTS.add(this);
+    	
+    	score = 0;
 	}
     
-	
 	public double getRotation() {
         return angle;
     }
@@ -37,23 +39,16 @@ public class GameObject {
         return size;
     }
     public double[] getPosition() {
-        double[] t = new double[2];
-        t[0] = x;
-        t[1] = y;
-        return t;
+        return new double[]{x, y};
     }
     public double[] getColour() {
-    	double[] t = new double[3];
-    	t[0] = colour[0];
-    	t[1] = colour[1];
-    	t[2] = colour[2];
-    	return t;
+    	return new double[]{colour[0], colour[1], colour[2]};
     }
     
     /**Useful for functions that move differently to their position
-     * Change if the objects' location is different to myTranslation
-     * This is the method called by GameEngine
-     * @return
+     * Change if the objects' location is different to x, y
+     * This is the method called by the selfCol()'s
+     * @return double[2]{x, y}
      */
     public double[] getCollisionPosition() {
     	return getPosition(); 
@@ -73,12 +68,21 @@ public class GameObject {
     	colour[0] = inColour[0];
     	colour[1] = inColour[1];
     	colour[2] = inColour[2];
+    	colour[3] = inColour[3];
     }
     
-    public void destroy() {
+    /**Handles removing the object and ifPoints adding to the score
+     * @param ifPoints If score should be added
+     */
+    public void amHit(boolean ifPoints) {
         ALL_OBJECTS.remove(this);
+        if (ifPoints) {
+        	GameEngine.curGame.addKill();
+        	GameEngine.curGame.addScore(score);
+        }
     }
     
+    ///////////////////////////////////////////////
     //things to use in sub classes:
     public void drawSelf(GL2 gl) {
         // do nothing
@@ -88,7 +92,7 @@ public class GameObject {
     }
     
     
-    /**Draw the object and all of its descendants recursively.
+    /**Move the matrix, then draw the object and all of its descendants recursively.
      * @param gl I don't think you should be using this code and NOT know what this is for
      */
     public void draw(GL2 gl) {

@@ -82,20 +82,19 @@ public class ConnectedTriangle extends MovingObject {
 		}
 	}
 	
-	public void destroy() {
+	public void amHit(boolean ifPoints) {
 		if (partner == null) {
-			super.destroy();
+			super.amHit(ifPoints);
 			ALL_THIS.remove(this);
-			GameEngine.curGame.addScore(score);
 		} else {
-			strength -= 1; //TODO balance
+			strength -= 1; //TODO balance, yeah....
 			partner.strength -= 1;
 			if (strength <= 0) {
-				super.destroy();
-				ALL_THIS.remove(this);
-				GameEngine.curGame.addScore(score);
+				super.amHit(ifPoints);
+				
 				partner.strength = 0;
 				partner.partner = null;
+				ALL_THIS.remove(this);
 			}
 		}
 	}

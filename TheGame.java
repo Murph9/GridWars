@@ -49,7 +49,7 @@ public class TheGame extends JFrame {
     	case 8:
     		s = new SnakeHead(0.8, GameEngine.YELLOW, 18);    		break;
     	case 9: case 10:
-    		s = new ShySquare(1, GameEngine.GREEN);		    		break;
+    		s = new ShySquare(0.8, GameEngine.GREEN);		    	break;
     	case 11:
     		s = new BlackHole(1, GameEngine.RED);		    		break;
     	case 12:

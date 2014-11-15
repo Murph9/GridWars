@@ -7,7 +7,6 @@ public class ShieldedClone extends MovingObject {
 
 	public final static LinkedList<ShieldedClone> ALL_THIS = new LinkedList<ShieldedClone>();
 	
-	public static final int score = 100;
 	private static final int MAX_ANGLE_CHANGE = 120;
 	private double lastAngle;
 	private static int MAX_SPEED = 6;
@@ -16,10 +15,12 @@ public class ShieldedClone extends MovingObject {
 	
 	ShieldedClone(double size, double[] colour) {
 		super(size, colour);
-		lastAngle = 0;
+		lastAngle = (GameEngine.rand.nextDouble()*2-1)*180; //random angle between -180 and 180
 		
-		shield = new Shield(size*1.2, colour);
+		shield = new Shield(size*1.2, colour); //bigger, get it?
 		ALL_THIS.add(this);
+		
+		score = 100;
 	}
 
 	@Override
@@ -97,11 +98,10 @@ public class ShieldedClone extends MovingObject {
 		
 	}
 	
-	public void destroy() {
-		shield.destroy();
-		super.destroy();
+	public void amHit(boolean ifPoints) {
+		shield.amHit(false); //never has any points
+		super.amHit(ifPoints);
 		ALL_THIS.remove(this);
-		GameEngine.curGame.addScore(score);
 	}
 	
 	

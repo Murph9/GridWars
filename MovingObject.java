@@ -19,13 +19,14 @@ public abstract class MovingObject extends GameObject {
 		return new double[]{dx, dy};
 	}
 	
-	public void destroy() {
-		super.destroy();
+	public void amHit(boolean ifPoints) {
+		super.amHit(ifPoints);
+		
 		if (! (this instanceof Particle)) {
 			if (this instanceof PlayerBullet) {
 				int offset = GameEngine.rand.nextInt(180);
 				for (int i = 0; i < 4; i++) {
-					MovingObject p = new Particle(2, colour, GameEngine.rand.nextDouble()*0.7 + 0.2);
+					MovingObject p = new Particle(2, colour, 0.7);
 					p.x = x;
 					p.y = y;
 					p.dx = GameEngine.rand.nextDouble()*Math.cos(offset + 360*i/4)*8 + dx/2;
@@ -63,7 +64,7 @@ public abstract class MovingObject extends GameObject {
 				dy += (h.size*BlackHole.SUCK_RADIUS-dist+2)*2*disty/dist;
 				
 				if (dist < size*h.size/2 && !(this instanceof BlackHole)) {
-					destroy();
+					amHit(false);
 					h.giveObject(distx, disty);
 				}
 			}

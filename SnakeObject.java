@@ -5,7 +5,7 @@ public interface SnakeObject {
 	
 	SnakeObject getBefore();
 	SnakeObject getAfter();
-	void destroy();
+	void amHit(boolean ifPoints);
 	void update(double dt);
 	double[] getPosition();
 	double getRotation();

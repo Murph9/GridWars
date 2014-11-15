@@ -7,8 +7,6 @@ public class SplitingSquare extends HomingObject {
 	
 	public final static ArrayList<SplitingSquare> ALL_THIS = new ArrayList<SplitingSquare>();
 	
-	public static final int scoreBig = 50;
-	public static final int scoreSmall = 100; 
 	public static final int MAX_SPEED = 3;
 	private int ORBIT_SPEED = 6;
 	
@@ -31,6 +29,8 @@ public class SplitingSquare extends HomingObject {
 		orbitRadius = radius;
 		isPosOrbit = rotDirection;
 		ALL_THIS.add(this);
+		
+		score = 50; //starts big then changes score to small when hit once
 	}
 	
 	public double getOrbitAngle() {
@@ -38,6 +38,7 @@ public class SplitingSquare extends HomingObject {
 	}
 	public void setSplitStatus() {
 		hasSplit = true;
+		score = 100;
 	}
 	
 	public double[] getCollisionPosition() { //because this object rotates about a point that moves
@@ -52,8 +53,8 @@ public class SplitingSquare extends HomingObject {
 	}
 	
 
-	public void destroy() {
-		super.destroy();
+	public void amHit(boolean ifPoints) {
+		super.amHit(ifPoints);
 		if (!hasSplit) {
 			double angle = this.getOrbitAngle();
 			
@@ -68,10 +69,6 @@ public class SplitingSquare extends HomingObject {
 			SplitingSquare sC = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
 			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.7, y+Math.sin(angle-120)*0.7});
 			sC.hasSplit = true;
-			
-			GameEngine.curGame.addScore(scoreBig);
-		} else {
-			GameEngine.curGame.addScore(scoreSmall);
 		}
 		ALL_THIS.remove(this);
 	}

@@ -47,15 +47,13 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		switch(num) {
 		case 4:
 			MovingObject b0a = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
-				b0a.x = Math.cos(Math.toRadians(angle+40))*size/4 + x;
-				b0a.y = Math.sin(Math.toRadians(angle+40))*size/4 + y;
+				b0a.x = x; b0a.y = y;
 				
 				b0a.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
 				b0a.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
 
 			MovingObject b0b = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
-				b0b.x = Math.cos(Math.toRadians(angle-40))*size/4 + x;
-				b0b.y = Math.sin(Math.toRadians(angle-40))*size/4 + y;
+				b0b.x = x; b0b.y = y;
 				
 				b0b.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
 				b0b.dy = (dy/2+2*Math.sin(Math.toRadians(angle-5)))*speed;
@@ -63,15 +61,13 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			//note the lack of break; here, important (if it was more than 4 i would have a formula)
 		case 2:
 			MovingObject b1 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
-				b1.x = Math.cos(Math.toRadians(angle+10))*size/4 + x;
-				b1.y = Math.sin(Math.toRadians(angle+10))*size/4 + y;
+				b1.x = x; b1.y = y;
 				
 				b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+2)))*speed;
 				b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+2)))*speed;
 			
 			MovingObject b2 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
-				b2.x = Math.cos(Math.toRadians(angle-10))*size/4 + x;
-				b2.y = Math.sin(Math.toRadians(angle-10))*size/4 + y;
+				b2.x = x; b2.y = y; 
 				
 				b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-2)))*speed;
 				b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-2)))*speed;
@@ -81,14 +77,9 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			MovingObject b4 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
 			MovingObject b5 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
 			
-			b3.x = Math.cos(Math.toRadians(angle+30))*size/4 + x;
-			b3.y = Math.sin(Math.toRadians(angle+30))*size/4 + y;
-
-			b4.x = Math.cos(Math.toRadians(angle))*size/4 + x;
-			b4.y = Math.sin(Math.toRadians(angle))*size/4 + y;
-			
-			b5.x = Math.cos(Math.toRadians(angle-30))*size/4 + x;
-			b5.y = Math.sin(Math.toRadians(angle-30))*size/4 + y;
+			b3.x = x; b3.y = y;
+			b4.x = x; b4.y = y;
+			b5.x = x; b5.y = y;
 			
 			//velocity
 			b3.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
@@ -134,16 +125,6 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		x += dx*dt*MAX_SPEED; //add it
     	y += dy*dt*MAX_SPEED;
     	
-    	//tail (with maths to come)
-    	MovingObject q = new Particle(2, GameEngine.BLUE, 1);
-    	q.x = x; q.dx = -dx*10*(GameEngine.rand.nextDouble()*2) - 1;
-    	q.y = y; q.dy = -dy*10*(GameEngine.rand.nextDouble()*2) - 1;
-    	MovingObject r = new Particle(2, GameEngine.BLUE, 1);
-    	r.x = x; r.dx = -dx*10*(GameEngine.rand.nextDouble()*2) - 1;
-    	r.y = y; r.dy = -dy*10*(GameEngine.rand.nextDouble()*2) - 1;
-//    	MovingObject r = new Particle(2, GameEngine.BLUE, 1);
-//    	r.dx = dx; r.dy = dy;
-		
     	Helper.keepInside(this, Helper.SPLAT);
 		
 		//do rotation stuff
@@ -151,6 +132,15 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		double angle = Math.toDegrees(Math.atan2((s[1]-y), (s[0]-x)));
 		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
 		setRotation(angle);
+
+		//tail (with maths to come)
+    	MovingObject q = new Particle(2, GameEngine.BLUE, 1);
+    	q.x = x; q.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
+    	q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
+    	MovingObject r = new Particle(2, GameEngine.BLUE, 1);
+    	r.x = x; r.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
+    	r.y = y; r.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
+		
 		
 		//do accel (for nextTime stuff)
 		if		(xPosAccel) { dx = 1; }
@@ -195,7 +185,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
 					if (o instanceof PowerUp) {
-						o.destroy();
+						o.amHit(false);
 					} else {
 						GameEngine.killAll();
 						GameEngine.curGame.lostLife();

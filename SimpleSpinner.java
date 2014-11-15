@@ -6,18 +6,18 @@ import javax.media.opengl.GL2;
 public class SimpleSpinner extends MovingObject {
 	
 	public final static ArrayList<SimpleSpinner> ALL_THIS = new ArrayList<SimpleSpinner>();
-	public final static int score = 25;
 	
 	public int rotSpeed = 180; //if not set
 	public static final int myMaxSpeed = 2;
 	
-	
 	SimpleSpinner(double size, double[] colour) {
 		super(size, colour);
 		this.rotSpeed = (GameEngine.rand.nextInt(180)+90)*(GameEngine.rand.nextInt(2)*2-1);
-		dx = GameEngine.rand.nextDouble();
-		dy = GameEngine.rand.nextDouble();
+		dx = GameEngine.rand.nextDouble()*2-1; //rand between -1 and 1
+		dy = GameEngine.rand.nextDouble()*2-1;
 		ALL_THIS.add(this);
+		
+		score = 25;
 	}
 
 	public void update(double dt) {
@@ -52,10 +52,9 @@ public class SimpleSpinner extends MovingObject {
 		}
 	}
 	
-	public void destroy() {
-		super.destroy();
+	public void amHit(boolean isPoints) {
+		super.amHit(isPoints);
 		ALL_THIS.remove(this);
-		GameEngine.curGame.addScore(score);
 	}
 	
 	public void drawSelf(GL2 gl) {

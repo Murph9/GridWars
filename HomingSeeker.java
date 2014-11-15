@@ -8,11 +8,11 @@ public class HomingSeeker extends HomingObject {
 	public final static ArrayList<HomingSeeker> ALL_THIS = new ArrayList<HomingSeeker>();
 	
 	public static final int MAX_SPEED = 5;
-	public static final int score = 10;
 	
 	HomingSeeker(double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);
+		score = 10;
 	}
 	
 	public void selfCol() {
@@ -42,9 +42,8 @@ public class HomingSeeker extends HomingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
-	public void destroy() {
-		super.destroy();
+	public void amHit(boolean ifPoints) {
+		super.amHit(ifPoints);
 		ALL_THIS.remove(this);
-		GameEngine.curGame.addScore(score);
 	}
 }

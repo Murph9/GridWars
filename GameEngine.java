@@ -11,7 +11,6 @@ import javax.media.opengl.GLEventListener;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 //does all the back-end logic..
-//multiplier works of this many kills [25,50,100,200,400,800,1600,3200,6400,12800]
 public class GameEngine implements GLEventListener {
 
 //	//Textures
@@ -43,6 +42,8 @@ public class GameEngine implements GLEventListener {
 	private Camera myCamera;
 	private long myTime;
 	private long startTime;
+	
+	private ShaderControl shader;
 	
 	public GameEngine(Camera camera, int width, int height) {
 		startTime = System.currentTimeMillis();
@@ -98,6 +99,13 @@ public class GameEngine implements GLEventListener {
 		
 		gl.glEnable(GL2.GL_BLEND); //alpha blending (you know transparency)
 		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA); //special blending
+		
+		
+		// create a new shader object that we can reference later to activate it.
+		shader = new ShaderControl();
+		shader.fsrc = shader.loadShader("f.txt"); // fragment GLSL Code
+		shader.vsrc = shader.loadShader("v.txt"); // vertex GLSL Code
+		shader.init(gl);
 	}
 
 	
@@ -105,11 +113,12 @@ public class GameEngine implements GLEventListener {
 	public void display(GLAutoDrawable drawable) {
 		GameEngine.viewHeight = drawable.getHeight();
 		GameEngine.viewWidth  = drawable.getWidth();
-		
 		update();
 
 		GL2 gl = drawable.getGL().getGL2();
 
+		shader.useShader(gl);
+		
 		// set the view matrix based on the camera position
 		myCamera.setView(gl);
 		
@@ -123,9 +132,9 @@ public class GameEngine implements GLEventListener {
 		GameEngine.renderer.beginRendering(viewWidth, viewHeight, true);
 		GameEngine.renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
 		GameEngine.renderer.draw("S:" + curGame.getScore()+" | L:"+curGame.getLives()+ " | B: " + curGame.getBombCount() + //
-				" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000, 10, viewHeight-22);
+				" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000 + " | Kills:" + curGame.getKills(), 10, viewHeight-22);
 		GameEngine.renderer.endRendering();
-		
+		shader.dontUseShader(gl); 
 	}
 
 	@Override
@@ -164,7 +173,7 @@ public class GameEngine implements GLEventListener {
 			}
 		}
 		
-		BlackHole.ALL_THIS.clear();
+		BlackHole.ALL_THIS.clear(); //calling delete() on each object would be weird
 		ConnectedTriangle.ALL_THIS.clear();
 		HomingButterfly.ALL_THIS.clear();
 		HomingDiamond.ALL_THIS.clear();
@@ -176,7 +185,7 @@ public class GameEngine implements GLEventListener {
 		
 		for (int i = 0; i < 100; i++) {
 			for (int j = 0; j < 20; j++) {
-				MovingObject p = new Particle(2, GameEngine.WHITE, GameEngine.rand.nextDouble()*0.7 + 0.2);
+				MovingObject p = new Particle(2, GameEngine.WHITE, 0.7);
 				p.x = playerPos[0]+Math.cos(360*j/20);
 				p.y = playerPos[1]+Math.sin(360*j/20);
 				p.dx = GameEngine.rand.nextDouble()*Math.cos(360*i/20)*50;

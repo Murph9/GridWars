@@ -26,8 +26,7 @@ public class BlackHole extends MovingObject {
 		hitPoints = 20;
 		ALL_THIS.add(this);
 		
-		dx = 0;
-		dy = 0;
+		score = 150; 
 	}
 	
 	public void giveObject(double x, double y) {
@@ -37,7 +36,7 @@ public class BlackHole extends MovingObject {
 		hitPoints += 2;
 		size += 0.02;
 		if (numCount > maxNum) {
-			actuallyDestroy(false);
+			delete(false);
 		}
 	}
 	
@@ -50,7 +49,7 @@ public class BlackHole extends MovingObject {
 		y += dy*dt*MAX_SPEED;
 		
 		//particle effects yay
-//		for (int i = 0; i < 6; i++) //maybe balance with size?
+//		for (int i = 0; i < 6; i++) //maybe balance with size? //TODO
 		if (!isInert) {
 			MovingObject a = new Particle(2, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 0.3);
 			a.x = x;
@@ -58,7 +57,6 @@ public class BlackHole extends MovingObject {
 			a.dx = (GameEngine.rand.nextDouble()*2-1)*10 + dx;
 			a.dy = (GameEngine.rand.nextDouble()*2-1)*10 + dy;
 		}
-		
 		
 		
 		Helper.keepInside(this, Helper.BOUNCE);
@@ -94,22 +92,22 @@ public class BlackHole extends MovingObject {
 	}
 
 	//function handles destroying things into itself
-	public void destroy() {
+	public void amHit() {
 		isInert = false;
 		hitPoints--;
 		size -= 0.01;
 		if (hitPoints <= 0) {
-			actuallyDestroy(true);
+			delete(true);
 		}
 	}
 	
 	//handles actually dying
-	private void actuallyDestroy(boolean wasShot) {
-		super.destroy();
+	private void delete(boolean wasShot) {
+		score = 150 + (5/2)*numCount*(numCount+1); //sneaky
+		super.amHit(wasShot);
 		ALL_THIS.remove(this);
 		
 		if (wasShot) { //then add score
-			GameEngine.curGame.addScore(150 + (5/2)*numCount*(numCount+1));
 		} else { // or explode
 			for (int i = 0; i < 20; i++) {
 				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);

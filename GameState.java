@@ -1,11 +1,14 @@
 
-/**nice small class to handle the current game state (could be given to a leaderboard class later)
+/**Nice class to handle the current game state (could be given to a leaderboard class later for saving....)
  * @author Jake Murphy
  */
 public class GameState {
 	
 	private final double SPEED_INC = 0.2;
-	private final double POWERUP_LENGTH = 15; //apparently 15 seconds
+	private final double POWERUP_LENGTH = 15; //apparently 15 seconds is the standard
+	
+	//multiplier works of this many kills [25,50,100,200,400,800,1600,3200,6400,12800]
+	private int[] killSteps = new int[]{25,50,100,200,400,800,1600,3200,6400,12800};
 	
 	private double isShield;
 	private double isSideBullets;
@@ -16,9 +19,10 @@ public class GameState {
 	
 	private int score;
 	private int lives;
-	private int multi;
-	private int bombCount; //don't really have a mouse listener for that...
+	private int multiplier;
+	private int kills;
 	
+	private int bombCount; //don't really have a mouse listener for that...
 	private int bulletCount;
 	private double bulletSpeed;
 	
@@ -31,8 +35,10 @@ public class GameState {
 		isSuperShot = 0;
 		
 		score = 0;
-		lives = 3;
-		multi = 1;
+		multiplier = 1;
+		kills = 0;
+		
+		lives = 3;		
 		bombCount = 3;
 		bulletCount = 4;
 		bulletSpeed = 1; //how to change the bullet speed
@@ -48,9 +54,15 @@ public class GameState {
 		isSuperShot = Math.max(0, isSuperShot-dt);
 	}
 
+	public void addKill() {
+		kills++;
+		if (kills >= killSteps[multiplier-1]) {
+			multiplier = Math.min(multiplier+1, 9); //please don't ever get this much
+		}
+	}
 	public void addScore(int add) {
-		if (add >= 0) { //please don't give a negative, won't work
-			score += add*multi;
+		if (add > 0) { //please don't give a negative, won't work (well or 0)
+			score += add*multiplier;
 		}
 	}
 	
@@ -63,6 +75,8 @@ public class GameState {
 	
 	public void lostLife() {
 		lives--;
+		kills = 0;
+		
 		bulletSpeed = Math.max(1, bulletSpeed-SPEED_INC); //set minimum bullet speed to be 1
 		bulletCount = Math.max(2, bulletCount-1); //set min bullet count to be 2
 		isShield = 3; //set temp shield (for 1 sec) so you don't die really quick
@@ -85,13 +99,18 @@ public class GameState {
 		}
 	}
 	public void incBombCount() {
-		bombCount++;
+		if (bombCount > 8) {
+			score += 2000;
+		} else {
+			bombCount++;
+		}
 	}
 	public void incLives() {
-		lives++;
-	}
-	public void incMultiplier(int in) {
-		multi = in;
+		if (lives > 8) {
+			score += 2000;
+		} else {
+			lives++;
+		}
 	}
 
 	//Then start the count down (with the time set)
@@ -103,10 +122,13 @@ public class GameState {
 
 	public int getScore() { return score; }
 	public int getLives() { return lives; }
-	public int getMultiplier() { return multi; }
+	public int getMultiplier() { return multiplier; }
+	public int getKills() { return kills; }
+	
 	public int getBombCount() { return bombCount; }
-	public double getBulletSpeed() { return bulletSpeed; }
 	public int getBulletCount() { return bulletCount; }
+	public double getBulletSpeed() { return bulletSpeed; }
+
 	public boolean ifTempShield() { return (isShield > 0); }
 	public boolean ifSideShot() { return (isSideBullets > 0); }
 	public boolean ifRearShot() { return (isRearBullets > 0); }

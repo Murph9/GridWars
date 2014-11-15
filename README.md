@@ -13,7 +13,17 @@ GameObject - The base object class, every objects hierarchy is handled in this f
 OtherObjects - All enemies basically, all handle what happens when they collide
 Player - Button listener and moves by itself, is a GameObject
 
-========
+--------
+
+0.26: GameState/Scoring + Shaders
+- Blackholes really needs a new "suck" method
+- Scoring is now handled by a protected variable that all GameObjects have
+  + some related methods renamed, and a killed objects counter added
+  + The counter, for the first time ever actually increases the multipler
+- Added shader files "f.txt" and "v.txt" (not included in git repo)
+  + they don't do anything fancy yet
+- Slightly changed how the Player's bullet work
+
 
 0.25: All problems now done:
 - selfCol() is completed but could use some fine tuning
@@ -22,15 +32,17 @@ Player - Button listener and moves by itself, is a GameObject
 - GameEngine now has a subclass that handles the game state information
   + including score, lives, multiplier, bullet speed and bullet count 
 - some very minor fixes..
-========
+
+
 0.24: Various:
 - Blackholes now move and explode
 - Snakes now get eaten and the body parts don't do weird things
 - Some files were renamed
 - Self collision is now handled using the method called selfCol()
   + of which the homing objects' versions have been fixed
-- Todo: Fix bullet rotation and other selfCol() s
-========
+- Todo: Fix bullet rotation and other selfCol()
+
+
 0.23: BlackHoles
 - they now: 
   + eat things
@@ -42,24 +54,28 @@ Player - Button listener and moves by itself, is a GameObject
   + explode into little pieces 
   + do anything with snakes 
   + move
-========
+
+
 0.22: Actual Collision
 - has been written
-========
+
+
 0.21: Starting Collision
 - Actually started rewriting the collision system, now each file handles collision on its own objects
   + The PlayerBullet class deals with ALL types of objects now, rather than GameEngine doing it
   + This new collision system allows the spinners to actually bounce off each other !!
     - This actual version only contains code to start writing it, not actually use ii
 - Scoring still needs to be done and all the other actual game stuff
-========
+
+
 0.2: Scoring/Snakes/ShySquare/Annoying
 - added a rewritten collision system that functions exactly the same (still needs fixing)
 - Better Scoring (with values taken from the speedrun-wiki)
 - added the 2 simple enemies butterfly and circle (Note: they move exactly the same as homingSquare)
 - added a early version of the ShySquare (needs a little smoothing)
 - fixed snakes to be better looking
-========
+
+
 0.1: Everything that is not above
 - Moving player + shooting in the correct directions
 - GameObjects:

@@ -1,0 +1,13 @@
+uniform sampler2D texture1; 
+varying float intensity; //not sure yet
+
+void main() {
+	if (gl_TexCoord[0].st != 0) { //if no texture given	
+		gl_FragColor = texture2D(texture1, gl_TexCoord[0].st) * gl_Color;
+		
+	} else { //for untextured things
+		gl_FragColor = gl_Color;
+	}
+}
+
+//xystpq reference different things (don't quite know yet)

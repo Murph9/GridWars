@@ -22,7 +22,7 @@ public class BlackHole extends MovingObject {
 		super(size, colour);
 		isInert = true;
 		numCount = 0;
-		maxNum = 30;
+		maxNum = 10;//30;
 		hitPoints = 20;
 		ALL_THIS.add(this);
 		

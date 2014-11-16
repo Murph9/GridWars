@@ -4,11 +4,10 @@
  */
 public class GameState {
 	
-	private final double SPEED_INC = 0.2;
+	private final double SPEED_INC = 0.15;
 	private final double POWERUP_LENGTH = 15; //apparently 15 seconds is the standard
 	
-	//multiplier works of this many kills [25,50,100,200,400,800,1600,3200,6400,12800]
-	private int[] killSteps = new int[]{25,50,100,200,400,800,1600,3200,6400,12800};
+	private int[] killSteps = new int[]{25,50,100,200,400,800,1600,3200,6400,12800}; //multipler steps
 	
 	private double isShield;
 	private double isSideBullets;
@@ -57,7 +56,7 @@ public class GameState {
 	public void addKill() {
 		kills++;
 		if (kills >= killSteps[multiplier-1]) {
-			multiplier = Math.min(multiplier+1, 9); //please don't ever get this much
+			multiplier = Math.min(multiplier+1, 10); //please don't ever get this much
 		}
 	}
 	public void addScore(int add) {
@@ -70,12 +69,15 @@ public class GameState {
 		if (bombCount > 0) {
 			bombCount--;
 			GameEngine.killAll();
+			kills = 0;
+			multiplier = 1;
 		}
 	}
 	
 	public void lostLife() {
 		lives--;
 		kills = 0;
+		multiplier = 1;
 		
 		bulletSpeed = Math.max(1, bulletSpeed-SPEED_INC); //set minimum bullet speed to be 1
 		bulletCount = Math.max(2, bulletCount-1); //set min bullet count to be 2

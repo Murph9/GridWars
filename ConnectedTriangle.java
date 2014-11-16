@@ -71,8 +71,8 @@ public class ConnectedTriangle extends MovingObject {
 			double dist = a[0]*a[0] + a[1]*a[1] + 0.0001; //no divide by zero for me
 			
 			double b = size*size*4 + partner.size*partner.size*4;
-			dx += a[0]*(dist - b)/1000; //change if you want it to do normal things
-			dy += a[1]*(dist - b)/1000;
+			dx += a[0]*(dist - b)/300; //change if you want it to do normal things
+			dy += a[1]*(dist - b)/300;
 		}
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
@@ -87,8 +87,8 @@ public class ConnectedTriangle extends MovingObject {
 			super.amHit(ifPoints);
 			ALL_THIS.remove(this);
 		} else {
-			strength -= 1; //TODO balance, yeah....
-			partner.strength -= 1;
+			strength--; //TODO balance, yeah....
+//			partner.strength--; //not too sure if this should be here...
 			if (strength <= 0) {
 				super.amHit(ifPoints);
 				
@@ -102,22 +102,17 @@ public class ConnectedTriangle extends MovingObject {
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.TRIANGLE].getTextureId());
-		if (partner == null) {
-			gl.glColor3d(colour[0], colour[2], colour[1]);
-		} else {
-			gl.glColor3d(colour[0], colour[1], colour[2]);
-		}
-
-		Helper.square(gl);
+		gl.glColor4d(colour[0], colour[1],colour[2],colour[3]);
 		if (partner != null) {
 			gl.glPushMatrix();
 			gl.glRotated(60,0,0,1);
 			Helper.square(gl);
 			gl.glPopMatrix();
 		}
+		Helper.square(gl);
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		
-		if (partner != null) { //yes i know this will draw it twice, im fine with that
+		if (partner != null) { //yes i know this will be drawn twice, im fine with that
 			gl.glPushMatrix();
 			gl.glRotated(-angle, 0, 0, 1);
 			gl.glColor3d(0.2+(double)strength/15, 0.2+(double)strength/15, 0.2+(double)strength/15);

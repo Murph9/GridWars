@@ -59,15 +59,15 @@ public class SplitingSquare extends HomingObject {
 			double angle = this.getOrbitAngle();
 			
 			SplitingSquare sA = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, false);
-			sA.setPosition(new double[] {x+Math.cos(angle+60)*0.7, y+Math.sin(angle+60)*0.7});
+			sA.setPosition(new double[] {x+Math.cos(angle+60)*0.6, y+Math.sin(angle+60)*0.7});
 			sA.hasSplit = true;
 			
 			SplitingSquare sB = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
-			sB.setPosition(new double[] {x+Math.cos(angle-30)*0.7, y+Math.sin(angle-30)*0.7});
+			sB.setPosition(new double[] {x+Math.cos(angle-30)*0.6, y+Math.sin(angle-30)*0.7});
 			sB.hasSplit = true;
 			
 			SplitingSquare sC = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
-			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.7, y+Math.sin(angle-120)*0.7});
+			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.6, y+Math.sin(angle-120)*0.7});
 			sC.hasSplit = true;
 		}
 		ALL_THIS.remove(this);
@@ -112,9 +112,7 @@ public class SplitingSquare extends HomingObject {
 		if (hasSplit) {
 			gl.glTranslated(Math.cos(orbitAngle)*orbitRadius, Math.sin(orbitAngle)*orbitRadius, 0);
 		}
-    	gl.glColor3d(colour[0], colour[1], colour[2]);
-    	Helper.square(gl);
-    	
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+		
+    	super.drawSelf(gl);
 	}
 }

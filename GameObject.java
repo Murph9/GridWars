@@ -26,7 +26,7 @@ public class GameObject {
 	    x = 0;
 	    y = 0;
 	    
-	    this.colour = new double[]{1,1,1}; //just in case don't want no 'null's confusing things
+	    this.colour = new double[]{1,1,1,1}; //just in case don't want no 'null's confusing things
     	ALL_OBJECTS.add(this);
     	
     	score = 0;
@@ -85,7 +85,11 @@ public class GameObject {
     ///////////////////////////////////////////////
     //things to use in sub classes:
     public void drawSelf(GL2 gl) {
-        // do nothing
+        // should be called after binding the texture
+    	
+    	gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
+    	Helper.square(gl);
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     }
     public void update(double dt) {
     	// do nothing

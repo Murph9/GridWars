@@ -36,9 +36,6 @@ public class Shield extends MovingObject {
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SHIELD].getTextureId());
 		
-		gl.glColor3d(colour[0], colour[1], colour[2]);
-		Helper.square(gl);
-		
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+		super.drawSelf(gl);
 	}
 }

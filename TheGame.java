@@ -27,7 +27,7 @@ public class TheGame extends JFrame {
 	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
 	private Random random;
 	
-	private static int boardWidth = 14, boardHeight = 10; //at least 4 please
+	private static int boardWidth = 16, boardHeight = 12; //at least 4 please
 	
     public static void main(String[] args) {
 		TheGame system = new TheGame();
@@ -45,7 +45,7 @@ public class TheGame extends JFrame {
     	case 5: case 6:
     		s = new SplitingSquare(1, GameEngine.RED, 0, 1, true);	break;
     	case 7:
-    		s = new ShieldedClone(1.1, GameEngine.ORANGE);    		break;
+    		s = new ShieldedClone(1.1, GameEngine.RED);    			break;
     	case 8:
     		s = new SnakeHead(0.8, GameEngine.YELLOW, 18);    		break;
     	case 9: case 10:
@@ -65,7 +65,7 @@ public class TheGame extends JFrame {
         this.myPanel = new GLJPanel(glcapabilities);
 
         Camera camera = new Camera();
-        camera.setSize(Math.max(boardHeight + 1, boardWidth - 4)); //these numbers are just so that it always fits on screen
+        camera.setSize(10);//Math.max(boardHeight + 1, boardWidth - 4)); 
         
         random = new Random();
         

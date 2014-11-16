@@ -34,12 +34,7 @@ public class HomingButterfly extends HomingObject {
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BUTTERFLY].getTextureId()); //get id of the dot file
-		
-    	gl.glColor3d(colour[0], colour[1], colour[2]);
-
-    	Helper.square(gl);
-		
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    	super.drawSelf(gl);
 	}
 
 	public void amHit(boolean ifPoints) {

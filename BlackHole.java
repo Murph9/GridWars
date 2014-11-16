@@ -7,7 +7,7 @@ import javax.media.opengl.GL2;
 public class BlackHole extends MovingObject {
 
 	public static final ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
-	public static final int SUCK_RADIUS = 4;
+	public static final int SUCK_RADIUS = 6;
 	
 	public static final int MAX_SPEED = 2; //yeah kinda slow
 	
@@ -49,7 +49,7 @@ public class BlackHole extends MovingObject {
 		y += dy*dt*MAX_SPEED;
 		
 		//particle effects yay
-//		for (int i = 0; i < 6; i++) //maybe balance with size? //TODO
+		//maybe balance with size? //TODO
 		if (!isInert) {
 			MovingObject a = new Particle(2, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 0.3);
 			a.x = x;
@@ -61,7 +61,8 @@ public class BlackHole extends MovingObject {
 		
 		Helper.keepInside(this, Helper.BOUNCE);
 		
-		blackHole();
+		if (!isInert)
+			blackHole();
 		
 		double speed = Math.sqrt(dx*dx + dy*dy);
 		if (speed != 0 && speed > 1) {
@@ -103,7 +104,7 @@ public class BlackHole extends MovingObject {
 	
 	//handles actually dying
 	private void delete(boolean wasShot) {
-		score = 150 + (5/2)*numCount*(numCount+1); //sneaky
+		score = 150 + (5/2)*numCount*(numCount+1); //sneaky... (i only wanted to calculate it once)
 		super.amHit(wasShot);
 		ALL_THIS.remove(this);
 		
@@ -119,14 +120,9 @@ public class BlackHole extends MovingObject {
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId());
 		if (isInert) {
-			gl.glColor3d(GameEngine.PURPLE[0], GameEngine.PURPLE[1], GameEngine.PURPLE[2]);
-		} else {
-			gl.glColor3d(colour[0], colour[1], colour[2]);
+			gl.glColor4d(GameEngine.PURPLE[0], GameEngine.PURPLE[1], GameEngine.PURPLE[2], GameEngine.PURPLE[3]);
 		}
-		
-		Helper.square(gl);
-		
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+		super.drawSelf(gl);
 	}
 
 }

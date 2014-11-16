@@ -25,16 +25,20 @@ public class Camera extends GameObject {
     }
 
     public void update (double dt) { //thought causing
-//    	double[] pos = GameEngine.getPlayerPos();
     	double[] myPos = getPosition();
-//    	myPos[0] = (pos[0])/3; //to feel move like a game here
-//    	myPos[1] = (pos[1])/3;
+    	double[] pos = GameEngine.getPlayerPos();
+    	myPos[0] = (pos[0])/3; //to feel move like a game here
+    	myPos[1] = (pos[1])/3;
     	setPosition(myPos);
+    }
+    
+    public void drawSelf(GL2 gl) {
+    	//nothing, because you can't see it...
     }
     
     // ===========================================
     public void setView(GL2 gl) {
-    	gl.glClearColor((float)myBackground[0],(float)myBackground[1],(float)myBackground[2],(float)myBackground[3]);
+    	gl.glClearColor((float)myBackground[0], (float)myBackground[1], (float)myBackground[2], (float)myBackground[3]);
     	gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
     	
         gl.glLoadIdentity();

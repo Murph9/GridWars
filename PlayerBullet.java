@@ -98,7 +98,6 @@ public class PlayerBullet extends MovingObject {
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BULLET].getTextureId());
 		
-    	gl.glColor3d(colour[0], colour[1], colour[2]);
     	if (GameEngine.curGame.ifBouncyShot()) {
     		gl.glColor3d(GameEngine.GREEN[0], GameEngine.GREEN[1], GameEngine.GREEN[2]);
     	}
@@ -107,8 +106,6 @@ public class PlayerBullet extends MovingObject {
     		gl.glColor3d(GameEngine.RED[0], GameEngine.RED[1], GameEngine.RED[2]);
     	}
 
-    	Helper.square(gl);
-		
-    	gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    	super.drawSelf(gl);
 	}
 }

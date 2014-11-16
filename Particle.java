@@ -86,10 +86,9 @@ public class Particle extends MovingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glColor3d(colour[0], colour[1], colour[2]);
+		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
 		
 		gl.glPointSize((float)thickness);
-//		gl.glPointSize(10);
 		gl.glBegin(GL2.GL_POINTS);
 			gl.glVertex2d(0,0);
 		gl.glEnd();

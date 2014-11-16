@@ -63,28 +63,30 @@ public class GameEngine implements GLEventListener {
 		myTime = System.currentTimeMillis();
 		GL2 gl = drawable.getGL().getGL2();
 		
+		String dir = "resource/";
+		
 		textures = new MyTexture[TEXTURE_SIZE];
-		textures[PLAYER] = new MyTexture(gl, "player.png");
-		textures[SPINNER] = new MyTexture(gl, "spinner.png");
-		textures[DIAMOND] = new MyTexture(gl, "diamond.png");
-		textures[SQUARE] = new MyTexture(gl, "square.png");
-		textures[BULLET] = new MyTexture(gl, "bullet.png");
-		textures[SHIELD] = new MyTexture(gl, "shield.png");
-		textures[SNAKEBODY] = new MyTexture(gl, "snakeBody.png");
-		textures[SNAKEHEAD] = new MyTexture(gl, "snakeHead.png");
-		textures[BUTTERFLY] = new MyTexture(gl, "butterfly.png");
-		textures[CIRCLE] = new MyTexture(gl, "circle.png");
-		textures[SHY] = new MyTexture(gl, "shy.png");
-		textures[EXTRA_BULLET] = new MyTexture(gl, "extraBullet.png");
-		textures[EXTRA_SPEED] = new MyTexture(gl, "extraSpeed.png");
-		textures[TEMP_SHIELD] = new MyTexture(gl, "tempShield.png");
-		textures[EXTRA_BOMB] = new MyTexture(gl, "extraBomb.png");
-		textures[EXTRA_LIFE] = new MyTexture(gl, "extraLife.png");
-		textures[BOUNCY_SHOT] = new MyTexture(gl, "bouncyShot.png");
-		textures[SUPER_SHOT] = new MyTexture(gl, "superShot.png");
-		textures[REAR_SHOT] = new MyTexture(gl, "rearShot.png");
-		textures[SIDE_SHOT] = new MyTexture(gl, "sideShot.png");
-		textures[TRIANGLE] = new MyTexture(gl, "triangle.png");
+		textures[PLAYER] = new MyTexture(gl, dir + "player.png");
+		textures[SPINNER] = new MyTexture(gl, dir + "spinner.png");
+		textures[DIAMOND] = new MyTexture(gl, dir + "diamond.png");
+		textures[SQUARE] = new MyTexture(gl, dir + "square.png");
+		textures[BULLET] = new MyTexture(gl, dir + "bullet.png");
+		textures[SHIELD] = new MyTexture(gl, dir + "shield.png");
+		textures[SNAKEBODY] = new MyTexture(gl, dir + "snakeBody.png");
+		textures[SNAKEHEAD] = new MyTexture(gl, dir + "snakeHead.png");
+		textures[BUTTERFLY] = new MyTexture(gl, dir + "butterfly.png");
+		textures[CIRCLE] = new MyTexture(gl, dir + "circle.png");
+		textures[SHY] = new MyTexture(gl, dir + "shy.png");
+		textures[EXTRA_BULLET] = new MyTexture(gl, dir + "extraBullet.png");
+		textures[EXTRA_SPEED] = new MyTexture(gl, dir + "extraSpeed.png");
+		textures[TEMP_SHIELD] = new MyTexture(gl, dir + "tempShield.png");
+		textures[EXTRA_BOMB] = new MyTexture(gl, dir + "extraBomb.png");
+		textures[EXTRA_LIFE] = new MyTexture(gl, dir + "extraLife.png");
+		textures[BOUNCY_SHOT] = new MyTexture(gl, dir + "bouncyShot.png");
+		textures[SUPER_SHOT] = new MyTexture(gl, dir + "superShot.png");
+		textures[REAR_SHOT] = new MyTexture(gl, dir + "rearShot.png");
+		textures[SIDE_SHOT] = new MyTexture(gl, dir + "sideShot.png");
+		textures[TRIANGLE] = new MyTexture(gl, dir + "triangle.png");
 		
 		GameEngine.renderer = new TextRenderer(new Font("Courier", Font.BOLD, 22), true);
 		GameEngine.viewHeight = drawable.getHeight();
@@ -103,8 +105,8 @@ public class GameEngine implements GLEventListener {
 		
 		// create a new shader object that we can reference later to activate it.
 		shader = new ShaderControl();
-		shader.fsrc = shader.loadShader("f.txt"); // fragment GLSL Code
-		shader.vsrc = shader.loadShader("v.txt"); // vertex GLSL Code
+		shader.fsrc = shader.loadShader(dir + "f.txt"); // fragment GLSL Code
+		shader.vsrc = shader.loadShader(dir + "v.txt"); // vertex GLSL Code
 		shader.init(gl);
 	}
 

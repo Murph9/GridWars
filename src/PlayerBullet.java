@@ -10,6 +10,8 @@ public class PlayerBullet extends MovingObject {
 	PlayerBullet(double size, double[] colour) {
 		super(size, colour);
 		PlayerBullet.ALL_THIS.add(this);
+    	SoundEffect.SHOT.play();
+    	SoundEffect.volume = SoundEffect.volume.LOW; //just leave it
 	}
 	
 	public void update(double dt) {
@@ -93,6 +95,7 @@ public class PlayerBullet extends MovingObject {
 	public void amHit(boolean isPoints) { //never gives points
 		super.amHit(false);
 		ALL_THIS.remove(this);
+		SoundEffect.BULLET_KILL.play();
 	}
 	
 	public void drawSelf(GL2 gl) {

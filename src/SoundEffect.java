@@ -6,9 +6,11 @@ import javax.sound.sampled.*;
 
 
 public enum SoundEffect {
-	POWERUP("resource/Powerup.wav"),   // powerup
-	POWERUP2("resource/Powerup2.wav"),         // gong
-	SHOOT("resource/shot.wav");       // bullet
+	SHOT("sounds/bullet1.wav"), //bullet shoot 
+	BULLET_KILL("sounds/bullet_hit.wav"), //bullet die 
+	POWERUP("sounds/Powerup.wav"),   // powerup
+	POWERUP2("sounds/Powerup2.wav"),         // gong
+	SHOOT("sounds/shot.wav");       // bullet
 	//lots of others
 	
 	// Nested class for specifying volume

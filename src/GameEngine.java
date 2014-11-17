@@ -63,7 +63,7 @@ public class GameEngine implements GLEventListener {
 		myTime = System.currentTimeMillis();
 		GL2 gl = drawable.getGL().getGL2();
 		
-		String dir = "resource/"; //because everything got moved
+		String dir = "images/"; //because everything got moved
 		
 		textures = new MyTexture[TEXTURE_SIZE];
 		textures[PLAYER] = new MyTexture(gl, dir + "player.png");

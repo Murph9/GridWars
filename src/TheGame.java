@@ -1,11 +1,20 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Random;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
@@ -31,6 +40,7 @@ public class TheGame extends JFrame {
 	
     public static void main(String[] args) {
 		TheGame system = new TheGame();
+		
 		system.init();
 	}
     
@@ -59,25 +69,25 @@ public class TheGame extends JFrame {
     }
     
     public void init() {
-    	GLProfile glprofile = GLProfile.getDefault();
-        GLCapabilities glcapabilities = new GLCapabilities(glprofile);
-        
-        this.myPanel = new GLJPanel(glcapabilities);
+		GLProfile glprofile = GLProfile.getDefault();
+		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
+		
+		this.myPanel = new GLJPanel(glcapabilities);
 
-        Camera camera = new Camera();
-        camera.setSize(10);//Math.max(boardHeight + 1, boardWidth - 4)); 
-        
-        random = new Random();
-        
-        GameEngine.player = new Player(1, GameEngine.WHITE);
-        Border border = new Border(boardWidth, boardHeight);
-        border.setSize(1); //just incase it stopped being 1
-        
-        GameEngine engine = new GameEngine(camera, boardWidth, boardHeight);
-        this.myPanel.addGLEventListener(engine);
-        
-        getContentPane().add(myPanel, BorderLayout.CENTER);
-        setSize(1024, 768);
+		Camera camera = new Camera();
+		camera.setSize(10);//Math.max(boardHeight + 1, boardWidth - 4)); 
+		
+		random = new Random();
+		
+		GameEngine.player = new Player(1, GameEngine.WHITE);
+		Border border = new Border(boardWidth, boardHeight);
+		border.setSize(1); //just incase it stopped being 1
+		
+		GameEngine engine = new GameEngine(camera, boardWidth, boardHeight);
+		this.myPanel.addGLEventListener(engine);
+		
+		getContentPane().add(myPanel, BorderLayout.CENTER);
+		setSize(1024, 768);
         setName("Game");
         setVisible(true);
         setFocusable(true);

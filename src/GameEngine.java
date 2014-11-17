@@ -108,6 +108,9 @@ public class GameEngine implements GLEventListener {
 		shader.fsrc = shader.loadShader(dir + "f.txt"); // fragment GLSL Code
 		shader.vsrc = shader.loadShader(dir + "v.txt"); // vertex GLSL Code
 		shader.init(gl);
+		
+		//init sounds
+		SoundEffect.init();
 	}
 
 	

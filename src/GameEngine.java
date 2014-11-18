@@ -31,10 +31,10 @@ public class GameEngine implements GLEventListener {
 	public static int viewWidth;
 	
 	public static final Random rand = new Random(); 
-			//just because ease of use, seeds could be used for specific game spawns (maybe?)
+			//just because ease of use, seeds could be used for specific game spawns (using seeds maybe?)
 	
 	public static GameState curGame;
-	public static int boardWidth = 12, boardHeight = 10; //at least 4 please
+	public static int boardWidth = 12, boardHeight = 10; //just incase something goes bad
 	
 	public static Player player;
 	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; //updated each 'update()' for speed of access
@@ -58,14 +58,16 @@ public class GameEngine implements GLEventListener {
 	public static GameObject getPlayer() {  return player;    }
 	
 
+	/**Initalises what is needed for the base game to work, (no actual game)
+	 */
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		myTime = System.currentTimeMillis();
 		GL2 gl = drawable.getGL().getGL2();
 		
-		String dir = "images/"; //because everything got moved
+		String dir = "images/"; //because everything got moved :/
 		
-		textures = new MyTexture[TEXTURE_SIZE];
+		textures = new MyTexture[TEXTURE_SIZE]; //this could be one line i guess.. (but the static indexes might be confusing)
 		textures[PLAYER] = new MyTexture(gl, dir + "player.png");
 		textures[SPINNER] = new MyTexture(gl, dir + "spinner.png");
 		textures[DIAMOND] = new MyTexture(gl, dir + "diamond.png");
@@ -95,9 +97,10 @@ public class GameEngine implements GLEventListener {
 		playerPos = player.getPosition();
         mousePos = Mouse.theMouse.getPosition();
 		
+        //enable textures
 		gl.glEnable(GL2.GL_TEXTURE_2D);
-		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT); //Set wrap mode for texture in S direction
-    	gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP_TO_EDGE);//Set wrap mode for texture in T direction
+		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP); //Set wrap mode for texture in S direction
+    	gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP);//Set wrap mode for texture in T direction
 		
 		gl.glEnable(GL2.GL_BLEND); //alpha blending (you know transparency)
 		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA); //special blending

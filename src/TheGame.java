@@ -1,36 +1,37 @@
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Random;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
 
 //not sure whether this file or GameEngine should handle the actual position of the spawning objects 
+//idea for different spawning sets, like only clones ..... (just increasing numbers of them)
+//rather large class...
 
-//idea for different spanning states, like only clones .....
+public class TheGame implements KeyListener {
 
-public class TheGame extends JFrame {
-	//contains main and all that jazz
-	private static final long serialVersionUID = 1L;
-
-	private GLJPanel myPanel;
-	private FPSAnimator animator;	
+	private JFrame menuFrame;
+	
+	private JFrame gameFrame;
+	private GLJPanel gamePanel; //for the GameEngine
+	private FPSAnimator animator;
+	private GameEngine engine;
 	
 	private Timer timer;
 	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
@@ -38,12 +39,119 @@ public class TheGame extends JFrame {
 	
 	private static int boardWidth = 16, boardHeight = 12; //at least 4 please
 	
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 		TheGame system = new TheGame();
-		
 		system.init();
 	}
+	
+	public void init() {
+		random = new Random();
+
+		menuFrame = new JFrame();
+		menuFrame.setLayout(new GridBagLayout());
+		
+		JPanel newGamePanel = new JPanel();
+		newGamePanel.setLayout(new GridBagLayout());
+		newGamePanel.setBorder(BorderFactory.createTitledBorder("New Game"));
+		
+		GridBagConstraints c = new GridBagConstraints();
+		
+		JButton buttonEasy = new JButton("Easy");
+		buttonEasy.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				initGame();
+				menuFrame.setVisible(false);
+			}
+		});
+		newGamePanel.add(buttonEasy, c);
+		
+		JButton buttonMed = new JButton("Med");
+		buttonMed.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				initGame();
+				menuFrame.setVisible(false);
+			}
+		});
+		newGamePanel.add(buttonMed, c);
+		
+		JButton buttonHard = new JButton("Hard");
+		buttonHard.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				initGame();
+				menuFrame.setVisible(false);
+			}
+		});
+		newGamePanel.add(buttonHard, c);
+		menuFrame.add(newGamePanel, c);
+		//////////////////////////////////////////////////
+		
+		JPanel settingsPanel = new JPanel();
+		settingsPanel.setLayout(new GridBagLayout());
+		settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
+		
+		JCheckBox settings = new JCheckBox("Yay check box");
+		settingsPanel.add(settings, c);
+		
+		JCheckBox set2 = new JCheckBox("n");
+		settingsPanel.add(set2, c);
+		
+		menuFrame.add(settingsPanel, c);
+		//////////////////////////////////////////////////		
+		menuFrame.setSize(800, 600);
+		menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		menuFrame.setName("Menu - Jake Murphy");
+		menuFrame.setVisible(true);
+	}
+	
+	//because its in the same file the settings dont't need to be passed in
+	private void initGame() {
+		GLProfile glprofile = GLProfile.getDefault();
+		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
+		
+		Camera camera = new Camera();
+		camera.setSize(10); //you know, it kind of works, as easy as this number is 
+		
+		GameEngine.player = new Player(1, GameEngine.WHITE);
+		Border border = new Border(boardWidth, boardHeight);
+		border.setSize(1); //just incase it stopped being 1
+		
+		engine = new GameEngine(camera, boardWidth, boardHeight);
+		
+		this.gamePanel = new GLJPanel(glcapabilities);
+		this.gamePanel.addGLEventListener(engine);
+		this.gameFrame = new JFrame();
+		this.gameFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
+		this.gameFrame.setSize(1024, 768);
+		this.gameFrame.setName("GridWars - Jake Murphy");
+		this.gameFrame.setVisible(true);
+		this.gameFrame.setFocusable(true);
+		this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        ActionListener taskPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				newEnemy();
+			}
+		};
+		this.timer = new Timer(TIME_INTERVAL, taskPerformer);
+		this.timer.start();
+        
+        this.gamePanel.addKeyListener(GameEngine.player);
+        this.gamePanel.addMouseListener(GameEngine.player);
+        
+        this.gamePanel.addMouseMotionListener(Mouse.theMouse);
+        this.gamePanel.addMouseListener(Mouse.theMouse);
+        
+        this.gamePanel.requestFocus();
+        
+        this.animator = new FPSAnimator(60);
+        this.animator.add(gamePanel);
+        this.animator.start();
+    }
     
+    //spawning
     private void newEnemy() {
     	int a = random.nextInt(13);
     	GameObject s = null;
@@ -67,51 +175,20 @@ public class TheGame extends JFrame {
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
-    
-    public void init() {
-		GLProfile glprofile = GLProfile.getDefault();
-		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
-		
-		this.myPanel = new GLJPanel(glcapabilities);
 
-		Camera camera = new Camera();
-		camera.setSize(10);//Math.max(boardHeight + 1, boardWidth - 4)); 
-		
-		random = new Random();
-		
-		GameEngine.player = new Player(1, GameEngine.WHITE);
-		Border border = new Border(boardWidth, boardHeight);
-		border.setSize(1); //just incase it stopped being 1
-		
-		GameEngine engine = new GameEngine(camera, boardWidth, boardHeight);
-		this.myPanel.addGLEventListener(engine);
-		
-		getContentPane().add(myPanel, BorderLayout.CENTER);
-		setSize(1024, 768);
-        setName("Game");
-        setVisible(true);
-        setFocusable(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
-        ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				newEnemy();
-			}
-		};
-		this.timer = new Timer(TIME_INTERVAL, taskPerformer);
-		this.timer.start();
-        
-        this.myPanel.addKeyListener(GameEngine.player);
-        this.myPanel.addMouseListener(GameEngine.player);
-        
-        this.myPanel.addMouseMotionListener(Mouse.theMouse);
-        this.myPanel.addMouseListener(Mouse.theMouse);
-        
-        this.myPanel.setFocusable(true);
-        this.myPanel.requestFocus();
-        
-        this.animator = new FPSAnimator(60);
-        this.animator.add(myPanel);
-        this.animator.start();
-    }
+	
+    
+    //TODO, don't really know about these yet
+    @Override
+	public void keyPressed(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+	}
+
 }

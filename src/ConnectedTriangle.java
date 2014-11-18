@@ -8,7 +8,6 @@ public class ConnectedTriangle extends MovingObject {
 	public final static ArrayList<ConnectedTriangle> ALL_THIS = new ArrayList<ConnectedTriangle>();
 	
 	private final int MAX_SPEED = 3;
-	private static final int score = 150;
 	private final int LINK_STRENGTH = 20;
 	
 	private ConnectedTriangle partner;
@@ -22,6 +21,7 @@ public class ConnectedTriangle extends MovingObject {
 		ALL_THIS.add(this);
 		strength = 0;
 		partner = in;
+		score = 150;
 	}
 
 	@Override

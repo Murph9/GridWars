@@ -44,6 +44,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		int num = GameEngine.curGame.getBulletCount();
 		double speed = MAX_SPEED*GameEngine.curGame.getBulletSpeed();
 		
+//		SoundEffect.SHOT.play();
 		switch(num) {
 		case 4:
 			MovingObject b0a = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);

@@ -7,7 +7,7 @@ public class HomingSeeker extends HomingObject {
 
 	public final static ArrayList<HomingSeeker> ALL_THIS = new ArrayList<HomingSeeker>();
 	
-	public static final int MAX_SPEED = 5;
+	public static final int MAX_SPEED = 6;
 	
 	HomingSeeker(double size, double[] colour) {
 		super(size, colour, MAX_SPEED);

@@ -17,7 +17,7 @@ public enum SoundEffect {
 	public static enum Volume {
 		MUTE, LOW, MEDIUM, HIGH
 	}
-	public static Volume volume = Volume.LOW;
+	public static Volume volume = Volume.HIGH;
 	
 	// Each sound effect has its own clip, loaded with its own sound file.
 	private Clip clip = null;
@@ -30,6 +30,7 @@ public enum SoundEffect {
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
 			// Get a sound clip resource.
 			clip = AudioSystem.getClip();
+
 			// Open audio clip and load samples from the audio input stream.
 			clip.open(audioIn);
 		} catch (UnsupportedAudioFileException e) {
@@ -50,6 +51,9 @@ public enum SoundEffect {
 			clip.setFramePosition(0); // rewind to the beginning
 			clip.start();     // Start playing
 		}
+		
+		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(-10.0f); // Reduce volume by 10 decibels.
 	}
 	
 	// Optional static method to pre-load all the sound files.

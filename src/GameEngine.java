@@ -30,30 +30,34 @@ public class GameEngine implements GLEventListener {
 	public static int viewHeight;
 	public static int viewWidth;
 	
-	public static final Random rand = new Random(); 
+	public static final Random rand = new Random();
 			//just because ease of use, seeds could be used for specific game spawns (using seeds maybe?)
 	
 	public static GameState curGame;
 	public static int boardWidth = 12, boardHeight = 10; //just incase something goes bad
+	public static double scale;
 	
 	public static Player player;
-	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; //updated each 'update()' for speed of access
+	private static double[] playerPos = new double[]{0,0}, 
+							mousePos = new double[]{0,0}; //updated each 'update()' for speed of access
 	
-	private Camera myCamera;
+	public static Camera myCamera;
+	
 	private long myTime;
 	private long startTime;
 	
 	private ShaderControl shader;
 	
-	public GameEngine(Camera camera, int width, int height) {
+	public GameEngine(Camera camera, int width, int height, double scale) {
 		startTime = System.currentTimeMillis();
 		myCamera = camera;
 		curGame = new GameState();
 		boardWidth = width;
 		boardHeight = height;
+		GameEngine.scale = scale;
 	}
 	
-	public static double[] getPlayerPos() { return playerPos; }
+	public static double[] getPlayerPos(){  return playerPos; }
 	public static double[] getMousePos() {  return mousePos;  }
 	public static GameObject getPlayer() {  return player;    }
 	
@@ -129,6 +133,7 @@ public class GameEngine implements GLEventListener {
 		
 		// set the view matrix based on the camera position
 		myCamera.setView(gl);
+		Helper.getScreenPos(0, 0, scale);
 		
 		Mouse.theMouse.update(gl);
 		playerPos = player.getPosition();
@@ -140,36 +145,37 @@ public class GameEngine implements GLEventListener {
 		GameEngine.renderer.beginRendering(viewWidth, viewHeight, true);
 		GameEngine.renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
 		GameEngine.renderer.draw("S:" + curGame.getScore()+" | L:"+curGame.getLives()+ " | B: " + curGame.getBombCount() + //
-				" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000 + " | Kills:" + curGame.getKills(), 10, viewHeight-22);
+				" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000 + " | Kills: " + curGame.getKills(), 10, viewHeight-22);
 		GameEngine.renderer.endRendering();
-		shader.dontUseShader(gl); 
+		
+		shader.dontUseShader(gl);
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 			int height) {
 		// tell the camera and the mouse that the screen has reshaped
-        GL2 gl = drawable.getGL().getGL2();
-        
-        myCamera.reshape(gl, x, y, width, height);
-        
-        // this has to happen after myCamera.reshape() to use the new projection
-        Mouse.theMouse.reshape(gl);
+		GL2 gl = drawable.getGL().getGL2();
+		
+		myCamera.reshape(gl, x, y, width, height);
+		
+		// this has to happen after myCamera.reshape() to use the new projection
+		Mouse.theMouse.reshape(gl);
 	}
 
 	private void update() {
 		long time = System.currentTimeMillis();
-        double dt = (time - myTime) / 1000.0;
-        myTime = time;
-        
-        List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
-        
-        // update all objects (and deleting when necessary)
-        for (GameObject g: objects) {
-            g.update(dt);
-        }
+		double dt = (time - myTime) / 1000.0;
+		myTime = time;
+		
+		List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
+		
+		// update all objects (and deleting when necessary)
+		for (GameObject g: objects) {
+			g.update(dt);
+		}
 
-        curGame.update(dt); //to count down the timer for the powerups
+		curGame.update(dt); //to count down the timer for the powerups
 	}
 	
 	public static void killAll() {

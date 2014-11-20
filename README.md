@@ -16,12 +16,16 @@ Structure of the project:
 
 --------
 
+0.27 Menu:
+- There is now an intro screen with 3 buttons that do the same thing, and 2 check boxes for fun
+- Sound has been removed from the game due to the weirdness of mono sound.
+
 0.26: GameState/Scoring + Shaders
 - Blackholes really needs a new "suck" method
 - Scoring is now handled by a protected variable that all GameObjects have
   + some related methods renamed, and a killed objects counter added
-  + The counter, for the first time ever actually increases the multipler
-- Added shader files "f.txt" and "v.txt" (not included in git repo)
+  + The counter, for the first time ever actually increases the multiplier
+- Added shader files "f.txt" and "v.txt" (not included in git repo) [now included]
   + they don't do anything fancy yet
 - Slightly changed how the Player's bullet work
 

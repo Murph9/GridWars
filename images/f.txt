@@ -10,4 +10,4 @@ void main() {
 	}
 }
 
-//xystpq reference different things (don't quite know yet)
+//use xystpq to reference different things (don't quite know yet)

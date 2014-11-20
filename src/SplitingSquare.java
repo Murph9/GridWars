@@ -60,15 +60,15 @@ public class SplitingSquare extends HomingObject {
 			
 			SplitingSquare sA = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, false);
 			sA.setPosition(new double[] {x+Math.cos(angle+60)*0.6, y+Math.sin(angle+60)*0.7});
-			sA.hasSplit = true;
+			sA.setSplitStatus();
 			
 			SplitingSquare sB = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
 			sB.setPosition(new double[] {x+Math.cos(angle-30)*0.6, y+Math.sin(angle-30)*0.7});
-			sB.hasSplit = true;
+			sB.setSplitStatus();
 			
 			SplitingSquare sC = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
 			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.6, y+Math.sin(angle-120)*0.7});
-			sC.hasSplit = true;
+			sC.setSplitStatus();
 		}
 		ALL_THIS.remove(this);
 	}

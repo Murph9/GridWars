@@ -22,6 +22,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 					yNegAccel = false;
 	
 	private Timer timer;
+	private boolean shooting;
 	
 	Player(double size, double[] colour) {
 		super(size, colour);
@@ -38,9 +39,15 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		};
 		this.timer = new Timer(100, taskPerformer);
 		this.timer.start();
+		
+		this.shooting = true;
 	}
 	
 	private void newBullet() { //creats PlayerBullets, large
+		if (!shooting) {
+			return;
+		}
+		
 		int num = GameEngine.curGame.getBulletCount();
 		double speed = MAX_SPEED*GameEngine.curGame.getBulletSpeed();
 		
@@ -281,24 +288,28 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) { }
-
+	public void keyTyped(KeyEvent arg0) {}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {}
-
 	@Override
 	public void mouseEntered(MouseEvent arg0) {}
-
 	@Override
 	public void mouseExited(MouseEvent arg0) {}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {}
+	public void mousePressed(MouseEvent arg0) {
+		if (arg0.getButton() == MouseEvent.BUTTON1) {
+			shooting = false;
+		}
+	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		if (arg0.getButton() == MouseEvent.BUTTON3) {
 			GameEngine.curGame.useBomb();
+		}
+		if (arg0.getButton() == MouseEvent.BUTTON1) {
+			shooting = true;
 		}
 	}
 

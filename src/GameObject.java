@@ -79,6 +79,8 @@ public class GameObject {
         if (ifPoints) {
         	GameEngine.curGame.addKill();
         	GameEngine.curGame.addScore(score);
+        	
+        	ScorePopup s = new ScorePopup(this.colour, score, 1, x, y);
         }
     }
     

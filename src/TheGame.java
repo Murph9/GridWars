@@ -24,7 +24,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 //idea for different spawning sets, like only clones ..... (just increasing numbers of them)
 //rather large class...
 
-public class TheGame implements KeyListener {
+public class TheGame {
 
 	private JFrame menuFrame;
 	
@@ -37,7 +37,8 @@ public class TheGame implements KeyListener {
 	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
 	private Random random;
 	
-	private static int boardWidth = 16, boardHeight = 12; //at least 4 please
+	private static final int boardWidth = 16, boardHeight = 12; //at least 4 please
+	private static final double scale = 10;
 	
 	public static void main(String[] args) {
 		TheGame system = new TheGame();
@@ -60,7 +61,7 @@ public class TheGame implements KeyListener {
 		buttonEasy.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				initGame();
+				initGame(0);
 				menuFrame.setVisible(false);
 			}
 		});
@@ -70,7 +71,7 @@ public class TheGame implements KeyListener {
 		buttonMed.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				initGame();
+				initGame(1);
 				menuFrame.setVisible(false);
 			}
 		});
@@ -80,7 +81,7 @@ public class TheGame implements KeyListener {
 		buttonHard.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				initGame();
+				initGame(2);
 				menuFrame.setVisible(false);
 			}
 		});
@@ -95,7 +96,7 @@ public class TheGame implements KeyListener {
 		JCheckBox settings = new JCheckBox("Yay check box");
 		settingsPanel.add(settings, c);
 		
-		JCheckBox set2 = new JCheckBox("n");
+		JCheckBox set2 = new JCheckBox("box 2");
 		settingsPanel.add(set2, c);
 		
 		menuFrame.add(settingsPanel, c);
@@ -107,21 +108,22 @@ public class TheGame implements KeyListener {
 	}
 	
 	//because its in the same file the settings dont't need to be passed in
-	private void initGame() {
+	private void initGame(int diff) {
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
 		Camera camera = new Camera();
-		camera.setSize(10); //you know, it kind of works, as easy as this number is 
+		camera.setSize(scale); //you know, it kind of works, as easy as this number is 
 		
 		GameEngine.player = new Player(1, GameEngine.WHITE);
 		Border border = new Border(boardWidth, boardHeight);
 		border.setSize(1); //just incase it stopped being 1
 		
-		engine = new GameEngine(camera, boardWidth, boardHeight);
+		engine = new GameEngine(camera, boardWidth, boardHeight, scale);
 		
 		this.gamePanel = new GLJPanel(glcapabilities);
 		this.gamePanel.addGLEventListener(engine);
+		
 		this.gameFrame = new JFrame();
 		this.gameFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 		this.gameFrame.setSize(1024, 768);
@@ -175,20 +177,5 @@ public class TheGame implements KeyListener {
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
-
-	
-    
-    //TODO, don't really know about these yet
-    @Override
-	public void keyPressed(KeyEvent arg0) {
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-	}
 
 }

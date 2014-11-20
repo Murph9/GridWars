@@ -5,7 +5,6 @@ import javax.media.opengl.glu.GLU;
 /**
  * The camera is a GameObject that can be moved, rotated and scaled like any other.
  * 		 Implments the setView() and reshape() methods.
- *       The methods you need to complete are at the bottom of the class
  * @author malcolmr
  */
 public class Camera extends GameObject {
@@ -23,7 +22,7 @@ public class Camera extends GameObject {
     public void setBackground(float[] background) {
         myBackground = background;
     }
-
+    
     public void update (double dt) { //thought causing
     	double[] myPos = getPosition();
     	double[] pos = GameEngine.getPlayerPos();
@@ -35,6 +34,7 @@ public class Camera extends GameObject {
     public void drawSelf(GL2 gl) {
     	//nothing, because you can't see it...
     }
+    
     
     // ===========================================
     public void setView(GL2 gl) {
@@ -64,6 +64,7 @@ public class Camera extends GameObject {
         } else {
         	glu.gluOrtho2D(-1.0, 1.0, -1.0/ar, 1.0/ar);
         }
+        
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
     }

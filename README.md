@@ -19,6 +19,7 @@ Structure of the project:
 0.27 Menu:
 - There is now an intro screen with 3 buttons that do the same thing, and 2 check boxes for fun
 - Sound has been removed from the game due to the weirdness of mono sound.
+- Points for kills have been added with the file ScorePopup.java
 
 0.26: GameState/Scoring + Shaders
 - Blackholes really needs a new "suck" method

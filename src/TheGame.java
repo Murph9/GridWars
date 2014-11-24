@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 
 import com.jogamp.opengl.util.FPSAnimator;
@@ -23,7 +25,6 @@ import com.jogamp.opengl.util.FPSAnimator;
 //not sure whether this file or GameEngine should handle the actual position of the spawning objects 
 //idea for different spawning sets, like only clones ..... (just increasing numbers of them)
 //rather large class...
-
 public class TheGame {
 
 	private JFrame menuFrame;
@@ -38,7 +39,10 @@ public class TheGame {
 	private Random random;
 	
 	private static final int boardWidth = 16, boardHeight = 12; //at least 4 please
-	private static final double scale = 10;
+	private static final double scale = 10; //you know, it kind of works, as easy as this number is 
+	
+	private JTextField gameWidth;
+	private JTextField gameHeight;
 	
 	public static void main(String[] args) {
 		TheGame system = new TheGame();
@@ -86,7 +90,6 @@ public class TheGame {
 			}
 		});
 		newGamePanel.add(buttonHard, c);
-		menuFrame.add(newGamePanel, c);
 		//////////////////////////////////////////////////
 		
 		JPanel settingsPanel = new JPanel();
@@ -99,12 +102,51 @@ public class TheGame {
 		JCheckBox set2 = new JCheckBox("box 2");
 		settingsPanel.add(set2, c);
 		
-		menuFrame.add(settingsPanel, c);
+		gameWidth = new JTextField("width");
+		settingsPanel.add(gameWidth, c);
+		
+		gameHeight = new JTextField("height");
+		settingsPanel.add(gameHeight, c);
+		//////////////////////////////////////////////////
+		
+		JPanel scoresPanel = new JPanel();
+		scoresPanel.setLayout(new GridBagLayout());
+		GridBagConstraints scoresC = new GridBagConstraints();
+		scoresC.gridx = 0;
+		scoresC.insets = new Insets(3,3,3,3);
+		
+		LeaderBoard l0 = new LeaderBoard(LeaderBoard.EASY, false);
+		scoresPanel.add(l0, scoresC);
+		l0.writeScore(-1); //how you write the score
+		scoresC.gridx++;
+		LeaderBoard l1 = new LeaderBoard(LeaderBoard.MED, false);
+		scoresPanel.add(l1, scoresC);
+		l1.writeScore(-1); //how you write the score
+		scoresC.gridx++;
+		LeaderBoard l2 = new LeaderBoard(LeaderBoard.HARD, false);
+		scoresPanel.add(l2, scoresC);
+		l2.writeScore(-1); //how you write the score
 		//////////////////////////////////////////////////		
-		menuFrame.setSize(800, 600);
+		c.gridy = 0;
+		c.gridx = 0;
+		c.gridwidth = 1;
+		menuFrame.add(newGamePanel, c);
+
+		c.gridx++;
+		menuFrame.add(settingsPanel, c);
+		
+		c.gridx = 0;
+		c.gridy++;
+		c.gridwidth = 2;
+		menuFrame.add(scoresPanel, c);
+		//////////////////////////////////////////////////
 		menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		menuFrame.setName("Menu - Jake Murphy");
+		menuFrame.setLocationRelativeTo(null);
+		
 		menuFrame.setVisible(true);
+		menuFrame.pack();
+		menuFrame.repaint();
 	}
 	
 	//because its in the same file the settings dont't need to be passed in
@@ -113,7 +155,7 @@ public class TheGame {
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
 		Camera camera = new Camera();
-		camera.setSize(scale); //you know, it kind of works, as easy as this number is 
+		camera.setSize(scale);
 		
 		GameEngine.player = new Player(1, GameEngine.WHITE);
 		Border border = new Border(boardWidth, boardHeight);

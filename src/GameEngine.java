@@ -1,4 +1,3 @@
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,7 +7,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
-import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 //does all the back-end logic..
 public class GameEngine implements GLEventListener {
@@ -26,7 +25,6 @@ public class GameEngine implements GLEventListener {
 			ORANGE = {1,0.6,0,0.5}, REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 	
 	
-	public static TextRenderer renderer;
 	public static int viewHeight;
 	public static int viewWidth;
 	
@@ -39,7 +37,7 @@ public class GameEngine implements GLEventListener {
 	
 	public static Player player;
 	private static double[] playerPos = new double[]{0,0}, 
-							mousePos = new double[]{0,0}; //updated each 'update()' for speed of access
+							mousePos = new double[]{0,0}; //updated each 'update()' for speed of access, all methods use this
 	
 	public static Camera myCamera;
 	
@@ -94,10 +92,6 @@ public class GameEngine implements GLEventListener {
 		textures[SIDE_SHOT] = new MyTexture(gl, dir + "sideShot.png");
 		textures[TRIANGLE] = new MyTexture(gl, dir + "triangle.png");
 		
-		GameEngine.renderer = new TextRenderer(new Font("Courier", Font.BOLD, 22), true);
-		GameEngine.viewHeight = drawable.getHeight();
-		GameEngine.viewWidth  = drawable.getWidth();
-		
 		playerPos = player.getPosition();
         mousePos = Mouse.theMouse.getPosition();
 		
@@ -128,25 +122,32 @@ public class GameEngine implements GLEventListener {
 		update();
 
 		GL2 gl = drawable.getGL().getGL2();
-
+		
 		shader.useShader(gl);
 		
 		// set the view matrix based on the camera position
 		myCamera.setView(gl);
-		Helper.getScreenPos(0, 0, scale);
+		
+		gl.glPushMatrix();
+		//Draw the score text
+		GLUT glut = new GLUT();
+		gl.glTranslated(-8 + myCamera.x, scale - 0.5 + myCamera.y,0);
+		gl.glColor3d(1,1,1);
+		gl.glScalef(0.004f, 0.004f, 0.004f); //for some reason it starts very big
+		String score = "S: " + curGame.getScore()+" | L: "+curGame.getLives()+ " | B: " + curGame.getBombCount() + //
+					" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000 + " | Kills: " + curGame.getKills();
+		
+		for (int i = 0; i < score.length(); i++) {
+			char ch = score.charAt(i);
+			glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+		}
+		gl.glPopMatrix();
 		
 		Mouse.theMouse.update(gl);
 		playerPos = player.getPosition();
 		mousePos = Mouse.theMouse.getPosition();
 		
 		GameObject.ROOT.draw(gl);
-		
-		//Draw the score text
-		GameEngine.renderer.beginRendering(viewWidth, viewHeight, true);
-		GameEngine.renderer.setColor(0.3f, 0.7f, 1.0f, 0.8f);
-		GameEngine.renderer.draw("S:" + curGame.getScore()+" | L:"+curGame.getLives()+ " | B: " + curGame.getBombCount() + //
-				" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000 + " | Kills: " + curGame.getKills(), 10, viewHeight-22);
-		GameEngine.renderer.endRendering();
 		
 		shader.dontUseShader(gl);
 	}

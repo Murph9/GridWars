@@ -1,5 +1,3 @@
-import java.nio.FloatBuffer;
-
 import javax.media.opengl.GL2;
 
 //class for just cleaning up some of the files (mainly methods that do simple things)

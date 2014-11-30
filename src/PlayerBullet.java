@@ -74,6 +74,9 @@ public class PlayerBullet extends MovingObject {
 				}
 			} else {
 				double[] pos = o.getCollisionPosition();
+				if (o.getCollisionPosition()[0] == Double.MAX_VALUE) {
+					continue;
+				}
 				double distX = pos[0] - x;
 				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.getSize()/2)*(o.getSize()/2))) {
@@ -82,7 +85,7 @@ public class PlayerBullet extends MovingObject {
 					}
 					if (o instanceof SnakeBody || o instanceof Shield) {
 					} else {
-						o.amHit(true);
+						o.amHit(true); //gives points
 					}
 					break;
 				}

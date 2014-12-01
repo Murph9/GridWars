@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Timer;
 
 
 //handles the spawning of objects, initalsed with the difficulty.
@@ -25,11 +26,14 @@ import java.util.HashMap;
  * Blackholes - should only really have a maximum for 4 on the board at once
  * 
  * Spawners - maybe like 16th the chance of spawning something
+ * 
+ * Powerups - need to be used
  */
 
 public class SpawnHandler {
 	
 	private int diff;
+	private Timer timer;
 	
 	private HashMap<String, Float> chance; //difficulty of the object
 	

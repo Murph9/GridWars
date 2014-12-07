@@ -1,4 +1,7 @@
 
+@SuppressWarnings("unused") //alot of 's' that i just don't need to see here 
+				//(im using eclipse if you hadn't figured)
+
 /**Nice class to handle the current game state (could be given to a leaderboard class later for saving....)
  * @author Jake Murphy
  */
@@ -56,11 +59,12 @@ public class GameState {
 	public void addKill() {
 		kills++;
 		if (kills >= killSteps[multiplier-1]) {
-			multiplier = Math.min(multiplier+1, 10); //please don't ever get this much
+			multiplier = Math.min(multiplier+1, 9); //please don't ever get this much (will break)
+			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Multiplier:"+multiplier, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 	public void addScore(int add) {
-		if (add > 0) { //please don't give a negative, won't work (well or 0)
+		if (add > 0) { //please don't give a negative, won't work (will give 0)
 			score += add*multiplier;
 		}
 	}
@@ -92,26 +96,33 @@ public class GameState {
 	
 	public void incBulletSpeed() {
 		bulletSpeed += SPEED_INC;
+		ScorePopup s = new ScorePopup(GameEngine.WHITE, "Bullet Speed++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 	}
 	public void incBulletCount() {
 		if (bulletCount > 3) {
 			score += 2000; //in the gridwars wiki
+			ScorePopup s = new ScorePopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		} else {
 			bulletCount++;
+			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Bullet Count++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 	public void incBombCount() {
 		if (bombCount > 8) {
 			score += 2000;
+			ScorePopup s = new ScorePopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		} else {
 			bombCount++;
+			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Bomb++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 	public void incLives() {
 		if (lives > 8) {
 			score += 2000;
+			ScorePopup s = new ScorePopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		} else {
 			lives++;
+			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Life++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 

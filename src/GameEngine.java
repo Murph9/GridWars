@@ -15,9 +15,12 @@ public class GameEngine implements GLEventListener {
 //	//Textures
 	public static MyTexture[] textures;
 	public static final int TEXTURE_SIZE = 25; //space for more
-	public static final int PLAYER = 0, SPINNER = 1, DIAMOND = 2, SQUARE = 3, BULLET = 4, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7,
-				SNAKEBODY = 8, BUTTERFLY = 9, CIRCLE = 10, SHY = 11, EXTRA_BULLET = 12, EXTRA_SPEED = 13, TEMP_SHIELD = 14, EXTRA_BOMB =15,
-				EXTRA_LIFE = 16, BOUNCY_SHOT = 17, SUPER_SHOT = 18, REAR_SHOT = 19, SIDE_SHOT = 20, TRIANGLE = 21;
+	public static final int /**/
+			SPINNER = 1, DIAMOND = 2, SQUARE = 3, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7, SNAKEBODY = 8, BUTTERFLY = 9, 
+			SEEKER = 10, SHY = 0, TRIANGLE = 4,
+							/**/
+			PLAYER = 11, BULLET = 12, EXTRA_BULLET = 21, EXTRA_SPEED = 13, TEMP_SHIELD = 14, EXTRA_BOMB = 15, 
+			EXTRA_LIFE = 16, BOUNCY_SHOT = 17, SUPER_SHOT = 18, REAR_SHOT = 19, SIDE_SHOT = 20;
 	
 	////Colours
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
@@ -79,7 +82,7 @@ public class GameEngine implements GLEventListener {
 		textures[SNAKEBODY] = new MyTexture(gl, dir + "snakeBody.png");
 		textures[SNAKEHEAD] = new MyTexture(gl, dir + "snakeHead.png");
 		textures[BUTTERFLY] = new MyTexture(gl, dir + "butterfly.png");
-		textures[CIRCLE] = new MyTexture(gl, dir + "circle.png");
+		textures[SEEKER] = new MyTexture(gl, dir + "circle.png");
 		textures[SHY] = new MyTexture(gl, dir + "shy.png");
 		textures[EXTRA_BULLET] = new MyTexture(gl, dir + "extraBullet.png");
 		textures[EXTRA_SPEED] = new MyTexture(gl, dir + "extraSpeed.png");
@@ -133,10 +136,10 @@ public class GameEngine implements GLEventListener {
 		GLUT glut = new GLUT();
 		gl.glTranslated(-8 + myCamera.x, scale - 0.5 + myCamera.y,0);
 		gl.glColor3d(1,1,1);
-		gl.glScalef(0.004f, 0.004f, 0.004f); //for some reason it starts very big
+		gl.glScalef(0.004f, 0.004f, 0.004f); //for some reason it starts very big (152 or something)
 		String score = "S: " + curGame.getScore()+" | L: "+curGame.getLives()+ " | B: " + curGame.getBombCount() + //
 					" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000 + " | Kills: " + curGame.getKills();
-		
+		gl.glLineWidth(2f);
 		for (int i = 0; i < score.length(); i++) {
 			char ch = score.charAt(i);
 			glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
@@ -160,7 +163,7 @@ public class GameEngine implements GLEventListener {
 		
 		myCamera.reshape(gl, x, y, width, height);
 		
-		// this has to happen after myCamera.reshape() to use the new projection
+		// this has to happen after myCamera.reshape() to use the new projection matrix
 		Mouse.theMouse.reshape(gl);
 	}
 
@@ -168,7 +171,7 @@ public class GameEngine implements GLEventListener {
 		long time = System.currentTimeMillis();
 		double dt = (time - myTime) / 1000.0;
 		myTime = time;
-		
+
 		List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
 		// update all objects (and deleting when necessary)
@@ -177,6 +180,10 @@ public class GameEngine implements GLEventListener {
 		}
 
 		curGame.update(dt); //to count down the timer for the powerups
+		
+		if (GameEngine.curGame.getLives() < 0) {
+//			dt = 0; //yeah not too sure
+		}
 	}
 	
 	public static void killAll() {

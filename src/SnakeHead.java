@@ -17,6 +17,10 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	private int curChangeRate = 0;
 	private static int ANGLE_VEL = 90;
 	
+	SnakeHead() {
+		this(0.8, GameEngine.YELLOW, 18);
+	}
+	
 	SnakeHead(double size, double[] colour, int length) {
 		super(size, colour);
 		score = 100;

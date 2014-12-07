@@ -13,6 +13,10 @@ public class ShieldedClone extends MovingObject {
 	
 	private Shield shield;
 	
+	ShieldedClone() {
+		this(1.1, GameEngine.RED);
+	}
+	
 	ShieldedClone(double size, double[] colour) {
 		super(size, colour);
 		lastAngle = (GameEngine.rand.nextDouble()*2-1)*180; //random angle between -180 and 180

@@ -18,6 +18,10 @@ public class SplitingSquare extends HomingObject {
 	private boolean isPosOrbit;
 		//rotation direction
 	
+	SplitingSquare() {
+		this(1, GameEngine.RED, 0, 1, true);
+	}
+	
 	/**if the size is 1 is a 'parent square', else its a 'child square'
 	 * The angle is the intial angle the square starts the rotation about the point
 	 * And the radius is how big of a circle it rotates about the centre

@@ -8,6 +8,10 @@ public class HomingDiamond extends HomingObject {
 	public final static ArrayList<HomingDiamond> ALL_THIS = new ArrayList<HomingDiamond>();
 	public static final int MAX_SPEED = 5;
 	
+	HomingDiamond() {
+		this(1, GameEngine.LIGHT_BLUE);
+	}
+	
 	HomingDiamond(double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);

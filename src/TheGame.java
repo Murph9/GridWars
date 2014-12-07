@@ -4,8 +4,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Random;
 
 import javax.media.opengl.GLCapabilities;
@@ -46,10 +44,10 @@ public class TheGame {
 	
 	public static void main(String[] args) {
 		TheGame system = new TheGame();
-		system.init();
+		system.initMenu();
 	}
 	
-	public void init() {
+	public void initMenu() {
 		random = new Random();
 
 		menuFrame = new JFrame();
@@ -142,11 +140,12 @@ public class TheGame {
 		//////////////////////////////////////////////////
 		menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		menuFrame.setName("Menu - Jake Murphy");
-		menuFrame.setLocationRelativeTo(null);
 		
 		menuFrame.setVisible(true);
+		
 		menuFrame.pack();
 		menuFrame.repaint();
+		menuFrame.setLocationRelativeTo(null);
 	}
 	
 	//because its in the same file the settings dont't need to be passed in
@@ -168,7 +167,18 @@ public class TheGame {
 		
 		this.gameFrame = new JFrame();
 		this.gameFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
-		this.gameFrame.setSize(1024, 768);
+		
+		if (!gameWidth.getText().equals("width") && !gameHeight.getText().equals("height")) {
+			int width = Integer.parseInt(gameWidth.getText());
+			int height = Integer.parseInt(gameHeight.getText());
+			if (width > 800 && height > 600) {
+				this.gameFrame.setSize(width, height);
+			} else {
+				this.gameFrame.setSize(1024, 768);
+			}
+		} else {
+			this.gameFrame.setSize(1024, 768);
+		}
 		this.gameFrame.setName("GridWars - Jake Murphy");
 		this.gameFrame.setVisible(true);
 		this.gameFrame.setFocusable(true);
@@ -189,6 +199,7 @@ public class TheGame {
         this.gamePanel.addMouseListener(Mouse.theMouse);
         
         this.gamePanel.requestFocus();
+        this.gamePanel.setLocation(menuFrame.getLocation());
         
         this.animator = new FPSAnimator(60);
         this.animator.add(gamePanel);
@@ -200,22 +211,22 @@ public class TheGame {
     	int a = random.nextInt(13);
     	GameObject s = null;
     	switch (a) {
-    	case 0: case 1: case 2: //more common = yay
-    		s = new SimpleSpinner(1, GameEngine.PURPLE);    		break;
+    	case 0: case 1: case 2:
+    		s = new SimpleSpinner();    	break;
     	case 3: case 4:
-    		s = new HomingDiamond(1, GameEngine.LIGHT_BLUE);   		break;
+    		s = new HomingDiamond();   		break;
     	case 5: case 6:
-    		s = new SplitingSquare(1, GameEngine.RED, 0, 1, true);	break;
+    		s = new SplitingSquare();		break;
     	case 7:
-    		s = new ShieldedClone(1.1, GameEngine.RED);    			break;
+    		s = new ShieldedClone();    	break;
     	case 8:
-    		s = new SnakeHead(0.8, GameEngine.YELLOW, 18);    		break;
+    		s = new SnakeHead();    		break;
     	case 9: case 10:
-    		s = new ShySquare(0.8, GameEngine.GREEN);		    	break;
+    		s = new ShySquare();			break;
     	case 11:
-    		s = new BlackHole(1, GameEngine.RED);		    		break;
+    		s = new BlackHole();   			break;
     	case 12:
-    		s = new ConnectedTriangle(1, GameEngine.ORANGE, null); 	break;
+    		s = new ConnectedTriangle();	break;
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }

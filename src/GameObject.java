@@ -20,16 +20,12 @@ public class GameObject {
 	protected double[] colour;
 	protected int score;
 	
-	GameObject() {
-		angle = 0;
+	GameObject() { 
 		size = 1;
-	    x = 0;
-	    y = 0;
-	    
-	    this.colour = new double[]{1,1,1,0.5}; //just in case don't want no 'null's confusing things
+	    	//note all others are 0
+		
+	    this.colour = new double[]{1,1,1,0.5}; //just in case don't want no 'null' confusing things [yes poor english]
     	ALL_OBJECTS.add(this);
-    	
-    	score = 0;
 	}
     
 	public double getRotation() {
@@ -51,7 +47,7 @@ public class GameObject {
      * @return double[2]{x, y}
      */
     public double[] getCollisionPosition() {
-    	return getPosition(); 
+    	return getPosition();
     }
     
 	public void setRotation(double rot) {

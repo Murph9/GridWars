@@ -11,6 +11,10 @@ public class ShySquare extends MovingObject {
 	private float dodgeRange = 6;
 	private float dodgeSpeed = 3f;
 	
+	ShySquare() {
+		this(0.8, GameEngine.GREEN);
+	}
+	
 	ShySquare(double size, double[] colour) {
 		super(size, colour);
 		ALL_THIS.add(this);

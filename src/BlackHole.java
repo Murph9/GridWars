@@ -13,10 +13,14 @@ public class BlackHole extends MovingObject {
 	
 	private boolean isInert;
 	private int numCount; //number of objects consumed
-				//as in NumNumNumNum (eating)
+				//as in NumNumNumNum [aggressively eating]
 	
 	private int maxNum; //before explosion
 	private int hitPoints;
+	
+	BlackHole() {
+		this(1, GameEngine.RED);
+	}
 	
 	BlackHole(double size, double[] colour) {
 		super(size, colour);
@@ -78,6 +82,33 @@ public class BlackHole extends MovingObject {
 		}
 	}
 	
+	@Override
+	public void blackHole() {
+		//does things (that every object does, so do it in here)
+		ArrayList<BlackHole> objects = new ArrayList<BlackHole>(BlackHole.ALL_THIS);
+		
+		for (BlackHole h: objects) {
+			if (h.isInert() || h.equals(this)) { //just incase a black hole targets itself..
+				continue;
+			}
+			double distx = h.x - x;
+			double disty = h.y - y;
+			double dist = Math.sqrt(distx*distx + disty*disty);
+			
+			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
+//				dx += ((h.size*BlackHole.SUCK_RADIUS-dist+2)*2*distx/dist);
+//				dy += ((h.size*BlackHole.SUCK_RADIUS-dist+2)*2*disty/dist);
+				dx += -disty; //works... i guess
+				dy += distx;
+				
+				if (dist < size*h.size/2 && !(this instanceof BlackHole)) {
+					amHit(false);
+					h.giveObject(distx, disty);
+				}
+			}
+		}
+	}
+	
 	public void selfCol() {
 		for (BlackHole s: BlackHole.ALL_THIS) {
 			if (!s.equals(this)) { //because that would be silly
@@ -118,7 +149,7 @@ public class BlackHole extends MovingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SEEKER].getTextureId());
 		if (isInert) {
 			gl.glColor4d(GameEngine.PURPLE[0], GameEngine.PURPLE[1], GameEngine.PURPLE[2], GameEngine.PURPLE[3]);
 		}

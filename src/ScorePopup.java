@@ -12,6 +12,15 @@ public class ScorePopup extends GameObject {
 	private double decayTime;
 	private String score;
 	
+	ScorePopup(double[] colour, String score, double time, double x, double y) {
+		this.colour = colour;
+		this.decayTime = time;
+		this.score = score;
+		this.x = x;
+		this.y = y;
+		ALL_THIS.add(this);
+	}
+	
 	ScorePopup(double[] colour, int score, double time, double x, double y) {
 		this.colour = colour;
 		this.decayTime = time;

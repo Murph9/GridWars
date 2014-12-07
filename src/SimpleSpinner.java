@@ -8,7 +8,11 @@ public class SimpleSpinner extends MovingObject {
 	public final static ArrayList<SimpleSpinner> ALL_THIS = new ArrayList<SimpleSpinner>();
 	
 	public int rotSpeed = 180; //if not set
-	public static final int myMaxSpeed = 2;
+	private static final int myMaxSpeed = 2;
+	
+	SimpleSpinner() {
+		this(1, GameEngine.PURPLE);
+	}
 	
 	SimpleSpinner(double size, double[] colour) {
 		super(size, colour);

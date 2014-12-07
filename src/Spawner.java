@@ -3,21 +3,24 @@ import javax.media.opengl.GL2;
 
 public class Spawner extends GameObject {
 	
-	public static final int SQUARE = 0, DIAMOND = 1, TRIANGLE = 2, SPLITTER = 3, SEEKER = 4;
-	
 	private int health; //hits remaining and size of the larger shape
 	private double countDown; //count down until next spawn
 	private double rate; //the time interval of the spawns
 	private int type;
 	
-	Spawner (int health, double rate, int type) {
+	/**Makes a spawner that spawns objects of the given type (from GameEngine)
+	 * @param type Value of given object from GameEngine's public values
+	 * @param health Number of shots to kill it
+	 * @param rate How often in seconds it shoots
+	 */
+	public Spawner(int type, int health, int rate) {
 		size = 1;
 		this.health = health;
 		countDown = rate;
 		this.rate = rate;
 		this.type = type;
 		
-		score = 300; //don't really know, i think its just worth double? [could be triple]
+		score = 200; //just big ok
 	}
 	
 	public double getSize() {
@@ -28,23 +31,49 @@ public class Spawner extends GameObject {
 		countDown -= dt;
 		if (countDown < 0) {
 			countDown = rate;
-			//spawn object
+			//then spawn object
 			GameObject o = null;
 			switch(type) {
-			case SQUARE:
-				o = new ShySquare(1, GameEngine.GREEN);					break;
-			case DIAMOND:
-				o = new HomingDiamond(1, GameEngine.LIGHT_BLUE);		break;
-			case TRIANGLE:
-				o = new ConnectedTriangle(1, GameEngine.GREEN, null);	break;
-			case SPLITTER:
-				o = new SplitingSquare(1, GameEngine.GREEN, 0, 1, true);break;
-			case SEEKER:
-				o = new HomingSeeker(1, GameEngine.GREEN);				break;
+			case GameEngine.SPINNER:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.DIAMOND:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.SQUARE:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.CLONE:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.SNAKEHEAD:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.BUTTERFLY:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.SEEKER:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.SHY:
+				o = new SimpleSpinner(); 	break;
+			case GameEngine.TRIANGLE:
+				o = new SimpleSpinner(); 	break;
+				
+			case GameEngine.PLAYER: 
+			case GameEngine.BULLET:
+			case GameEngine.SNAKEBODY:
+			case GameEngine.EXTRA_BULLET:
+			case GameEngine.EXTRA_SPEED:
+			case GameEngine.TEMP_SHIELD:
+			case GameEngine.EXTRA_BOMB:
+			case GameEngine.EXTRA_LIFE:
+			case GameEngine.BOUNCY_SHOT:
+			case GameEngine.SUPER_SHOT:
+			case GameEngine.REAR_SHOT:
+				try {
+					throw new Exception(); //we don't want this
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
 			}
-			
-			o.x = x;
-			o.y = y;
+		
+			o.setPosition(new double[]{(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.boardWidth-0.5), 
+					(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.boardHeight-0.5)});
 		}
 	}
 	
@@ -55,21 +84,12 @@ public class Spawner extends GameObject {
 			super.amHit(isPoints);
 		}
 	}
-	
+
+	/**draw shape, then draw bigger shape (of size + (double)health/10 larger)
+	 */
 	public void drawSelf(GL2 gl) {
-		//draw shape, then draw bigger shape (of size + (double)health/10 larger)
-		switch(type) {
-		case SQUARE:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SHY].getTextureId());	break;
-		case DIAMOND:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.DIAMOND].getTextureId());	break;
-		case TRIANGLE:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.TRIANGLE].getTextureId());	break;
-		case SPLITTER:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SQUARE].getTextureId());	break;
-		case SEEKER:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId());	break;
-		}
+		
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[type].getTextureId()); //fix please
 		
 		Helper.square(gl);
 		
@@ -80,4 +100,5 @@ public class Spawner extends GameObject {
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
+
 }

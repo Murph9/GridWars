@@ -51,7 +51,6 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		int num = GameEngine.curGame.getBulletCount();
 		double speed = MAX_SPEED*GameEngine.curGame.getBulletSpeed();
 		
-//		SoundEffect.SHOT.play();
 		switch(num) {
 		case 4:
 			MovingObject b0a = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
@@ -141,12 +140,13 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
 		setRotation(angle);
 
-		//tail (with maths to come)
+		//tail (with maths below)
 		double thresh = GameEngine.rand.nextDouble();
-		if (Math.sqrt(dx*dx + dy*dy) > thresh) {
-			MovingObject q = new Particle(2, GameEngine.BLUE, 1);
+		if (Math.sqrt(dx*dx + dy*dy) > thresh) { //only matters if going less than max speed
+			MovingObject q = new Particle(2, GameEngine.BLUE, 1); //also not really sure why blue but hey..
 			q.x = x; q.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
 			q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
+			
 	    	MovingObject r = new Particle(2, GameEngine.BLUE, 1);
 	    	r.x = x; r.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
 	    	r.y = y; r.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
@@ -232,7 +232,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		if (GameEngine.curGame.ifTempShield()) { //shield is active, UGLY PLEASE FIX
 			gl.glPushMatrix();
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId());
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SEEKER].getTextureId());
 			
 			gl.glScaled(2, 2, 1);
 			Helper.square(gl);

@@ -33,7 +33,7 @@ public class HomingSeeker extends HomingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.CIRCLE].getTextureId()); //get id of the dot file
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SEEKER].getTextureId()); //get id of the dot file
 		
     	super.drawSelf(gl);
 	}

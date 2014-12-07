@@ -14,7 +14,12 @@ public class ConnectedTriangle extends MovingObject {
 	private int strength;
 	private int rotSpeed = 1;
 	
-	/**@param in Partner if spawned with one, not needed as they find them on the fly
+	ConnectedTriangle() {
+		this(1, GameEngine.ORANGE, null);
+	}
+	
+	
+	/**@param in Partner if spawned with one (for whatever reason), but they can find them later
 	 */
 	ConnectedTriangle(double size, double[] colour, ConnectedTriangle in) {
 		super(size, colour);

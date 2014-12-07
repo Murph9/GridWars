@@ -16,6 +16,16 @@ Structure of the project:
 
 --------
 
+0.27.1 Menu 2:
+- Added to the menu screen is 2 textboxes that let you change the size of the window (although its still moveable anyway)
+- ScorePopup makes a second appearance with a multiplier and powerup notification (position fixed)
+- Sound is still not making a come back any time soon
+- Blackholes now travel around each other, although it looks funky (the suck method is the same)
+- I think the score has been changedto be jogl stuff rather than renderable text (could have been the last update)
+- Also realised I may have been doing some things the hard way, completely ignoring OOP (object orientented approaches)
+- The spawning file really hasn't been started yet, trying to procastinate it. :(
+
+
 0.27 Menu:
 - There is now an intro screen with 3 buttons that do the same thing, and 2 check boxes for fun
 - Sound has been removed from the game due to the weirdness of mono sound.

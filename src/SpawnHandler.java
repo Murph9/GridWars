@@ -12,7 +12,7 @@ import java.util.Timer;
  * 1 - SnakeHead
  * 
  * 1 - HomingButterfly
- * 1 - HominghSeeker
+ * 1 - HomingSeeker
  * 
  * 1 - BlackHole
  * 1 - ShieldedClone

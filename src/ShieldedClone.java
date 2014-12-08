@@ -2,12 +2,14 @@ import java.util.LinkedList;
 
 import javax.media.opengl.GL2;
 
+//TODO still kind of turn the wrong way sometimes
+
 
 public class ShieldedClone extends MovingObject {
 
 	public final static LinkedList<ShieldedClone> ALL_THIS = new LinkedList<ShieldedClone>();
 	
-	private static final int MAX_ANGLE_CHANGE = 120;
+	private static final int MAX_ANGLE_CHANGE = 180;
 	private double lastAngle;
 	private static int MAX_SPEED = 6;
 	

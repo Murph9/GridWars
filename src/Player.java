@@ -232,7 +232,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		if (GameEngine.curGame.ifTempShield()) { //shield is active, UGLY PLEASE FIX
 			gl.glPushMatrix();
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SEEKER].getTextureId());
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BLACKHOLE].getTextureId());
 			
 			gl.glScaled(2, 2, 1);
 			Helper.square(gl);

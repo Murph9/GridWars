@@ -1,5 +1,3 @@
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,22 +12,22 @@ import com.jogamp.opengl.util.gl2.GLUT;
 //does all the back-end logic..
 public class GameEngine implements GLEventListener {
 
-//	//Textures
+	////Textures
 	public static MyTexture[] textures;
 	public static final int TEXTURE_SIZE = 35; //space for more (and order space)
 	public static final int /**/
 			SHY = 0, SPINNER = 1, DIAMOND = 2, SQUARE = 3, TRIANGLE = 4, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7,  
 			SNAKEBODY = 8, BUTTERFLY = 9, SEEKER = 10, BLACKHOLE = 11,
 							/**/
-			PLAYER = 21, BULLET = 22, EXTRA_SPEED = 23, TEMP_SHIELD = 24, EXTRA_BOMB = 25, 
-			EXTRA_LIFE = 26, BOUNCY_SHOT = 27, SUPER_SHOT = 28, REAR_SHOT = 29, SIDE_SHOT = 30, EXTRA_BULLET = 31;
+			PLAYER = 20, BULLET = 21, EXTRA_BULLET = 22, EXTRA_SPEED = 23, TEMP_SHIELD = 24, EXTRA_BOMB = 25, 
+			EXTRA_LIFE = 26, BOUNCY_SHOT = 27, SUPER_SHOT = 28, REAR_SHOT = 29, SIDE_SHOT = 30;
 	
-	////Colours
+	////Colours - note the alpha values
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
 			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, LIGHT_YELLOW = {1,1,0.2,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, BLUE = {0.2,0.2,1,0.5}, 
 			ORANGE = {1,0.6,0,0.5}, REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 	
-	
+	////State values
 	public static int viewHeight;
 	public static int viewWidth;
 	
@@ -41,15 +39,15 @@ public class GameEngine implements GLEventListener {
 	public static double scale;
 	
 	public static Player player;
-	private static double[] playerPos = new double[]{0,0}, 
-							mousePos = new double[]{0,0}; //updated each 'update()' for speed of access, all methods use this
+	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; 
+				//updated each 'update()' for speed of access, all methods use this
 	
 	public static Camera myCamera;
 	
 	private long myTime;
 	private long startTime;
 	
-	private ShaderControl shader;
+	private ShaderControl shader; //might have an option for this later
 	
 	public GameEngine(Camera camera, int width, int height, double scale) {
 		startTime = System.currentTimeMillis();
@@ -84,7 +82,7 @@ public class GameEngine implements GLEventListener {
 		textures[SNAKEBODY] = new MyTexture(gl, dir + "snakeBody.png");
 		textures[SNAKEHEAD] = new MyTexture(gl, dir + "snakeHead.png");
 		textures[BUTTERFLY] = new MyTexture(gl, dir + "butterfly.png");
-		textures[SEEKER] = new MyTexture(gl, dir + "circle.png");
+		textures[SEEKER] = new MyTexture(gl, dir + "seeker.png");
 		textures[SHY] = new MyTexture(gl, dir + "shy.png");
 		textures[BLACKHOLE] = new MyTexture(gl, dir + "circle.png");
 
@@ -136,34 +134,22 @@ public class GameEngine implements GLEventListener {
 		myCamera.setView(gl);
 		
 		gl.glPushMatrix();
-		
-		//Draw the score text
-		GLUT glut = new GLUT();
-		gl.glTranslated(-2, scale - 0.5 + myCamera.y,0);
-		gl.glColor3d(1,1,1);
-		gl.glScalef(0.004f, 0.004f, 0.004f); //for some reason it starts very big (152 or something)
-		String score = "S: " + curGame.getScore()+" | L: "+curGame.getLives()+ " | B: " + curGame.getBombCount() + //
-					" | x"+curGame.getMultiplier() +" | Time:  "+(myTime-startTime)/1000 + " | Kills: " + curGame.getKills();
-		gl.glLineWidth(2f);
-		for (int i = 0; i < score.length(); i++) {
-			char ch = score.charAt(i);
-			glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
-		}
+		drawUI(gl);
 		gl.glPopMatrix();
 		
 		Mouse.theMouse.update(gl);
 		playerPos = player.getPosition();
 		mousePos = Mouse.theMouse.getPosition();
 		
-		GameObject.ROOT.draw(gl);
-		
+		shader.useShader(gl);
+			GameObject.ROOT.draw(gl);
 		shader.dontUseShader(gl);
 		
 		//finding the screen resolution (of the computer im on)
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int width = (int)screenSize.getWidth();
-		int height = (int)screenSize.getHeight();
-		System.out.println(width + " " + height);
+//		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//		int width = (int)screenSize.getWidth();
+//		int height = (int)screenSize.getHeight();
+//		System.out.println(width + " " + height);
 	}
 
 	@Override
@@ -193,7 +179,7 @@ public class GameEngine implements GLEventListener {
 		curGame.update(dt); //to count down the timer for the powerups
 		
 		if (GameEngine.curGame.getLives() < 0) {
-//			dt = 0; //yeah not too sure
+//			dt = 0; //yeah not too sure yet
 		}
 	}
 	
@@ -225,6 +211,100 @@ public class GameEngine implements GLEventListener {
 				p.dy = GameEngine.rand.nextDouble()*Math.sin(360*i/20)*50;
 			}
 		}
+	}
+
+	//Draws the score text
+	private void drawUI(GL2 gl) {
+		gl.glLoadIdentity();
+		GLUT glut = new GLUT();
+		gl.glLineWidth(2f);
+		gl.glColor3d(1,1,1);
+		
+		String score = ": "+curGame.getScore();
+		String lives = "  "+curGame.getLives();
+		String bCount = "  "+curGame.getBombCount();
+		String multi = "x"+curGame.getMultiplier();
+		int a = (int)(myTime-startTime)/100;
+		int b = a % 10;
+		a /= 10;
+		String time = "  "+a+"."+b;
+		String kills = "  "+curGame.getKills();
+
+		//score
+			gl.glPushMatrix();
+			gl.glTranslated(-1,0.9,0);
+			gl.glScalef(0.0005f, 0.0005f, 1); //for some reason it starts very big (152 or something)
+		
+			for (int i = 0; i < score.length(); i++) {
+				char ch = score.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+		
+		//lives
+			gl.glPushMatrix();
+			gl.glTranslated(0.9,0.9,0);
+			gl.glScalef(0.1f, 0.1f, 1);
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_LIFE].getTextureId());
+			Helper.square(gl);
+			
+			gl.glScalef(0.005f, 0.005f, 1); //for some reason it starts very big (152 or something)
+			gl.glTranslated(0,-50,0);
+			for (int i = 0; i < lives.length(); i++) {
+				char ch = lives.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+		
+		//bomb count
+			gl.glPushMatrix();
+			gl.glTranslated(0.9,0.8,0);
+			gl.glScalef(0.1f, 0.1f, 1);
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BOMB].getTextureId());
+			Helper.square(gl);
+			
+			gl.glScalef(0.005f, 0.005f, 1); //for some reason it starts very big (152 or something)
+			gl.glTranslated(0,-50,0);
+			for (int i = 0; i < bCount.length(); i++) {
+				char ch = bCount.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+		
+		//multiplier
+			gl.glPushMatrix();
+			gl.glTranslated(0,0.9,0);
+			gl.glScalef(0.0005f, 0.0005f, 1); //for some reason it starts very big (152 or something)
+	
+			for (int i = 0; i < multi.length(); i++) {
+				char ch = multi.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+		
+		//time
+			gl.glPushMatrix();
+			gl.glTranslated(-1,0.8,0);
+			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
+	
+			for (int i = 0; i < time.length(); i++) {
+				char ch = time.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+		
+		//kills
+			gl.glPushMatrix();
+			gl.glTranslated(-1,0.75,0);
+			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
+	
+			for (int i = 0; i < kills.length(); i++) {
+				char ch = kills.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+		
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 	
 	@Override

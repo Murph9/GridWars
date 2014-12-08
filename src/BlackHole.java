@@ -95,13 +95,13 @@ public class BlackHole extends MovingObject {
 			double disty = h.y - y;
 			double dist = Math.sqrt(distx*distx + disty*disty);
 			
-			if (dist < h.size*BlackHole.SUCK_RADIUS) {
+			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
 				if (dist < size*h.size/2 && !(this instanceof BlackHole)) {
 					amHit(false);
 					h.giveObject(distx, disty);
 				}
 				
-				if (dist < h.size*BlackHole.SUCK_RADIUS/2) { //stolen from the particle code, it kind-of orbits
+				if (dist < h.size*BlackHole.SUCK_RADIUS/3) { //stolen from the particle code, it kind-of orbits
 					dy -= (h.x - x)*2 + h.dy;
 					dx += (h.y - y)*2 + h.dx;
 				} else {
@@ -144,9 +144,13 @@ public class BlackHole extends MovingObject {
 		
 		if (wasShot) { //then add score
 		} else { // or explode
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 10; i++) {
 				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);
 				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
+			}
+			for (int i = 0; i < 10; i++) {
+				HomingSeeker s = new HomingSeeker(0.6, GameEngine.BLUE);
+				s.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
 			}
 		}
 	}

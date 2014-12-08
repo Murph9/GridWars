@@ -24,11 +24,9 @@ public class Camera extends GameObject {
     }
     
     public void update (double dt) { //thought causing
-    	double[] myPos = getPosition();
     	double[] pos = GameEngine.getPlayerPos();
-    	myPos[0] = (pos[0])/3; //to feel move like a game here
-    	myPos[1] = (pos[1])/3;
-    	setPosition(myPos);
+    	this.x = pos[0]/3; //this makes it feel more like a game
+    	this.y = pos[1]/3;
     }
     
     public void drawSelf(GL2 gl) {

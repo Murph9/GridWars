@@ -28,7 +28,8 @@ public class HomingSeeker extends HomingObject {
 			}
 		}
 	}
-	public void blackhole() {
+	
+	public void blackHole() {
 		//don't think it actually does anything in this
 	}
 	

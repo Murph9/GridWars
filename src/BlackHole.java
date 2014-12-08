@@ -95,15 +95,18 @@ public class BlackHole extends MovingObject {
 			double disty = h.y - y;
 			double dist = Math.sqrt(distx*distx + disty*disty);
 			
-			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
-//				dx += ((h.size*BlackHole.SUCK_RADIUS-dist+2)*2*distx/dist);
-//				dy += ((h.size*BlackHole.SUCK_RADIUS-dist+2)*2*disty/dist);
-				dx += -disty; //works... i guess
-				dy += distx;
-				
+			if (dist < h.size*BlackHole.SUCK_RADIUS) {
 				if (dist < size*h.size/2 && !(this instanceof BlackHole)) {
 					amHit(false);
 					h.giveObject(distx, disty);
+				}
+				
+				if (dist < h.size*BlackHole.SUCK_RADIUS/2) { //stolen from the particle code, it kind-of orbits
+					dy -= (h.x - x)*2 + h.dy;
+					dx += (h.y - y)*2 + h.dx;
+				} else {
+					dy -= (h.x - x) + h.dy;
+					dx += (h.y - y) + h.dx;
 				}
 			}
 		}
@@ -149,9 +152,11 @@ public class BlackHole extends MovingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SEEKER].getTextureId());
-		if (isInert) {
-			gl.glColor4d(GameEngine.PURPLE[0], GameEngine.PURPLE[1], GameEngine.PURPLE[2], GameEngine.PURPLE[3]);
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BLACKHOLE].getTextureId());
+		if (isInert) { //Its ALLWAYS purple when inert..
+			colour = GameEngine.PURPLE;
+		} else {
+			colour = GameEngine.RED;
 		}
 		super.drawSelf(gl);
 	}

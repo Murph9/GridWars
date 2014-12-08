@@ -6,7 +6,7 @@ public class Spawner extends GameObject {
 	private int health; //hits remaining and size of the larger shape
 	private double countDown; //count down until next spawn
 	private double rate; //the time interval of the spawns
-	private int type;
+	private int type; //GameEngine.<type>
 	
 	/**Makes a spawner that spawns objects of the given type (from GameEngine)
 	 * @param type Value of given object from GameEngine's public values
@@ -20,7 +20,7 @@ public class Spawner extends GameObject {
 		this.rate = rate;
 		this.type = type;
 		
-		score = 200; //just big ok
+		score = 200; //just big ok, yes its this cost
 	}
 	
 	public double getSize() {

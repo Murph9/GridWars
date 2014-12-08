@@ -39,6 +39,9 @@ public class TheGame {
 	private static final int boardWidth = 16, boardHeight = 12; //at least 4 please
 	private static final double scale = 10; //you know, it kind of works, as easy as this number is 
 	
+	private final int pixelWidth = 1024;
+	private final int pixelHeight = 768;
+
 	private JTextField gameWidth;
 	private JTextField gameHeight;
 	
@@ -174,10 +177,10 @@ public class TheGame {
 			if (width > 800 && height > 600) {
 				this.gameFrame.setSize(width, height);
 			} else {
-				this.gameFrame.setSize(1024, 768);
+				this.gameFrame.setSize(pixelWidth, pixelHeight);
 			}
 		} else {
-			this.gameFrame.setSize(1024, 768);
+			this.gameFrame.setSize(pixelWidth, pixelHeight);
 		}
 		this.gameFrame.setName("GridWars - Jake Murphy");
 		this.gameFrame.setVisible(true);

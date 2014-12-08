@@ -14,7 +14,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 
 	public static double MAX_SPEED = 7;
 	
-	public static double DRAG = 1.04; //please don't change these numbers again
+	public static double DRAG = 1.04; //please don't change these numbers again (user defined probably)
 	
 	private boolean xPosAccel = false,
 					xNegAccel = false,
@@ -43,7 +43,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		this.shooting = true;
 	}
 	
-	private void newBullet() { //creats PlayerBullets, large
+	private void newBullet() { //creates PlayerBullets, large
 		if (!shooting) {
 			return;
 		}
@@ -217,7 +217,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			double disty = h.y - y;
 			double dist = Math.sqrt(distx*distx + disty*disty);
 			
-			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
+			if (dist < h.size*BlackHole.SUCK_RADIUS) {
 				dx += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*distx*0.013/dist;
 				dy += Math.min(h.size,(h.size*BlackHole.SUCK_RADIUS-dist))*disty*0.013/dist;
 			}

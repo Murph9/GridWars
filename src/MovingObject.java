@@ -59,7 +59,7 @@ public abstract class MovingObject extends GameObject {
 			double disty = h.y - y;
 			double dist = Math.sqrt(distx*distx + disty*disty);
 			
-			if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
+			if (dist < h.size*BlackHole.SUCK_RADIUS) {
 				dx += (h.size*BlackHole.SUCK_RADIUS-dist+2)*2*distx/dist;
 				dy += (h.size*BlackHole.SUCK_RADIUS-dist+2)*2*disty/dist;
 				

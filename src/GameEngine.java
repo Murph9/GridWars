@@ -1,3 +1,5 @@
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,13 +16,13 @@ public class GameEngine implements GLEventListener {
 
 //	//Textures
 	public static MyTexture[] textures;
-	public static final int TEXTURE_SIZE = 25; //space for more
+	public static final int TEXTURE_SIZE = 35; //space for more (and order space)
 	public static final int /**/
-			SPINNER = 1, DIAMOND = 2, SQUARE = 3, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7, SNAKEBODY = 8, BUTTERFLY = 9, 
-			SEEKER = 10, SHY = 0, TRIANGLE = 4,
+			SHY = 0, SPINNER = 1, DIAMOND = 2, SQUARE = 3, TRIANGLE = 4, CLONE = 5, SHIELD = 6, SNAKEHEAD = 7,  
+			SNAKEBODY = 8, BUTTERFLY = 9, SEEKER = 10, BLACKHOLE = 11,
 							/**/
-			PLAYER = 11, BULLET = 12, EXTRA_BULLET = 21, EXTRA_SPEED = 13, TEMP_SHIELD = 14, EXTRA_BOMB = 15, 
-			EXTRA_LIFE = 16, BOUNCY_SHOT = 17, SUPER_SHOT = 18, REAR_SHOT = 19, SIDE_SHOT = 20;
+			PLAYER = 21, BULLET = 22, EXTRA_SPEED = 23, TEMP_SHIELD = 24, EXTRA_BOMB = 25, 
+			EXTRA_LIFE = 26, BOUNCY_SHOT = 27, SUPER_SHOT = 28, REAR_SHOT = 29, SIDE_SHOT = 30, EXTRA_BULLET = 31;
 	
 	////Colours
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
@@ -84,6 +86,8 @@ public class GameEngine implements GLEventListener {
 		textures[BUTTERFLY] = new MyTexture(gl, dir + "butterfly.png");
 		textures[SEEKER] = new MyTexture(gl, dir + "circle.png");
 		textures[SHY] = new MyTexture(gl, dir + "shy.png");
+		textures[BLACKHOLE] = new MyTexture(gl, dir + "circle.png");
+
 		textures[EXTRA_BULLET] = new MyTexture(gl, dir + "extraBullet.png");
 		textures[EXTRA_SPEED] = new MyTexture(gl, dir + "extraSpeed.png");
 		textures[TEMP_SHIELD] = new MyTexture(gl, dir + "tempShield.png");
@@ -132,9 +136,10 @@ public class GameEngine implements GLEventListener {
 		myCamera.setView(gl);
 		
 		gl.glPushMatrix();
+		
 		//Draw the score text
 		GLUT glut = new GLUT();
-		gl.glTranslated(-8 + myCamera.x, scale - 0.5 + myCamera.y,0);
+		gl.glTranslated(-2, scale - 0.5 + myCamera.y,0);
 		gl.glColor3d(1,1,1);
 		gl.glScalef(0.004f, 0.004f, 0.004f); //for some reason it starts very big (152 or something)
 		String score = "S: " + curGame.getScore()+" | L: "+curGame.getLives()+ " | B: " + curGame.getBombCount() + //
@@ -153,6 +158,12 @@ public class GameEngine implements GLEventListener {
 		GameObject.ROOT.draw(gl);
 		
 		shader.dontUseShader(gl);
+		
+		//finding the screen resolution (of the computer im on)
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = (int)screenSize.getWidth();
+		int height = (int)screenSize.getHeight();
+		System.out.println(width + " " + height);
 	}
 
 	@Override

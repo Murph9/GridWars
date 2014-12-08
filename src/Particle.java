@@ -65,10 +65,10 @@ public class Particle extends MovingObject {
 //				double disty = h.y - y;
 //				double dist = Math.sqrt(distx*distx + disty*disty);
 //				
-//				if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
+//				if (dist < h.size*BlackHole.SUCK_RADIUS) {
 //					decayTimer = 1; //so we don't decay
 //					
-//					if (dist < h.size*BlackHole.SUCK_RADIUS/4) {
+//					if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
 //						dy -= (h.x - x)*2 + h.dy;
 //						dx += (h.y - y)*2 + h.dx;
 //					} else {

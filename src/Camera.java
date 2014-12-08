@@ -43,13 +43,10 @@ public class Camera extends GameObject {
     	
         gl.glLoadIdentity();
         
-        gl.glScaled(1/getSize(), 1/getSize(), 1);
-    	gl.glRotated(-getRotation(), 0, 0, 1);
+        gl.glScaled(1/size, 1/size, 1);
+    	gl.glRotated(-angle, 0, 0, 1);
 
-    	double[] myTranslation = getPosition();
-    	myTranslation[0] *= -1;
-    	myTranslation[1] *= -1;
-    	gl.glTranslated(myTranslation[0], myTranslation[1], 0);
+    	gl.glTranslated(-x, -y, 0);
     }
 
     public void reshape(GL2 gl, int x, int y, int width, int height) {
@@ -59,6 +56,7 @@ public class Camera extends GameObject {
 		gl.glLoadIdentity();
 		GLU glu = new GLU();
         double ar = (double)width / (double)height;
+
         if (ar >= 1) {
         	glu.gluOrtho2D( -1.0*ar, 1.0*ar, -1.0, 1.0);
         } else {

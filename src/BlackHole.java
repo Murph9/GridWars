@@ -15,32 +15,32 @@ public class BlackHole extends MovingObject {
 	private int numCount; //number of objects consumed
 				//as in NumNumNumNum [aggressively eating]
 	
-	private int maxNum; //before explosion
-	private int hitPoints;
+	private int maxNum; //if hit points hits this number it will explode
+	private int hitPoints; //hits it will take to destroy, increases on nums
 	
 	BlackHole() {
 		this(1, GameEngine.RED);
 	}
 	
 	BlackHole(double size, double[] colour) {
-		super(size, colour);
+		super(size, colour); //this colour is ignored in the draw method
 		isInert = true;
 		numCount = 0;
-		maxNum = 30;
-		hitPoints = 20;
+		maxNum = 60;
+		hitPoints = 10; //starts with hit points of 10 shots to kill
 		ALL_THIS.add(this);
 		
-		score = 150; 
+		score = 150; //default score value 
 	}
 	
 	public void giveObject(double x, double y) {
-		dx += x/2;//(numCount+15);
-		dy += y/2;//(numCount+15);
+		dx += x/2; //objects give it speed
+		dy += y/2;
 		numCount++;
-		hitPoints += 2;
-		size += 0.02;
-		if (numCount > maxNum) {
-			delete(false);
+		hitPoints += 2; //because it would be too easy on 1
+		size += 0.025; //so it can grow
+		if (hitPoints >= maxNum) { //if its to big, explode
+			delete(false); //explode
 		}
 	}
 	
@@ -54,14 +54,14 @@ public class BlackHole extends MovingObject {
 		
 		//particle effects yay
 		//maybe balance with size? //TODO
-		if (!isInert) {
-			MovingObject a = new Particle(2, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 0.3);
+		double rand = GameEngine.rand.nextDouble();
+		if (!isInert && rand < ((float)numCount/(float)maxNum)) {
+			MovingObject a = new Particle(3, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 0.3);
 			a.x = x;
 			a.y = y;
 			a.dx = (GameEngine.rand.nextDouble()*2-1)*10 + dx;
 			a.dy = (GameEngine.rand.nextDouble()*2-1)*10 + dy;
 		}
-		
 		
 		Helper.keepInside(this, Helper.BOUNCE);
 		
@@ -75,7 +75,7 @@ public class BlackHole extends MovingObject {
 		}
 		selfCol();
 		
-		speed = Math.sqrt(dx*dx + dy*dy);
+		speed = Math.sqrt(dx*dx + dy*dy); 
 		if (speed != 0 && speed > 1) {
 			dx *= MAX_SPEED/speed;
 			dy *= MAX_SPEED/speed;
@@ -132,7 +132,7 @@ public class BlackHole extends MovingObject {
 		hitPoints--;
 		size -= 0.01;
 		if (hitPoints <= 0) {
-			delete(true);
+			delete(true); //as in shot
 		}
 	}
 	
@@ -149,7 +149,7 @@ public class BlackHole extends MovingObject {
 				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
 			}
 			for (int i = 0; i < 10; i++) {
-				HomingSeeker s = new HomingSeeker(0.6, GameEngine.BLUE);
+				HomingSeeker s = new HomingSeeker(0.6, GameEngine.PURPLE);
 				s.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
 			}
 		}

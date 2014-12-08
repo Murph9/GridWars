@@ -19,16 +19,20 @@ public class GameState {
 	private double isBouncyShot;
 	private double isSuperShot;
 	
+	private int record;
 	private int score;
+
 	private int lives;
 	private int multiplier;
+	
 	private int kills;
+	private int totalKills;
 	
 	private int bombCount; //don't really have a mouse listener for that...
 	private int bulletCount;
 	private double bulletSpeed;
 	
-	GameState() {
+	GameState(int record) { //this happens once, so screw speed but adds to understanding
 		isShield = 0;
 		isSideBullets = 0;
 		isRearBullets = 0;
@@ -36,11 +40,15 @@ public class GameState {
 		isBouncyShot = 0;
 		isSuperShot = 0;
 		
+		this.record = record;
 		score = 0;
-		multiplier = 1;
-		kills = 0;
 		
-		lives = 3;		
+		lives = 3;
+		multiplier = 1;
+		
+		kills = 0;
+		totalKills = 0;
+				
 		bombCount = 3;
 		bulletCount = 4;
 		bulletSpeed = 1; //how to change the bullet speed
@@ -58,6 +66,7 @@ public class GameState {
 
 	public void addKill() {
 		kills++;
+		totalKills++;
 		if (kills >= killSteps[multiplier-1]) {
 			multiplier = Math.min(multiplier+1, 9); //please don't ever get this much (will break)
 			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Multiplier:"+multiplier, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
@@ -66,6 +75,9 @@ public class GameState {
 	public void addScore(int add) {
 		if (add > 0) { //please don't give a negative, won't work (will give 0)
 			score += add*multiplier;
+			if (score > record) {
+				record = score;
+			}
 		}
 	}
 	
@@ -75,6 +87,7 @@ public class GameState {
 			GameEngine.killAll();
 			kills = 0;
 			multiplier = 1;
+			isShield = 2;
 		}
 	}
 	
@@ -133,10 +146,12 @@ public class GameState {
 	public void gotBouncyShot() { isBouncyShot = POWERUP_LENGTH; }
 	public void gotSuperShot() { isSuperShot = POWERUP_LENGTH; }
 
+	public int getRecord() { return record; }
 	public int getScore() { return score; }
 	public int getLives() { return lives; }
 	public int getMultiplier() { return multiplier; }
 	public int getKills() { return kills; }
+	public int getTotalKills() { return totalKills; }
 	
 	public int getBombCount() { return bombCount; }
 	public int getBulletCount() { return bulletCount; }

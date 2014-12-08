@@ -55,11 +55,11 @@ public class Camera extends GameObject {
 		GLU glu = new GLU();
         double ar = (double)width / (double)height;
 
-        if (ar >= 1) {
-        	glu.gluOrtho2D( -1.0*ar, 1.0*ar, -1.0, 1.0);
-        } else {
-        	glu.gluOrtho2D(-1.0, 1.0, -1.0/ar, 1.0/ar);
-        }
+//        if (ar >= 1) {
+        	glu.gluOrtho2D( -1.0*ar, 1.0*ar, -1.0, 1.0); //because we want constant scale
+//        } else {
+//        	glu.gluOrtho2D(-1.0, 1.0, -1.0/ar, 1.0/ar);
+//        }
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();

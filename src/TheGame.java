@@ -144,11 +144,10 @@ public class TheGame {
 		menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		menuFrame.setName("Menu - Jake Murphy");
 		
-		menuFrame.setVisible(true);
-		
 		menuFrame.pack();
 		menuFrame.repaint();
 		menuFrame.setLocationRelativeTo(null);
+		menuFrame.setVisible(true);
 	}
 	
 	//because its in the same file the settings dont't need to be passed in
@@ -156,14 +155,7 @@ public class TheGame {
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
-		Camera camera = new Camera();
-		camera.setSize(scale);
-		
-		GameEngine.player = new Player(1, GameEngine.WHITE);
-		Border border = new Border(boardWidth, boardHeight);
-		border.setSize(1); //just incase it stopped being 1
-		
-		engine = new GameEngine(camera, boardWidth, boardHeight, scale);
+		this.engine = new GameEngine(boardWidth, boardHeight, scale, 10000);
 		
 		this.gamePanel = new GLJPanel(glcapabilities);
 		this.gamePanel.addGLEventListener(engine);
@@ -209,7 +201,7 @@ public class TheGame {
         this.animator.start();
     }
     
-    //spawning
+    //spawning. simple. Look at SpawnHandler for better spawning logic
     private void newEnemy() {
     	int a = random.nextInt(13);
     	GameObject s = null;

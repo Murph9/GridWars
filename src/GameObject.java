@@ -111,7 +111,7 @@ public class GameObject {
         if (this.equals(GameObject.ROOT)) { // the root
         	ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
         	for (GameObject o: objects) { 	// then draws everything
-        		if (!o.equals(GameObject.ROOT))
+        		if (!o.equals(GameObject.ROOT)) //doesn't draw itself because thats called recursive
         			o.draw(gl);
         	}
         }

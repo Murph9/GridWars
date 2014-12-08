@@ -37,6 +37,7 @@ public class GameEngine implements GLEventListener {
 	public static GameState curGame;
 	public static int boardWidth = 12, boardHeight = 10; //just incase something goes bad
 	public static double scale;
+	private double curAspect;
 	
 	public static Player player;
 	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; 
@@ -49,10 +50,17 @@ public class GameEngine implements GLEventListener {
 	
 	private ShaderControl shader; //might have an option for this later
 	
-	public GameEngine(Camera camera, int width, int height, double scale) {
+	public GameEngine(int width, int height, double scale, int record) {
+		Border border = new Border(width, height);
+		border.setSize(1); //just incase it stopped being 1
+		
 		startTime = System.currentTimeMillis();
-		myCamera = camera;
-		curGame = new GameState();
+		myCamera = new Camera();
+		myCamera.setSize(scale);
+		
+		GameEngine.player = new Player(1, GameEngine.WHITE);
+		
+		curGame = new GameState(record);
 		boardWidth = width;
 		boardHeight = height;
 		GameEngine.scale = scale;
@@ -133,19 +141,20 @@ public class GameEngine implements GLEventListener {
 		// set the view matrix based on the camera position
 		myCamera.setView(gl);
 		
-		gl.glPushMatrix();
-		drawUI(gl);
-		gl.glPopMatrix();
-		
 		Mouse.theMouse.update(gl);
 		playerPos = player.getPosition();
 		mousePos = Mouse.theMouse.getPosition();
 		
 		shader.useShader(gl);
 			GameObject.ROOT.draw(gl);
-		shader.dontUseShader(gl);
+//		shader.dontUseShader(gl); //causes issues in the UI if this is used (although it should be)
 		
-		//finding the screen resolution (of the computer im on)
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+		drawUI(gl);
+		gl.glPopMatrix();
+		
+		//finding the screen resolution (could be useful later)
 //		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //		int width = (int)screenSize.getWidth();
 //		int height = (int)screenSize.getHeight();
@@ -159,6 +168,7 @@ public class GameEngine implements GLEventListener {
 		GL2 gl = drawable.getGL().getGL2();
 		
 		myCamera.reshape(gl, x, y, width, height);
+		this.curAspect = (double)width / (double)height; //so UI is fine
 		
 		// this has to happen after myCamera.reshape() to use the new projection matrix
 		Mouse.theMouse.reshape(gl);
@@ -213,26 +223,17 @@ public class GameEngine implements GLEventListener {
 		}
 	}
 
-	//Draws the score text
+	//Draws the score text and UI
 	private void drawUI(GL2 gl) {
 		gl.glLoadIdentity();
 		GLUT glut = new GLUT();
 		gl.glLineWidth(2f);
 		gl.glColor3d(1,1,1);
 		
-		String score = ": "+curGame.getScore();
-		String lives = "  "+curGame.getLives();
-		String bCount = "  "+curGame.getBombCount();
-		String multi = "x"+curGame.getMultiplier();
-		int a = (int)(myTime-startTime)/100;
-		int b = a % 10;
-		a /= 10;
-		String time = "  "+a+"."+b;
-		String kills = "  "+curGame.getKills();
-
 		//score
+			String score = " "+curGame.getScore();
 			gl.glPushMatrix();
-			gl.glTranslated(-1,0.9,0);
+			gl.glTranslated(-1*curAspect,0.9,0);
 			gl.glScalef(0.0005f, 0.0005f, 1); //for some reason it starts very big (152 or something)
 		
 			for (int i = 0; i < score.length(); i++) {
@@ -241,37 +242,60 @@ public class GameEngine implements GLEventListener {
 			}
 			gl.glPopMatrix();
 		
-		//lives
+		//record
+			String record = " "+curGame.getRecord();
 			gl.glPushMatrix();
-			gl.glTranslated(0.9,0.9,0);
-			gl.glScalef(0.1f, 0.1f, 1);
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_LIFE].getTextureId());
-			Helper.square(gl);
-			
-			gl.glScalef(0.005f, 0.005f, 1); //for some reason it starts very big (152 or something)
-			gl.glTranslated(0,-50,0);
-			for (int i = 0; i < lives.length(); i++) {
-				char ch = lives.charAt(i);
-				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
-			}
-			gl.glPopMatrix();
+			gl.glTranslated(-0.98*curAspect,0.8,0);
+			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
 		
-		//bomb count
-			gl.glPushMatrix();
-			gl.glTranslated(0.9,0.8,0);
-			gl.glScalef(0.1f, 0.1f, 1);
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BOMB].getTextureId());
-			Helper.square(gl);
-			
-			gl.glScalef(0.005f, 0.005f, 1); //for some reason it starts very big (152 or something)
-			gl.glTranslated(0,-50,0);
-			for (int i = 0; i < bCount.length(); i++) {
-				char ch = bCount.charAt(i);
+			for (int i = 0; i < record.length(); i++) {
+				char ch = record.charAt(i);
 				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
 			}
 			gl.glPopMatrix();
+			
+		//lives
+			String lives = "";
+			if (curGame.getLives() > 0) {
+				lives = " "+curGame.getLives();
+			
+				gl.glPushMatrix();
+				gl.glTranslated(0.9*curAspect,0.9,0);
+				gl.glScalef(0.1f, 0.1f, 1);
+				gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_LIFE].getTextureId());
+				Helper.square(gl);
+				
+				gl.glScalef(0.005f, 0.005f, 1); //for some reason it starts very big (152 or something)
+				gl.glTranslated(10,-50,0);
+				for (int i = 0; i < lives.length(); i++) {
+					char ch = lives.charAt(i);
+					glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+				}
+				gl.glPopMatrix();
+			}
+			
+		//bomb count
+			String bCount = "";
+			if (curGame.getBombCount() > 0) {
+				bCount = " "+curGame.getBombCount();
+				
+				gl.glPushMatrix();
+				gl.glTranslated(0.9*curAspect,0.8,0);
+				gl.glScalef(0.1f, 0.1f, 1);
+				gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BOMB].getTextureId());
+				Helper.square(gl);
+				
+				gl.glScalef(0.005f, 0.005f, 1); //for some reason it starts very big (152 or something)
+				gl.glTranslated(10,-50,0);
+				for (int i = 0; i < bCount.length(); i++) {
+					char ch = bCount.charAt(i);
+					glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+				}
+				gl.glPopMatrix();
+			}
 		
 		//multiplier
+			String multi = "x"+curGame.getMultiplier();
 			gl.glPushMatrix();
 			gl.glTranslated(0,0.9,0);
 			gl.glScalef(0.0005f, 0.0005f, 1); //for some reason it starts very big (152 or something)
@@ -282,24 +306,43 @@ public class GameEngine implements GLEventListener {
 			}
 			gl.glPopMatrix();
 		
-		//time
-			gl.glPushMatrix();
-			gl.glTranslated(-1,0.8,0);
-			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
-	
-			for (int i = 0; i < time.length(); i++) {
-				char ch = time.charAt(i);
-				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
-			}
-			gl.glPopMatrix();
-		
 		//kills
+			String kills = "  "+curGame.getKills();
+			
 			gl.glPushMatrix();
-			gl.glTranslated(-1,0.75,0);
+			gl.glTranslated(0.8 *curAspect,0.7,0);
 			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
 	
 			for (int i = 0; i < kills.length(); i++) {
 				char ch = kills.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+			
+			String tKills = "  "+curGame.getTotalKills();
+			gl.glPushMatrix();
+			gl.glTranslated(0.8*curAspect,0.65,0);
+			gl.glScalef(0.0004f, 0.0004f, 1);
+			
+			for (int i = 0; i < tKills.length(); i++) {
+				char ch = tKills.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();
+			
+			
+		//time
+			int a = (int)(myTime-startTime)/100;
+			int b = a % 10;
+			a /= 10;
+			String time = "  "+a+"."+b; //math so its in the form ddddd.d
+			
+			gl.glPushMatrix();
+			gl.glTranslated(0.8*curAspect,0.58,0);
+			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
+	
+			for (int i = 0; i < time.length(); i++) {
+				char ch = time.charAt(i);
 				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
 			}
 			gl.glPopMatrix();

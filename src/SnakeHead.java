@@ -18,7 +18,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	private static int ANGLE_VEL = 90;
 	
 	SnakeHead() {
-		this(0.8, GameEngine.YELLOW, 18);
+		this(0.8, GameEngine.YELLOW, 24);
 	}
 	
 	SnakeHead(double size, double[] colour, int length) {
@@ -30,7 +30,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 			length = 10; //set minimum length to be 10, just because they look funny otherwise
 		}
 		
-		after = new SnakeBody(size*0.8, colour, this, length);
+		after = new SnakeBody(size*0.85, colour, this, length);
 	}
 	
 	public void amHit(boolean ifPoints) {
@@ -43,7 +43,21 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		x += dx*dt;
 		y += dy*dt;
 		
-		Helper.keepInside(this, Helper.SPLAT);
+		if (x > GameEngine.boardWidth-(size/2)) {
+			curChangeRate = 100;
+			x = GameEngine.boardWidth-(size/2);
+		} else if (x < -GameEngine.boardWidth+(size/2)) {
+			curChangeRate = 100;
+			x = -GameEngine.boardWidth+(size/2);
+		}
+		
+		if (y > GameEngine.boardHeight-(size/2)) {
+			curChangeRate = 100;
+			y = GameEngine.boardHeight-(size/2);
+		} else if (y < -GameEngine.boardHeight+(size/2)) {
+			curChangeRate = 100;
+			y = -GameEngine.boardHeight+(size/2);
+		}
 
 		if (curAngleChange) { //pick a direction 
 			angle += ANGLE_VEL*dt; //change in the angle
@@ -54,7 +68,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		
 		if (curChangeRate == 0) {
 			Random r = new Random();
-			curAngleChange = r.nextInt(2) == 0;
+			curAngleChange = r.nextInt(2) == 0; //nice and easy way for getting true/false
 			curChangeRate = r.nextInt(60);
 		} else {
 			curChangeRate--;

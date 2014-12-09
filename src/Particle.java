@@ -24,7 +24,7 @@ public class Particle extends MovingObject {
 		
 		this.angle = Math.atan2(dy, dx);
 		
-		//can't use the helper function here ;(, because the size of the object is 0 here
+		//can't use the helper function here ;(, because the size of the object is used as 0
 		if (x > GameEngine.boardWidth) {
 			dx = -dx;
 			x = GameEngine.boardWidth;
@@ -43,8 +43,8 @@ public class Particle extends MovingObject {
 		
 		if (!inOrbit) {
 			decayTimer -= dt;
-			dx /= 1.07; //what drag should i have
-			dy /= 1.07;
+			dx /= 1.065; //what drag should i have ?
+			dy /= 1.065;
 		}
 		
 		if (decayTimer <= 0) {

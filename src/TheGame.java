@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
@@ -61,13 +62,21 @@ public class TheGame {
 		newGamePanel.setBorder(BorderFactory.createTitledBorder("New Game"));
 		
 		GridBagConstraints c = new GridBagConstraints();
+		////////////////////////////////////////////////
+
+		JPanel headPanel = new JPanel();
+		headPanel.setLayout(new GridBagLayout());
 		
+		JTextArea t = new JTextArea("Welcome to NotGridWars2\nArrow keys/WASD to move, right/left mouse button do things");
+		t.setEditable(false);
+		headPanel.add(t, c);
+		
+		////////////////////////////////////////////////
 		JButton buttonEasy = new JButton("Easy");
 		buttonEasy.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				initGame(0);
-				menuFrame.setVisible(false);
 			}
 		});
 		newGamePanel.add(buttonEasy, c);
@@ -77,7 +86,6 @@ public class TheGame {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				initGame(1);
-				menuFrame.setVisible(false);
 			}
 		});
 		newGamePanel.add(buttonMed, c);
@@ -87,27 +95,33 @@ public class TheGame {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				initGame(2);
-				menuFrame.setVisible(false);
 			}
 		});
 		newGamePanel.add(buttonHard, c);
 		//////////////////////////////////////////////////
+		GridBagConstraints c2 = new GridBagConstraints();
 		
 		JPanel settingsPanel = new JPanel();
 		settingsPanel.setLayout(new GridBagLayout());
 		settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
 		
+		c2.gridx = 0;
+		c2.gridy = 0;
 		JCheckBox settings = new JCheckBox("Yay check box");
-		settingsPanel.add(settings, c);
+		settingsPanel.add(settings, c2);
 		
+		c2.gridy++;
 		JCheckBox set2 = new JCheckBox("box 2");
-		settingsPanel.add(set2, c);
+		settingsPanel.add(set2, c2);
 		
-		gameWidth = new JTextField("width");
-		settingsPanel.add(gameWidth, c);
+		c2.gridy = 0;
+		c2.gridx++;
+		gameWidth = new JTextField("1024");
+		settingsPanel.add(gameWidth, c2);
 		
-		gameHeight = new JTextField("height");
-		settingsPanel.add(gameHeight, c);
+		c2.gridy++;
+		gameHeight = new JTextField("768");
+		settingsPanel.add(gameHeight, c2);
 		//////////////////////////////////////////////////
 		
 		JPanel scoresPanel = new JPanel();
@@ -127,9 +141,17 @@ public class TheGame {
 		LeaderBoard l2 = new LeaderBoard(LeaderBoard.HARD, false);
 		scoresPanel.add(l2, scoresC);
 		l2.writeScore(-1); //how you write the score
-		//////////////////////////////////////////////////		
+		//////////////////////////////////////////////////
+		
+		//something im sure
+		
+		//////////////////////////////////////////////////
 		c.gridy = 0;
 		c.gridx = 0;
+		c.gridwidth = 2;
+		menuFrame.add(headPanel, c);
+		
+		c.gridy++;
 		c.gridwidth = 1;
 		menuFrame.add(newGamePanel, c);
 
@@ -140,6 +162,7 @@ public class TheGame {
 		c.gridy++;
 		c.gridwidth = 2;
 		menuFrame.add(scoresPanel, c);
+		
 		//////////////////////////////////////////////////
 		menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		menuFrame.setName("Menu - Jake Murphy");
@@ -147,11 +170,16 @@ public class TheGame {
 		menuFrame.pack();
 		menuFrame.repaint();
 		menuFrame.setLocationRelativeTo(null);
+		menuFrame.requestFocus();
 		menuFrame.setVisible(true);
+		
+		buttonEasy.requestFocus();
 	}
 	
-	//because its in the same file the settings dont't need to be passed in
+	//because its in the same file the settings dont't need to be passed in [:D]
 	private void initGame(int diff) {
+		menuFrame.setVisible(false);
+		
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
@@ -163,10 +191,10 @@ public class TheGame {
 		this.gameFrame = new JFrame();
 		this.gameFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 		
-		if (!gameWidth.getText().equals("width") && !gameHeight.getText().equals("height")) {
+		if (gameWidth.getText().matches("$[0-9]+^") || gameHeight.getText().matches("$[0-9]+^")) {
 			int width = Integer.parseInt(gameWidth.getText());
 			int height = Integer.parseInt(gameHeight.getText());
-			if (width > 800 && height > 600) {
+			if (width > 800 && height > 600) { //minimum size
 				this.gameFrame.setSize(width, height);
 			} else {
 				this.gameFrame.setSize(pixelWidth, pixelHeight);
@@ -225,5 +253,6 @@ public class TheGame {
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
+
 
 }

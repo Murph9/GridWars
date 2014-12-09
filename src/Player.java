@@ -146,10 +146,6 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			MovingObject q = new Particle(2, GameEngine.BLUE, 1); //also not really sure why blue but hey..
 			q.x = x; q.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
 			q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
-			
-	    	MovingObject r = new Particle(2, GameEngine.BLUE, 1);
-	    	r.x = x; r.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
-	    	r.y = y; r.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
 		}
 		
 		//do accel (for nextTime stuff)

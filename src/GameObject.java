@@ -77,7 +77,7 @@ public class GameObject {
         	GameEngine.curGame.addScore(score);
         	
         	ScorePopup s = new ScorePopup(this.colour, score, 1, x-(size/2), y-0.1);
-        	s.angle = 0; //because annoying warning
+        	s.angle = 0; //because annoying warning now that ive used it
         }
     }
     

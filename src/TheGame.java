@@ -26,9 +26,9 @@ import com.jogamp.opengl.util.FPSAnimator;
 //rather large class...
 public class TheGame {
 
-	private JFrame menuFrame;
+	private JFrame theFrame;
+	private JPanel menuPanel; //for the menu
 	
-	private JFrame gameFrame;
 	private GLJPanel gamePanel; //for the GameEngine
 	private FPSAnimator animator;
 	private GameEngine engine;
@@ -54,8 +54,11 @@ public class TheGame {
 	public void initMenu() {
 		random = new Random();
 
-		menuFrame = new JFrame();
-		menuFrame.setLayout(new GridBagLayout());
+		theFrame = new JFrame();
+		
+		menuPanel = new JPanel();
+		menuPanel.setLayout(new GridBagLayout());
+		theFrame.add(menuPanel);
 		
 		JPanel newGamePanel = new JPanel();
 		newGamePanel.setLayout(new GridBagLayout());
@@ -149,63 +152,63 @@ public class TheGame {
 		c.gridy = 0;
 		c.gridx = 0;
 		c.gridwidth = 2;
-		menuFrame.add(headPanel, c);
+		menuPanel.add(headPanel, c);
 		
 		c.gridy++;
 		c.gridwidth = 1;
-		menuFrame.add(newGamePanel, c);
+		menuPanel.add(newGamePanel, c);
 
 		c.gridx++;
-		menuFrame.add(settingsPanel, c);
+		menuPanel.add(settingsPanel, c);
 		
 		c.gridx = 0;
 		c.gridy++;
 		c.gridwidth = 2;
-		menuFrame.add(scoresPanel, c);
+		menuPanel.add(scoresPanel, c);
 		
 		//////////////////////////////////////////////////
-		menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		menuFrame.setName("Menu - Jake Murphy");
+		theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		theFrame.setName("Menu - Jake Murphy");
 		
-		menuFrame.pack();
-		menuFrame.repaint();
-		menuFrame.setLocationRelativeTo(null);
-		menuFrame.requestFocus();
-		menuFrame.setVisible(true);
+		theFrame.pack();
+		theFrame.repaint();
+		theFrame.requestFocus();
+		theFrame.setLocationRelativeTo(null);
+		theFrame.setVisible(true);
 		
 		buttonEasy.requestFocus();
 	}
 	
 	//because its in the same file the settings dont't need to be passed in [:D]
 	private void initGame(int diff) {
-		menuFrame.setVisible(false);
+		menuPanel.setVisible(false);
 		
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
 		this.engine = new GameEngine(boardWidth, boardHeight, scale, 10000);
+		theFrame.setLocationRelativeTo(null);
 		
 		this.gamePanel = new GLJPanel(glcapabilities);
 		this.gamePanel.addGLEventListener(engine);
 		
-		this.gameFrame = new JFrame();
-		this.gameFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
+		this.theFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 		
 		if (gameWidth.getText().matches("$[0-9]+^") || gameHeight.getText().matches("$[0-9]+^")) {
 			int width = Integer.parseInt(gameWidth.getText());
 			int height = Integer.parseInt(gameHeight.getText());
 			if (width > 800 && height > 600) { //minimum size
-				this.gameFrame.setSize(width, height);
+				this.theFrame.setSize(width, height);
 			} else {
-				this.gameFrame.setSize(pixelWidth, pixelHeight);
+				this.theFrame.setSize(pixelWidth, pixelHeight);
 			}
 		} else {
-			this.gameFrame.setSize(pixelWidth, pixelHeight);
+			this.theFrame.setSize(pixelWidth, pixelHeight);
 		}
-		this.gameFrame.setName("GridWars - Jake Murphy");
-		this.gameFrame.setVisible(true);
-		this.gameFrame.setFocusable(true);
-		this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.theFrame.setName("GridWars - Jake Murphy");
+		this.theFrame.setVisible(true);
+		this.theFrame.setFocusable(true);
+		this.theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         ActionListener taskPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -222,13 +225,15 @@ public class TheGame {
         this.gamePanel.addMouseListener(Mouse.theMouse);
         
         this.gamePanel.requestFocus();
-        this.gamePanel.setLocation(menuFrame.getLocation());
+//        this.gamePanel.setLocation(menuPanel.getLocation());
+        this.theFrame.setLocationRelativeTo(null);
         
         this.animator = new FPSAnimator(60);
         this.animator.add(gamePanel);
         this.animator.start();
     }
-    
+	
+	
     //spawning. simple. Look at SpawnHandler for better spawning logic
     private void newEnemy() {
     	int a = random.nextInt(13);

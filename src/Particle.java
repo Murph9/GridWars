@@ -3,18 +3,26 @@ import javax.media.opengl.GL2;
 
 public class Particle extends MovingObject {
 
+	public static final double DEFAULT_DRAG = 1.065;
+	
 	private boolean inOrbit;
 	private double decayTimer;
 	private double speed;
+	private double drag;
 	
 	private double thickness;
 	
-	Particle(double thickness, double[] colour, double time) {
+	Particle() {
+		this(2, GameEngine.WHITE, 0.7, 1.065);
+	}
+	
+	Particle(double thickness, double[] colour, double time, double drag) {
 		super(1, colour);
 		this.thickness = thickness;
 		speed = 1;
 		decayTimer = GameEngine.rand.nextDouble()*time + 0.3;
 		inOrbit = false;
+		this.drag = drag;
 	}
 
 	@Override
@@ -43,8 +51,8 @@ public class Particle extends MovingObject {
 		
 		if (!inOrbit) {
 			decayTimer -= dt;
-			dx /= 1.065; //what drag should i have ?
-			dy /= 1.065;
+			dx /= drag; //what drag should i have ?
+			dy /= drag;
 		}
 		
 		if (decayTimer <= 0) {

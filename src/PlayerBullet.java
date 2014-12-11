@@ -7,6 +7,10 @@ public class PlayerBullet extends MovingObject {
 
 	public final static ArrayList<PlayerBullet> ALL_THIS = new ArrayList<PlayerBullet>();
 	
+	PlayerBullet() {
+		this(0.35, GameEngine.LIGHT_YELLOW);
+	}
+	
 	PlayerBullet(double size, double[] colour) {
 		super(size, colour);
 		PlayerBullet.ALL_THIS.add(this);

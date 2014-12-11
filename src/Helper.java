@@ -1,10 +1,8 @@
 import javax.media.opengl.GL2;
 
-//class for just cleaning up some of the files (mainly methods that do simple things)
+//class for just cleaning up some of the files (mainly methods that do simple long things)
 public class Helper {
 	
-//	public static final double SIZE_MUL = 0.707107; // 1 /sqrt(2)
-
 	public static final int NOTHING = 0;
 	public static final int BOUNCE = 1;
 	public static final int SPLAT = 2;
@@ -12,15 +10,17 @@ public class Helper {
 	public static int sgn(int a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return GameEngine.rand.nextInt(2)*2 -1; //i was trying to make it move when it didn't want to;
+		else return (GameEngine.rand.nextInt(2)*2 -1); //i was trying to make them move when they didn't want to
 	}
 	public static double sgn(double a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return GameEngine.rand.nextDouble()*2 -1; //i was trying to make it move when it didn't want to
+		else return (GameEngine.rand.nextInt()*2 -1); //yes i know i used nextInt(), it must be full or nothing
 	}
 	
-	
+	/**Draw a gl square centered about the position of the object
+	 * @param gl
+	 */
 	public static void square (GL2 gl) {
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2d(0, 0);
@@ -36,7 +36,7 @@ public class Helper {
 	
 	/**for things that collide off the play arena walls
 	 * @param a The object to bounce
-	 * @param type if bouncy (use static field)
+	 * @param type if bouncy (use the static fields: NOTHING, BOUNCE, SPLAT )
 	 */
 	public static void keepInside(MovingObject a, int type) {
 		if (a.x > GameEngine.boardWidth-(a.size/2)) {

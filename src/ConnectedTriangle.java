@@ -24,7 +24,7 @@ public class ConnectedTriangle extends MovingObject {
 	ConnectedTriangle(double size, double[] colour, ConnectedTriangle in) {
 		super(size, colour);
 		ALL_THIS.add(this);
-		strength = 0;
+		strength = 0; //TODO, balance
 		partner = in;
 		score = 150;
 	}
@@ -92,8 +92,7 @@ public class ConnectedTriangle extends MovingObject {
 			super.amHit(ifPoints);
 			ALL_THIS.remove(this);
 		} else {
-			strength--; //TODO balance, yeah....
-//			partner.strength--; //not too sure if this should be here...
+			strength--;
 			if (strength <= 0) {
 				super.amHit(ifPoints);
 				

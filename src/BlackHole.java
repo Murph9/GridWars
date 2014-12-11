@@ -53,10 +53,9 @@ public class BlackHole extends MovingObject {
 		y += dy*dt*MAX_SPEED;
 		
 		//particle effects yay
-		//maybe balance with size? //TODO
 		double rand = GameEngine.rand.nextDouble();
 		if (!isInert && rand < ((float)numCount/(float)maxNum)) {
-			MovingObject a = new Particle(3, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 0.3);
+			MovingObject a = new Particle(3, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 1, 1.04);
 			a.x = x;
 			a.y = y;
 			a.dx = (GameEngine.rand.nextDouble()*2-1)*10 + dx;
@@ -144,11 +143,11 @@ public class BlackHole extends MovingObject {
 		
 		if (wasShot) { //then add score
 		} else { // or explode
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 20; i++) {
 				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);
 				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
 			}
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 20; i++) {
 				HomingSeeker s = new HomingSeeker(0.6, GameEngine.PURPLE);
 				s.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
 			}

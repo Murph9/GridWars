@@ -36,7 +36,7 @@ public class GameEngine implements GLEventListener {
 	
 	public static GameState curGame;
 	public static int boardWidth = 12, boardHeight = 10; //just incase something goes bad
-	public static double scale;
+//	private double scale;
 	private double curAspect;
 	
 	public static Player player;
@@ -63,7 +63,7 @@ public class GameEngine implements GLEventListener {
 		curGame = new GameState(record);
 		boardWidth = width;
 		boardHeight = height;
-		GameEngine.scale = scale;
+//		this.scale = scale;
 	}
 	
 	public static double[] getPlayerPos(){  return playerPos; }
@@ -136,7 +136,7 @@ public class GameEngine implements GLEventListener {
 
 		GL2 gl = drawable.getGL().getGL2();
 		
-		shader.useShader(gl);
+		shader.useShader(gl); //it has a disable method but i want everything to use it
 		
 		// set the view matrix based on the camera position
 		myCamera.setView(gl);
@@ -145,9 +145,7 @@ public class GameEngine implements GLEventListener {
 		playerPos = player.getPosition();
 		mousePos = Mouse.theMouse.getPosition();
 		
-		shader.useShader(gl);
-			GameObject.ROOT.draw(gl);
-//		shader.dontUseShader(gl); //causes issues in the UI if this is used (although it should be)
+		GameObject.ROOT.draw(gl);
 		
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
@@ -214,7 +212,7 @@ public class GameEngine implements GLEventListener {
 		
 		for (int i = 0; i < 100; i++) {
 			for (int j = 0; j < 20; j++) {
-				MovingObject p = new Particle(2, GameEngine.WHITE, 0.7);
+				MovingObject p = new Particle(2, GameEngine.WHITE, 0.7, Particle.DEFAULT_DRAG);
 				p.x = playerPos[0]+Math.cos(360*j/20);
 				p.y = playerPos[1]+Math.sin(360*j/20);
 				p.dx = GameEngine.rand.nextDouble()*Math.cos(360*i/20)*50;

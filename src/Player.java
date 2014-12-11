@@ -37,7 +37,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 				newBullet();
 			}
 		};
-		this.timer = new Timer(100, taskPerformer);
+		this.timer = new Timer(140, taskPerformer);
 		this.timer.start();
 		
 		this.shooting = true;
@@ -143,7 +143,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		//tail (with maths below)
 		double thresh = GameEngine.rand.nextDouble();
 		if (Math.sqrt(dx*dx + dy*dy) > thresh) { //only matters if going less than max speed
-			MovingObject q = new Particle(2, GameEngine.BLUE, 1); //also not really sure why blue but hey..
+			MovingObject q = new Particle(2, GameEngine.BLUE, 1, Particle.DEFAULT_DRAG); //also not really sure why blue but hey..
 			q.x = x; q.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
 			q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
 		}

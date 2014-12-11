@@ -26,7 +26,7 @@ public abstract class MovingObject extends GameObject {
 			if (this instanceof PlayerBullet) {
 				int offset = GameEngine.rand.nextInt(180);
 				for (int i = 0; i < 4; i++) {
-					MovingObject p = new Particle(2, colour, 0.7);
+					MovingObject p = new Particle(2, colour, 0.7, Particle.DEFAULT_DRAG);
 					p.x = x;
 					p.y = y;
 					p.dx = GameEngine.rand.nextDouble()*Math.cos(offset + 360*i/4)*8 + dx/2;
@@ -35,7 +35,7 @@ public abstract class MovingObject extends GameObject {
 			} else {
 				int offset = GameEngine.rand.nextInt(180);
 				for (int i = 0; i < 8; i++) {
-					MovingObject p = new Particle(2, this.colour, 1);
+					MovingObject p = new Particle(2, this.colour, 1, Particle.DEFAULT_DRAG);
 					p.x = x;
 					p.y = y;
 					p.dx = Math.cos(offset+i*360/8)*16*GameEngine.rand.nextDouble();

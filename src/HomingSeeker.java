@@ -31,6 +31,22 @@ public class HomingSeeker extends HomingObject {
 	
 	public void blackHole() {
 		//don't think it actually does anything in this
+		
+		ArrayList<BlackHole> objects = new ArrayList<BlackHole>(BlackHole.ALL_THIS);
+		
+		for (BlackHole h: objects) {
+			if (h.isInert() || h.equals(this)) { //just incase a black hole targets itself..
+				continue;
+			}
+			double distx = h.x - x;
+			double disty = h.y - y;
+			double dist = Math.sqrt(distx*distx + disty*disty);
+			
+			if (dist < size*h.size/2) {
+				amHit(false);
+				h.giveObject(distx, disty);
+			}
+		}
 	}
 	
 	public void drawSelf(GL2 gl) {

@@ -18,13 +18,12 @@ public class ConnectedTriangle extends MovingObject {
 		this(1, GameEngine.ORANGE, null);
 	}
 	
-	
 	/**@param in Partner if spawned with one (for whatever reason), but they can find them later
 	 */
 	ConnectedTriangle(double size, double[] colour, ConnectedTriangle in) {
 		super(size, colour);
 		ALL_THIS.add(this);
-		strength = 0; //TODO, balance
+		strength = 0; //TODO, balance :D
 		partner = in;
 		score = 150;
 	}
@@ -119,6 +118,7 @@ public class ConnectedTriangle extends MovingObject {
 		if (partner != null) { //yes i know this will be drawn twice, im fine with that
 			gl.glPushMatrix();
 			gl.glRotated(-angle, 0, 0, 1);
+			gl.glLineWidth((int) (0.2+(double)strength/8));
 			gl.glColor3d(0.2+(double)strength/15, 0.2+(double)strength/15, 0.2+(double)strength/15);
 			gl.glBegin(GL2.GL_LINES);
 				gl.glVertex2d(0,0);

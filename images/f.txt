@@ -1,13 +1,23 @@
 uniform sampler2D texture1; 
-varying float intensity; //not sure yet
 
-void main() {
-	if (gl_TexCoord[0].st != 0) { //if no texture given	
-		gl_FragColor = texture2D(texture1, gl_TexCoord[0].st) * gl_Color;
-		
-	} else { //for untextured things
+void main (void)  
+{  
+	vec2 pos = {gl_TexCoord[0][0], gl_TexCoord[0][1]}; //.st didn't work on all jogls
+	if (pos[0] != 0) {
+		gl_FragColor = gl_Color * texture2D(texture1, pos);
+	} else {
 		gl_FragColor = gl_Color;
 	}
 }
 
-//use xystpq to reference different things (don't quite know yet)
+//using stpq to reference different indexes
+  //warning - version specific -  using a tedious [0] and [1] option above
+
+  
+  //void main() {
+//	if (gl_TexCoord[0].st != 0) { //if no texture given	
+//		gl_FragColor = texture2D(texture1, gl_TexCoord[0].st) * gl_Color;
+//	} else { //for untextured things
+//		gl_FragColor = gl_Color;
+//	}
+//}

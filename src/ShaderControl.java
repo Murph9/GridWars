@@ -40,9 +40,10 @@ public class ShaderControl {
         catch (Exception e) {
             e.printStackTrace();
         }
-//        System.out.println("Shader is " + sb.toString());
-        System.out.println("Loaded shader: " + name);
-        return new String[]{ sb.toString() };
+
+        System.err.println("Read shader: " + name); 
+//        System.err.println(sb.toString());
+        return new String[]{sb.toString()};
     }
 
     // This compiles and loads the shader to the video card.
@@ -50,35 +51,36 @@ public class ShaderControl {
     private void attachShaders( GL2 gl ) throws Exception {
         vertexShaderProgram = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
         fragmentShaderProgram = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
+        
         gl.glShaderSource(vertexShaderProgram, 1, vsrc, null, 0);
         gl.glCompileShader(vertexShaderProgram);
         gl.glShaderSource(fragmentShaderProgram, 1, fsrc, null, 0);
         gl.glCompileShader(fragmentShaderProgram);
         shaderprogram = gl.glCreateProgram();
-        //
+        
         gl.glAttachShader(shaderprogram, vertexShaderProgram);
         gl.glAttachShader(shaderprogram, fragmentShaderProgram);
         gl.glLinkProgram(shaderprogram);
         gl.glValidateProgram(shaderprogram);
-        IntBuffer intBuffer = IntBuffer.allocate(1);
-        gl.glGetProgramiv(shaderprogram, GL2.GL_LINK_STATUS, intBuffer);
         
-        if (intBuffer.get(0) != 1)
-        {
+        IntBuffer intBuffer = IntBuffer.allocate(1);
+        
+        gl.glGetProgramiv(shaderprogram, GL2.GL_LINK_STATUS, intBuffer);
+//        System.err.println("Linked?   " +intBuffer.get(0));
+        
+        if (intBuffer.get(0) != GL2.GL_TRUE) { //better than writing ' == GL2.GL_FALSE'
+        	
             gl.glGetProgramiv(shaderprogram, GL2.GL_INFO_LOG_LENGTH, intBuffer);
             int size = intBuffer.get(0);
             System.err.println("Program link error: ");
-            if (size > 0)
-            {
+            if (size > 0) {
                 ByteBuffer byteBuffer = ByteBuffer.allocate(size);
                 gl.glGetProgramInfoLog(shaderprogram, size, intBuffer, byteBuffer);
-                for (byte b : byteBuffer.array())
-                {
+                for (byte b : byteBuffer.array()) {
                     System.err.print((char) b);
                 }
             }
-            else
-            {
+            else {
                 System.out.println("Unknown");
             }
             System.exit(1);

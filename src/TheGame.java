@@ -114,12 +114,13 @@ public class TheGame {
 		settingsPanel.add(settings, c2);
 		
 		c2.gridy++;
-		JCheckBox set2 = new JCheckBox("box 2");
+		JCheckBox set2 = new JCheckBox("Particles");
+		set2.setSelected(true); //defaults to on (read from settings later)
 		settingsPanel.add(set2, c2);
 		
 		c2.gridy = 0;
 		c2.gridx++;
-		gameWidth = new JTextField("1024");
+		gameWidth = new JTextField("1024"); //read both from settinfsgs later
 		settingsPanel.add(gameWidth, c2);
 		
 		c2.gridy++;
@@ -146,7 +147,7 @@ public class TheGame {
 		l2.writeScore(-1); //how you write the score
 		//////////////////////////////////////////////////
 		
-		//something im sure
+		//something else im sure
 		
 		//////////////////////////////////////////////////
 		c.gridy = 0;

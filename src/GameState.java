@@ -1,6 +1,6 @@
 
 @SuppressWarnings("unused") //alot of 's' that i just don't need to see here 
-				//(im using eclipse if you hadn't figured)
+				//(im using the eclipse editor if you hadn't figured)
 
 /**Nice class to handle the current game state (could be given to a leaderboard class later for saving....)
  * @author Jake Murphy
@@ -32,6 +32,8 @@ public class GameState {
 	private int bulletCount;
 	private double bulletSpeed;
 	
+	private boolean ifParticles; //should have more than on/off options
+	
 	GameState(int record) { //this happens once, so screw speed but adds to understanding
 		isShield = 0;
 		isSideBullets = 0;
@@ -52,6 +54,8 @@ public class GameState {
 		bombCount = 3;
 		bulletCount = 4;
 		bulletSpeed = 1; //how to change the bullet speed
+		
+		ifParticles = false;
 	}
 	
 	//because it has time dependant things
@@ -156,6 +160,8 @@ public class GameState {
 	public int getBombCount() { return bombCount; }
 	public int getBulletCount() { return bulletCount; }
 	public double getBulletSpeed() { return bulletSpeed; }
+	
+	public boolean ifParticles() { return ifParticles; }
 
 	public boolean ifTempShield() { return (isShield > 0); }
 	public boolean ifSideShot() { return (isSideBullets > 0); }

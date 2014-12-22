@@ -36,7 +36,6 @@ public class GameEngine implements GLEventListener {
 	
 	public static GameState curGame;
 	public static int boardWidth = 12, boardHeight = 10; //just incase something goes bad
-//	private double scale;
 	private double curAspect;
 	
 	public static Player player;
@@ -63,7 +62,6 @@ public class GameEngine implements GLEventListener {
 		curGame = new GameState(record);
 		boardWidth = width;
 		boardHeight = height;
-//		this.scale = scale;
 	}
 	
 	public static double[] getPlayerPos(){  return playerPos; }
@@ -78,32 +76,32 @@ public class GameEngine implements GLEventListener {
 		myTime = System.currentTimeMillis();
 		GL2 gl = drawable.getGL().getGL2();
 		
-		String dir = "images/"; //because everything got moved :/
+		String img = "images/"; //because everything moved :/
 		
 		textures = new MyTexture[TEXTURE_SIZE]; //this could be one line i guess.. (but the static indexes might be confusing)
-		textures[PLAYER] = new MyTexture(gl, dir + "player.png");
-		textures[SPINNER] = new MyTexture(gl, dir + "spinner.png");
-		textures[DIAMOND] = new MyTexture(gl, dir + "diamond.png");
-		textures[SQUARE] = new MyTexture(gl, dir + "square.png");
-		textures[BULLET] = new MyTexture(gl, dir + "bullet.png");
-		textures[SHIELD] = new MyTexture(gl, dir + "shield.png");
-		textures[SNAKEBODY] = new MyTexture(gl, dir + "snakeBody.png");
-		textures[SNAKEHEAD] = new MyTexture(gl, dir + "snakeHead.png");
-		textures[BUTTERFLY] = new MyTexture(gl, dir + "butterfly.png");
-		textures[SEEKER] = new MyTexture(gl, dir + "seeker.png");
-		textures[SHY] = new MyTexture(gl, dir + "shy.png");
-		textures[BLACKHOLE] = new MyTexture(gl, dir + "circle.png");
+		textures[PLAYER] = new MyTexture(gl, img + "player.png");
+		textures[SPINNER] = new MyTexture(gl, img + "spinner.png");
+		textures[DIAMOND] = new MyTexture(gl, img + "diamond.png");
+		textures[SQUARE] = new MyTexture(gl, img + "square.png");
+		textures[BULLET] = new MyTexture(gl, img + "bullet.png");
+		textures[SHIELD] = new MyTexture(gl, img + "shield.png");
+		textures[SNAKEBODY] = new MyTexture(gl, img + "snakeBody.png");
+		textures[SNAKEHEAD] = new MyTexture(gl, img + "snakeHead.png");
+		textures[BUTTERFLY] = new MyTexture(gl, img + "butterfly.png");
+		textures[SEEKER] = new MyTexture(gl, img + "seeker.png");
+		textures[SHY] = new MyTexture(gl, img + "shy.png");
+		textures[BLACKHOLE] = new MyTexture(gl, img + "circle.png");
 
-		textures[EXTRA_BULLET] = new MyTexture(gl, dir + "extraBullet.png");
-		textures[EXTRA_SPEED] = new MyTexture(gl, dir + "extraSpeed.png");
-		textures[TEMP_SHIELD] = new MyTexture(gl, dir + "tempShield.png");
-		textures[EXTRA_BOMB] = new MyTexture(gl, dir + "extraBomb.png");
-		textures[EXTRA_LIFE] = new MyTexture(gl, dir + "extraLife.png");
-		textures[BOUNCY_SHOT] = new MyTexture(gl, dir + "bouncyShot.png");
-		textures[SUPER_SHOT] = new MyTexture(gl, dir + "superShot.png");
-		textures[REAR_SHOT] = new MyTexture(gl, dir + "rearShot.png");
-		textures[SIDE_SHOT] = new MyTexture(gl, dir + "sideShot.png");
-		textures[TRIANGLE] = new MyTexture(gl, dir + "triangle.png");
+		textures[EXTRA_BULLET] = new MyTexture(gl, img + "extraBullet.png");
+		textures[EXTRA_SPEED] = new MyTexture(gl, img + "extraSpeed.png");
+		textures[TEMP_SHIELD] = new MyTexture(gl, img + "tempShield.png");
+		textures[EXTRA_BOMB] = new MyTexture(gl, img + "extraBomb.png");
+		textures[EXTRA_LIFE] = new MyTexture(gl, img + "extraLife.png");
+		textures[BOUNCY_SHOT] = new MyTexture(gl, img + "bouncyShot.png");
+		textures[SUPER_SHOT] = new MyTexture(gl, img + "superShot.png");
+		textures[REAR_SHOT] = new MyTexture(gl, img + "rearShot.png");
+		textures[SIDE_SHOT] = new MyTexture(gl, img + "sideShot.png");
+		textures[TRIANGLE] = new MyTexture(gl, img + "triangle.png");
 		
 		playerPos = player.getPosition();
         mousePos = Mouse.theMouse.getPosition();
@@ -119,9 +117,10 @@ public class GameEngine implements GLEventListener {
 		
 		// create a new shader object that we can reference later to activate it.
 		shader = new ShaderControl();
-		shader.fsrc = shader.loadShader(dir + "f.txt"); // fragment GLSL Code
-		shader.vsrc = shader.loadShader(dir + "v.txt"); // vertex GLSL Code
+		shader.fsrc = shader.loadShader(img + "f.txt"); // fragment GLSL Code
+		shader.vsrc = shader.loadShader(img + "v.txt"); // vertex GLSL Code
 		shader.init(gl);
+		//TODO
 		
 		//init sounds
 		SoundEffect.init();
@@ -152,7 +151,7 @@ public class GameEngine implements GLEventListener {
 		drawUI(gl);
 		gl.glPopMatrix();
 		
-		//finding the screen resolution (could be useful later)
+		//finding the screen resolution [could be useful later]
 //		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //		int width = (int)screenSize.getWidth();
 //		int height = (int)screenSize.getHeight();
@@ -176,6 +175,8 @@ public class GameEngine implements GLEventListener {
 		long time = System.currentTimeMillis();
 		double dt = (time - myTime) / 1000.0;
 		myTime = time;
+		
+		//lag prevention TODO
 
 		List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
@@ -188,6 +189,7 @@ public class GameEngine implements GLEventListener {
 		
 		if (GameEngine.curGame.getLives() < 0) {
 //			dt = 0; //yeah not too sure yet
+				//something todo with freezing the thing that hit you
 		}
 	}
 	

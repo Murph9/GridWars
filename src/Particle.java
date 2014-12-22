@@ -13,16 +13,20 @@ public class Particle extends MovingObject {
 	private double thickness;
 	
 	Particle() {
-		this(2, GameEngine.WHITE, 0.7, 1.065);
+		this(2, GameEngine.WHITE, 0.7, 1.065); //default settings
 	}
 	
 	Particle(double thickness, double[] colour, double time, double drag) {
 		super(1, colour);
 		this.thickness = thickness;
-		speed = 1;
-		decayTimer = GameEngine.rand.nextDouble()*time + 0.3;
-		inOrbit = false;
+		this.speed = 1;
+		this.decayTimer = GameEngine.rand.nextDouble()*time + 0.3;
+		this.inOrbit = false;
 		this.drag = drag;
+		
+		if (!GameEngine.curGame.ifParticles()) {
+			amHit(false);
+		}
 	}
 
 	@Override
@@ -32,7 +36,8 @@ public class Particle extends MovingObject {
 		
 		this.angle = Math.atan2(dy, dx);
 		
-		//can't use the helper function here ;(, because the size of the object is used as 0
+		//can't use the helper function here ;(
+			//because the size of the object is used as 'small'
 		if (x > GameEngine.boardWidth) {
 			dx = -dx;
 			x = GameEngine.boardWidth;
@@ -51,7 +56,7 @@ public class Particle extends MovingObject {
 		
 		if (!inOrbit) {
 			decayTimer -= dt;
-			dx /= drag; //what drag should i have ?
+			dx /= drag; //default drag is the best looking...
 			dy /= drag;
 		}
 		
@@ -67,6 +72,8 @@ public class Particle extends MovingObject {
 //		doesn't exist in this
 	}
 	
+	//this is if you want orbiting particles (looks kind of weird at the moment)
+		//causes lag and needs refining 
 	public void blackHole() {
 //		for (BlackHole h: BlackHole.ALL_THIS) {
 //			if (!h.isInert()) {
@@ -91,7 +98,7 @@ public class Particle extends MovingObject {
 //					}
 //				}
 //			}
-//		} //this is if you want orbiting particles (looks kind of weird at the moment)
+//		} 
 	}
 	
 	public void drawSelf(GL2 gl) {
@@ -102,5 +109,4 @@ public class Particle extends MovingObject {
 			gl.glVertex2d(0,0);
 		gl.glEnd();
 	}
-
 }

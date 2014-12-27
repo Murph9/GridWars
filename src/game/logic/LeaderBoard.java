@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
-
+//maybe returns text for a textarea rather than being one
 public class LeaderBoard extends JTextArea {
 
 	public static final String 
@@ -24,11 +24,21 @@ public class LeaderBoard extends JTextArea {
 	private String file;
 	
 	//TODO - rewrite please so that it stores the info in itself, rather than to file
-	/*things to store in file: (noting that the file needs to be rewritten)
-	   * Score, name
-	   * Stats (long term stats as well)
+	/* things to store in file: (noting that the file needs to be rewritten)
+	   * Stats in the curGame
+	   * Game Stats (long term stats):
+	        * highest score
+	        * highest multiplier
+	        * total kills
+	        * powerups collected
+	        * times died
+	        * total score
+	        * ???
 	   * most recent record
 	   * ???
+	   * 
+	 * Also requires a method that saves to file on abrupt exit of program
+	 *    called from wherever makes sense
 	*/
 	private File saveFile;
 	

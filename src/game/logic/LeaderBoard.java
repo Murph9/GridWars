@@ -13,10 +13,6 @@ import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
-//TODO
-//TODO rewrite please so that it stores the info itself, rather than to file
-//TODO
-
 
 public class LeaderBoard extends JTextArea {
 
@@ -27,6 +23,13 @@ public class LeaderBoard extends JTextArea {
 	private LinkedList<Record> records;
 	private String file;
 	
+	//TODO - rewrite please so that it stores the info in itself, rather than to file
+	/*things to store in file: (noting that the file needs to be rewritten)
+	   * Score, name
+	   * Stats (long term stats as well)
+	   * most recent record
+	   * ???
+	*/
 	private File saveFile;
 	
 	//is just a text area

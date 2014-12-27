@@ -29,7 +29,7 @@ public class Camera extends GameObject {
     public void update (double dt) { //thought causing
     	double[] pos = GameEngine.getPlayerPos();
     	this.x = pos[0]/3; //this makes it feel more like a game
-    	this.y = pos[1]/3;
+    	this.y = pos[1]/3; //TODO maths about making it use the board height and widths
     }
     
     public void drawSelf(GL2 gl) {

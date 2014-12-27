@@ -7,14 +7,14 @@ import javax.media.opengl.GL2;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 
-public class ScorePopup extends GameObject {
+public class TextPopup extends GameObject {
 	
-	public static final LinkedList<ScorePopup> ALL_THIS = new LinkedList<ScorePopup>();
+	public static final LinkedList<TextPopup> ALL_THIS = new LinkedList<TextPopup>();
 	
 	private double decayTime;
 	private String score;
 	
-	public ScorePopup(double[] colour, String score, double time, double x, double y) {
+	public TextPopup(double[] colour, String score, double time, double x, double y) {
 		this.colour = colour;
 		this.decayTime = time;
 		this.score = score;
@@ -23,7 +23,7 @@ public class ScorePopup extends GameObject {
 		ALL_THIS.add(this);
 	}
 	
-	public ScorePopup(double[] colour, int score, double time, double x, double y) {
+	public TextPopup(double[] colour, int score, double time, double x, double y) {
 		this.colour = colour;
 		this.decayTime = time;
 		this.score = Integer.toString(score*GameEngine.curGame.getMultiplier());
@@ -32,7 +32,7 @@ public class ScorePopup extends GameObject {
 		ALL_THIS.add(this);
 	}
 
-	public double[] getCollisionPosition() {
+	public double[] getCollisionPosition() { //once again too big
 		return new double[]{Double.MAX_VALUE, Double.MAX_VALUE, 0};
 	}
 	
@@ -48,7 +48,6 @@ public class ScorePopup extends GameObject {
 		super.amHit(hit);
 		ALL_THIS.remove(this);
 	}
-	
 	
 	public void draw(GL2 gl) { //see last page of link
 		GLUT glut = new GLUT();

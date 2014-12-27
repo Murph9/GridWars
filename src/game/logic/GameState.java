@@ -2,72 +2,65 @@ package game.logic;
 import game.objects.*;
 
 @SuppressWarnings("unused") //alot of 's' that i just don't need to see here 
-				//(im using the eclipse editor if you hadn't figured)
+				//(im using the eclipse editor if you hadn't figured already)
 
-/**Nice class to handle the current game state (could be given to a leaderboard class later for saving....)
+/**Nice class to handle the current game state, handed to the game engine
+ * to use. Has a lot of read only variables and should only contain info for this game
  * @author Jake Murphy
  */
 public class GameState {
 	
 	private final double SPEED_INC = 0.15;
-	private final double POWERUP_LENGTH = 15; //apparently 15 seconds is the standard
+	private final double POWERUP_LENGTH = 15; //15 seconds is the standard (according to the game)
 	
-	private int[] killSteps = new int[]{25,50,100,200,400,800,1600,3200,6400,12800}; //multipler steps
+	private final int[] killSteps = new int[]{25,50,100,200,400,800,1600,3200,6400,12800}; //multipler steps
 	
-	private double isShield;
-	private double isSideBullets;
-	private double isRearBullets;
+	//player states
+	private double 
+			hasShield, hasSideBullets, hasRearBullets, 
+			hasBouncyShot, hasSuperShot;
 	
-	private double isBouncyShot;
-	private double isSuperShot;
+	//Current game values
+	private int 
+		lastRecord, score, lives, multiplier, kills, totalKills;
 	
-	private int record;
-	private int score;
-
-	private int lives;
-	private int multiplier;
-	
-	private int kills;
-	private int totalKills;
-	
-	private int bombCount; //don't really have a mouse listener for that...
+	private int bombCount;
 	private int bulletCount;
 	private double bulletSpeed;
 	
+	//Settings:
+	private int width, height;
+	private double scale;
+	
 	private boolean ifParticles; //should have more than on/off options
 	
-	GameState(int record, boolean particles) { //screw speed but adds to understanding
-		isShield = 0;
-		isSideBullets = 0;
-		isRearBullets = 0;
-		
-		isBouncyShot = 0;
-		isSuperShot = 0;
-		
-		this.record = record;
-		score = 0;
+	
+	GameState(int width, int height, double scale, int record, boolean ifParticles) { 
+			//note how anything not here is initalised to 0.
+		this.lastRecord = record;
 		
 		lives = 3;
 		multiplier = 1;
 		
-		kills = 0;
-		totalKills = 0;
-				
 		bombCount = 3;
 		bulletCount = 4;
-		bulletSpeed = 1; //how to change the bullet speed
+		bulletSpeed = 1; //how to change the intial bullet speed
 		
-		ifParticles = particles;
+		//part of settings
+		this.width = width;
+		this.height = height;
+		this.scale = scale;
+		this.ifParticles = ifParticles;
 	}
 	
-	//because it has time dependant things
+	//time dependant things updated here
 	public void update(double dt) {
-		isShield = Math.max(0, isShield-dt);
-		isSideBullets = Math.max(0, isSideBullets-dt);
-		isRearBullets = Math.max(0, isRearBullets-dt);
+		hasShield = Math.max(0, hasShield-dt);
+		hasSideBullets = Math.max(0, hasSideBullets-dt);
+		hasRearBullets = Math.max(0, hasRearBullets-dt);
 
-		isBouncyShot = Math.max(0, isBouncyShot-dt);
-		isSuperShot = Math.max(0, isSuperShot-dt);
+		hasBouncyShot = Math.max(0, hasBouncyShot-dt);
+		hasSuperShot = Math.max(0, hasSuperShot-dt);
 	}
 
 	public void addKill() {
@@ -75,14 +68,16 @@ public class GameState {
 		totalKills++;
 		if (kills >= killSteps[multiplier-1]) {
 			multiplier = Math.min(multiplier+1, 9); //please don't ever get this much (will break)
-			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Multiplier:"+multiplier, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(GameEngine.WHITE, "Multiplier:"+multiplier, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 	public void addScore(int add) {
-		if (add > 0) { //please don't give a negative, won't work (will give 0)
+		//please don't give a negative, won't work (will give 0)
+			//also can't put a limit on it because blackholes
+		if (add > 0) { 
 			score += add*multiplier;
-			if (score > record) {
-				record = score;
+			if (score > lastRecord) {
+				lastRecord = score;
 			}
 		}
 	}
@@ -90,10 +85,10 @@ public class GameState {
 	public void useBomb() {
 		if (bombCount > 0) {
 			bombCount--;
-			GameEngine.killAll();
+			GameEngine.killAll(null);
 			kills = 0;
 			multiplier = 1;
-			isShield = 2;
+			hasShield = 2;
 		}
 	}
 	
@@ -104,70 +99,81 @@ public class GameState {
 		
 		bulletSpeed = Math.max(1, bulletSpeed-SPEED_INC); //set minimum bullet speed to be 1
 		bulletCount = Math.max(2, bulletCount-1); //set min bullet count to be 2
-		isShield = 3; //set temp shield (for 1 sec) so you don't die really quick
+		hasShield = 3; //set temp shield (for 1 sec) so you don't die really quick
 		
-		isSideBullets = 0;
-		isRearBullets = 0;
+		hasSideBullets = 0;
+		hasRearBullets = 0;
 		
-		isBouncyShot = 0;
-		isSuperShot = 0;
+		hasBouncyShot = 0;
+		hasSuperShot = 0;
 	}
 	
 	public void incBulletSpeed() {
 		bulletSpeed += SPEED_INC;
-		ScorePopup s = new ScorePopup(GameEngine.WHITE, "Bullet Speed++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+		TextPopup s = new TextPopup(GameEngine.WHITE, "Bullet Speed++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 	}
 	public void incBulletCount() {
 		if (bulletCount > 3) {
 			score += 2000; //in the gridwars wiki
-			ScorePopup s = new ScorePopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		} else {
 			bulletCount++;
-			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Bullet Count++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(GameEngine.WHITE, "Bullet Count++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 	public void incBombCount() {
 		if (bombCount > 8) {
 			score += 2000;
-			ScorePopup s = new ScorePopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		} else {
 			bombCount++;
-			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Bomb++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(GameEngine.WHITE, "Bomb++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 	public void incLives() {
 		if (lives > 8) {
 			score += 2000;
-			ScorePopup s = new ScorePopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		} else {
 			lives++;
-			ScorePopup s = new ScorePopup(GameEngine.WHITE, "Life++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(GameEngine.WHITE, "Life++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
 		}
 	}
 
-	//Then start the count down (with the time set)
-	public void gotShield() { isShield = POWERUP_LENGTH; }
-	public void gotSideShot() {	isSideBullets = POWERUP_LENGTH; }
-	public void gotRearShot() {	isRearBullets = POWERUP_LENGTH; }
-	public void gotBouncyShot() { isBouncyShot = POWERUP_LENGTH; }
-	public void gotSuperShot() { isSuperShot = POWERUP_LENGTH; }
+	//Getters:
+	public void gotShield()     { hasShield      = POWERUP_LENGTH; }
+	public void gotSideShot()   { hasSideBullets = POWERUP_LENGTH; }
+	public void gotRearShot()   { hasRearBullets = POWERUP_LENGTH; }
+	public void gotBouncyShot() { hasBouncyShot  = POWERUP_LENGTH; }
+	public void gotSuperShot()  { hasSuperShot   = POWERUP_LENGTH; }
 
-	public int getRecord() { return record; }
-	public int getScore() { return score; }
-	public int getLives() { return lives; }
+	public int getRecord()     { return lastRecord;     }
+	public int getScore()      { return score;      }
+	public int getLives()      { return lives;      }
 	public int getMultiplier() { return multiplier; }
-	public int getKills() { return kills; }
+	public int getKills()      { return kills;      }
 	public int getTotalKills() { return totalKills; }
 	
-	public int getBombCount() { return bombCount; }
-	public int getBulletCount() { return bulletCount; }
+	public int    getBombCount()   { return bombCount;   }
+	public int    getBulletCount() { return bulletCount; }
 	public double getBulletSpeed() { return bulletSpeed; }
-	
-	public boolean ifParticles() { return ifParticles; }
 
-	public boolean ifTempShield() { return (isShield > 0); }
-	public boolean ifSideShot() { return (isSideBullets > 0); }
-	public boolean ifRearShot() { return (isRearBullets > 0); }
-	public boolean ifBouncyShot() { return (isBouncyShot > 0); }
-	public boolean ifSuperShot() { return (isSuperShot > 0); }
+	public boolean ifTempShield() { return (hasShield > 0);      }
+	public boolean ifSideShot()   { return (hasSideBullets > 0); }
+	public boolean ifRearShot()   { return (hasRearBullets > 0); }
+	public boolean ifBouncyShot() { return (hasBouncyShot > 0);  }
+	public boolean ifSuperShot()  { return (hasSuperShot > 0);   }
+	
+	//thinking of compressing this to a settings file..
+	public int     getWidth()    { return width;       }
+	public int     getHeight()   { return height;      }
+	public double  getScale()    { return scale;       }
+	public boolean ifParticles() { return ifParticles; }
+	
+	public String toString() {
+		return "Powerups: sh:" +hasShield +", sb:"+hasSideBullets +", rb:"+hasRearBullets +", bs:"+hasBouncyShot +", ss:"+hasSuperShot
+				+"\nNumbers: lr:" + lastRecord +", s:"+score+", l:"+lives+", m:"+multiplier+", k:"+kills+", tk:"
+						+totalKills+", bc:"+bombCount+", bu:"+bulletCount+", bs:"+bulletSpeed 
+				+"\nSettings: w:" + width +", h:"+ height +", p:"+ifParticles;
+	}
 }

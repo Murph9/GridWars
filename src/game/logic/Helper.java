@@ -42,24 +42,24 @@ public class Helper {
 	 * @param type if bouncy (use the static fields: NOTHING, BOUNCE, SPLAT )
 	 */
 	public static void keepInside(MovingObject a, int type) {
-		if (a.x > GameEngine.boardWidth-(a.size/2)) {
+		if (a.x > GameEngine.curGame.getWidth()-(a.size/2)) {
 			if (type == BOUNCE) a.dx = -a.dx;	
 			else if (type == SPLAT)	a.dx = 0; 
-			a.x = GameEngine.boardWidth-(a.size/2);
-		} else if (a.x < -GameEngine.boardWidth+(a.size/2)) {
+			a.x = GameEngine.curGame.getWidth()-(a.size/2);
+		} else if (a.x < -GameEngine.curGame.getWidth()+(a.size/2)) {
 			if (type == BOUNCE) a.dx = -a.dx;	
 			else if (type == SPLAT)	a.dx = 0;
-			a.x = -GameEngine.boardWidth+(a.size/2);
+			a.x = -GameEngine.curGame.getWidth()+(a.size/2);
 		}
 		
-		if (a.y > GameEngine.boardHeight-(a.size/2)) {
+		if (a.y > GameEngine.curGame.getHeight()-(a.size/2)) {
 			if (type == BOUNCE) a.dy = -a.dy;	
 			else if (type == SPLAT)	a.dy = 0;
-			a.y = GameEngine.boardHeight-(a.size/2);
-		} else if (a.y < -GameEngine.boardHeight+(a.size/2)) {
+			a.y = GameEngine.curGame.getHeight()-(a.size/2);
+		} else if (a.y < -GameEngine.curGame.getHeight()+(a.size/2)) {
 			if (type == BOUNCE) a.dy = -a.dy;	
 			else if (type == SPLAT)	a.dy = 0;
-			a.y = -GameEngine.boardHeight+(a.size/2);
+			a.y = -GameEngine.curGame.getHeight()+(a.size/2);
 		}
 	}
 

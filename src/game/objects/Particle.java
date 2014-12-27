@@ -1,11 +1,15 @@
 package game.objects;
+import java.util.ArrayList;
+
 import game.logic.*;
+
 import javax.media.opengl.GL2;
 
 
 public class Particle extends MovingObject {
 
 	public static final double DEFAULT_DRAG = 1.065;
+	public final static ArrayList<Particle> ALL_THIS = new ArrayList<Particle>();
 	
 	private boolean inOrbit;
 	private double decayTimer;
@@ -20,6 +24,8 @@ public class Particle extends MovingObject {
 	
 	public Particle(double thickness, double[] colour, double time, double drag) {
 		super(1, colour);
+		ALL_THIS.add(this);
+		
 		this.thickness = thickness;
 		this.speed = 1;
 		this.decayTimer = GameEngine.rand.nextDouble()*time + 0.3;
@@ -40,20 +46,20 @@ public class Particle extends MovingObject {
 		
 		//can't use the helper function here ;(
 			//because the size of the object is used as 'small'
-		if (x > GameEngine.boardWidth) {
+		if (x > GameEngine.curGame.getWidth()) {
 			dx = -dx;
-			x = GameEngine.boardWidth;
-		} else if (x < -GameEngine.boardWidth) {
+			x = GameEngine.curGame.getWidth();
+		} else if (x < -GameEngine.curGame.getWidth()) {
 			dx = -dx;
-			x = -GameEngine.boardWidth;
+			x = -GameEngine.curGame.getWidth();
 		}
 		
-		if (y > GameEngine.boardHeight) {
+		if (y > GameEngine.curGame.getHeight()) {
 			dy = -dy;
-			y = GameEngine.boardHeight;
-		} else if (y < -GameEngine.boardHeight) {
+			y = GameEngine.curGame.getHeight();
+		} else if (y < -GameEngine.curGame.getHeight()) {
 			dy = -dy;
-			y = -GameEngine.boardHeight;
+			y = -GameEngine.curGame.getHeight();
 		}
 		
 		if (!inOrbit) {
@@ -72,6 +78,11 @@ public class Particle extends MovingObject {
 	@Override
 	public void selfCol() {
 //		doesn't exist in this
+	}
+	
+	public void amHit(boolean ifPoints) {
+		super.amHit(ifPoints);
+		Particle.ALL_THIS.remove(this);
 	}
 	
 	//this is if you want orbiting particles (looks kind of weird at the moment)

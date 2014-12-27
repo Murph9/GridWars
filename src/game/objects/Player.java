@@ -47,6 +47,9 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	}
 	
 	private void newBullet() { //creates PlayerBullets, large
+		if (!GameEngine.canSpawn()) {
+    		return;
+    	}
 		if (!shooting) {
 			return;
 		}
@@ -143,7 +146,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
 		setRotation(angle);
 
-		//tail (with maths below)
+		//tail of particles
 		double thresh = GameEngine.rand.nextDouble();
 		if (Math.sqrt(dx*dx + dy*dy) > thresh) { //only matters if going less than max speed
 			MovingObject q = new Particle(2, GameEngine.BLUE, 1, Particle.DEFAULT_DRAG); //also not really sure why blue but hey..
@@ -151,7 +154,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
 		}
 		
-		//do accel (for nextTime stuff)
+		//acceleration calculations 
 		if		(xPosAccel) { dx = 1; }
 		else if	(xNegAccel) { dx = -1; }
 		else 				{ dx /= DRAG; }
@@ -196,8 +199,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 					if (o instanceof PowerUp) {
 						o.amHit(false);
 					} else {
-						GameEngine.killAll();
-						GameEngine.curGame.lostLife();
+						GameEngine.lostLife(o);
 					}
 				}
 			}

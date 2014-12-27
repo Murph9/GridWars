@@ -76,7 +76,7 @@ public class GameObject {
         	GameEngine.curGame.addKill();
         	GameEngine.curGame.addScore(score);
         	
-        	ScorePopup s = new ScorePopup(this.colour, score, 1, x-(size/2), y-0.1);
+        	TextPopup s = new TextPopup(this.colour, score, 1, x-(size/2), y-0.1);
         	s.angle = 0; //because annoying warning now that ive used it
         }
     }
@@ -102,9 +102,9 @@ public class GameObject {
         gl.glPushMatrix(); //remember it ....
         
         //transform to position, draw, then call on children
-        gl.glTranslated(this.x, this.y, 0);
-        gl.glRotated(this.angle, 0, 0, 1); //because 2D, everything rotates about the z axis
-        gl.glScaled(this.size, this.size, 1);
+        gl.glTranslated(x, y, 0);
+        gl.glRotated(angle, 0, 0, 1); //because 2D, everything rotates about the z axis
+        gl.glScaled(size, size, 1);
         
         drawSelf(gl);
         
@@ -115,6 +115,7 @@ public class GameObject {
         			o.draw(gl);
         	}
         }
+        
         gl.glPopMatrix(); //.... then put it back 
     }
 }

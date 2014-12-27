@@ -6,6 +6,9 @@ import javax.swing.Timer;
 
 
 //handles the spawning of objects, initalsed with the difficulty of the object
+//not sure whether thisfile/GameEngine/newfile should handle the actual position of the spawning objects 
+	//idea for different spawning sets, like only clones ..... (just increasing numbers of them)
+
 
 //////////////////////////
 /*objects that can be spawned: (note the key, going to use GameEngine.<NAME> later)
@@ -35,6 +38,7 @@ import javax.swing.Timer;
 //thinking about having "waves" of things spawn: (in order) (with swarms in the transition, either around the player or on the edge)	
 	//maybe the transition is slower on easy difficulty?
 	//correct gameplay should be (on as many levels as possible) easy/hard/easy/hard/...
+		//this is a known good gameplay mechanic
 /* Sv |  
  * Dv |
  *    | Ss
@@ -62,12 +66,12 @@ import javax.swing.Timer;
 
 public class SpawnHandler {
 	
-	private int diff;
+	private int type;
 	private Timer timer;
 
-	public SpawnHandler(int diff) {
-		this.diff = diff;
-		if (this.diff == 0) //TODO, just removing the warning for now
+	public SpawnHandler(int type) {
+		this.type = type;
+		if (this.type == 0) //TODO, just removing the warning for 'type' now
 			return;
 
 		ActionListener taskPerformer = new ActionListener() {
@@ -76,6 +80,7 @@ public class SpawnHandler {
 			}
 		};
 		this.timer = new Timer(200, taskPerformer);
+			//might have to be an object thats updated
 		this.timer.start();
 	}
 }

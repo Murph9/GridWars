@@ -76,8 +76,8 @@ public class Spawner extends GameObject {
 				break;
 			}
 		
-			o.setPosition(new double[]{(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.boardWidth-0.5), 
-					(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.boardHeight-0.5)});
+			o.setPosition(new double[]{(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.curGame.getWidth()-0.5), 
+					(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.curGame.getHeight()-0.5)});
 		}
 	}
 	

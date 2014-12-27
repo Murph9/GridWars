@@ -1,5 +1,6 @@
 package game.logic;
 import game.objects.*;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,17 +29,19 @@ public class GameEngine implements GLEventListener {
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
 			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, LIGHT_YELLOW = {1,1,0.2,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, BLUE = {0.2,0.2,1,0.5}, 
 			ORANGE = {1,0.6,0,0.5}, REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
+
+	public static final Random rand = new Random();
+		//just because ease of use, ive heard making a random object is slow
+	
+	private static final double KILL_SCREEN_TIME = 2;
+		//for measuring the respawn times
 	
 	////State values
 	public static int viewHeight;
 	public static int viewWidth;
 	
-	public static final Random rand = new Random();
-			//just because ease of use, seeds could be used for specific game spawns (using seeds maybe?)
-	
-	public static GameState curGame;
-	public static int boardWidth = 12, boardHeight = 10; //just incase something goes bad
-	private double curAspect;
+	public static GameState curGame; //holds the game state info, like lives...
+	private double curAspect; //for the GUI positioning
 	
 	public static Player player;
 	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; 
@@ -49,38 +52,46 @@ public class GameEngine implements GLEventListener {
 	private long myTime;
 	private long startTime;
 	
-	private ShaderControl shader; //might have an option for this later
+	private static double killCountdown; //if killscreen
+	private static GameObject killObj;
 	
-	public GameEngine(int width, int height, double scale, GameState state) {
-		Border border = new Border(width, height);
-		border.setSize(1); //just incase it stopped being 1
+	private ShaderControl shader; //might have an option to change this later
+	
+	/**Instantiates a new game engine.
+	 * @param state the state of the incoming game with fields set
+	 */
+	public GameEngine(GameState state) {
+		Border border = new Border(state.getWidth(), state.getHeight());
+		border.setSize(1); //just incase it stopped being 1 (removes warning)
 		
 		startTime = System.currentTimeMillis();
 		myCamera = new Camera();
-		myCamera.setSize(scale);
+		myCamera.setSize(state.getScale());
 		
 		GameEngine.player = new Player(1, GameEngine.WHITE);
+		textures = new MyTexture[TEXTURE_SIZE];
 		
-		curGame = state; 
-		boardWidth = width;
-		boardHeight = height;
+		//kill screen shouldn't be activated yet
+        GameEngine.killCountdown = 0;
+        GameEngine.killObj = null;
+		
+		curGame = state;
 	}
 	
 	public static double[] getPlayerPos(){  return playerPos; }
 	public static double[] getMousePos() {  return mousePos;  }
 	public static GameObject getPlayer() {  return player;    }
-	
 
-	/**Initalises what is needed for the base game to work, (no actual game)
+	/**Initalises what is needed for the base game to work, (but not an actually playable game)
+	 * Everything should be in the constructor unless it needs gl context
 	 */
 	@Override
 	public void init(GLAutoDrawable drawable) {
-		myTime = System.currentTimeMillis();
+		myTime = System.currentTimeMillis(); //this is here because of timing
 		GL2 gl = drawable.getGL().getGL2();
 		
-		String img = "images/"; //because everything moved :/
+		String img = "images/"; //because everything is in its own folder
 		
-		textures = new MyTexture[TEXTURE_SIZE]; //this could be one line i guess.. (but the static indexes might be confusing)
 		textures[PLAYER] = new MyTexture(gl, img + "player.png");
 		textures[SPINNER] = new MyTexture(gl, img + "spinner.png");
 		textures[DIAMOND] = new MyTexture(gl, img + "diamond.png");
@@ -105,9 +116,9 @@ public class GameEngine implements GLEventListener {
 		textures[SIDE_SHOT] = new MyTexture(gl, img + "sideShot.png");
 		textures[TRIANGLE] = new MyTexture(gl, img + "triangle.png");
 		
-		playerPos = player.getPosition();
+		playerPos = player.getPosition(); //this is here because it requires a screen to function
         mousePos = Mouse.theMouse.getPosition();
-		
+        
         //enable textures
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP); //Set wrap mode for texture in S direction
@@ -122,13 +133,12 @@ public class GameEngine implements GLEventListener {
 		shader.fsrc = shader.loadShader(img + "f.txt"); // fragment GLSL Code
 		shader.vsrc = shader.loadShader(img + "v.txt"); // vertex GLSL Code
 		shader.init(gl);
-		//TODO
+		//this seems to be fine above, check the shader use in draw
 		
 		//init sounds
 		SoundEffect.init();
 	}
 
-	
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GameEngine.viewHeight = drawable.getHeight();
@@ -146,13 +156,29 @@ public class GameEngine implements GLEventListener {
 		playerPos = player.getPosition();
 		mousePos = Mouse.theMouse.getPosition();
 		
-		GameObject.ROOT.draw(gl);
+		//only draw the default things if on kill screen (but not the player)
+		if (killCountdown > 0) {
+			LinkedList<GameObject> allObj = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
+			if (killCountdown >= GameEngine.KILL_SCREEN_TIME/2) {
+				for (GameObject o : allObj) {
+					if (!(o instanceof Player || o.equals(GameObject.ROOT))) {
+						o.draw(gl);
+					}
+				}
+			} else {
+				GameObject.ROOT.draw(gl);
+			}
+		} else { //if not then draw everything as normal
+			GameObject.ROOT.draw(gl);
+		}
 		
+		//start again to draw the GUI
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
-		drawUI(gl);
+		drawGUI(gl);
 		gl.glPopMatrix();
-		
+
+		shader.dontUseShader(gl);
 		//finding the screen resolution [could be useful later]
 //		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //		int width = (int)screenSize.getWidth();
@@ -167,7 +193,7 @@ public class GameEngine implements GLEventListener {
 		GL2 gl = drawable.getGL().getGL2();
 		
 		myCamera.reshape(gl, x, y, width, height);
-		this.curAspect = (double)width / (double)height; //so UI is fine
+		this.curAspect = (double)width / (double)height; //so the GUI is fine
 		
 		// this has to happen after myCamera.reshape() to use the new projection matrix
 		Mouse.theMouse.reshape(gl);
@@ -178,7 +204,37 @@ public class GameEngine implements GLEventListener {
 		double dt = (time - myTime) / 1000.0;
 		myTime = time;
 		
-		//lag prevention TODO
+		//when a life is lost the killScreen is displayed
+		if (killCountdown > 0) {
+			killCountdown -= dt;
+			
+			if (killCountdown <= 0) { //the respawn time
+				killCountdown = 0;
+				GameEngine.curGame.lostLife();
+			} else if (killCountdown <= GameEngine.KILL_SCREEN_TIME/2) { //the obj that hit you
+				GameObject.ALL_OBJECTS.remove(killObj);
+				GameEngine.player.x = 0;
+				GameEngine.player.y = 0;
+				GameEngine.player.dx = 0;
+				GameEngine.player.dy = 0;
+				GameEngine.myCamera.x = 0;
+				GameEngine.myCamera.y = 0;
+				killObj = null;
+				TextPopup s = new TextPopup(WHITE, "Ready", 0.1, -0.6, 1);
+				s.angle = 0; //remove warning message
+			}
+			
+				//still want to animate particles (so they can disappear)
+			LinkedList<Particle> all = new LinkedList<Particle>(Particle.ALL_THIS);
+			for (GameObject obj: all) {
+				obj.update(dt);
+			}
+			
+			return;
+		}
+		
+		//lag handling TODO:
+//		dt = 0.036;
 
 		List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
@@ -187,46 +243,11 @@ public class GameEngine implements GLEventListener {
 			g.update(dt);
 		}
 
-		curGame.update(dt); //to count down the timer for the powerups
-		
-		if (GameEngine.curGame.getLives() < 0) {
-//			dt = 0; //yeah not too sure yet
-				//something todo with freezing the thing that hit you
-		}
+		curGame.update(dt); //to count down the powerups timers
 	}
 	
-	public static void killAll() {
-		LinkedList<GameObject> n = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
-		for (GameObject o: n) {
-			if (o instanceof Player || o instanceof Border || o instanceof Camera || o instanceof PowerUp || o.equals(GameObject.ROOT)) {
-			} else {
-				GameObject.ALL_OBJECTS.remove(o);
-			}
-		}
-		
-		BlackHole.ALL_THIS.clear(); //calling delete() on each object would be weird
-		ConnectedTriangle.ALL_THIS.clear();
-		HomingButterfly.ALL_THIS.clear();
-		HomingDiamond.ALL_THIS.clear();
-		PlayerBullet.ALL_THIS.clear();
-		ShieldedClone.ALL_THIS.clear();
-		ShySquare.ALL_THIS.clear();
-		SimpleSpinner.ALL_THIS.clear();
-		SplitingSquare.ALL_THIS.clear();
-		
-		for (int i = 0; i < 50; i++) {
-			for (int j = 0; j < 20; j++) {
-				MovingObject p = new Particle(2, GameEngine.WHITE, 0.7, Particle.DEFAULT_DRAG);
-				p.x = playerPos[0]+Math.cos(360*j/20);
-				p.y = playerPos[1]+Math.sin(360*j/20);
-				p.dx = GameEngine.rand.nextDouble()*Math.cos(360*i/20)*50;
-				p.dy = GameEngine.rand.nextDouble()*Math.sin(360*i/20)*50;
-			}
-		}
-	}
-
 	//Draws the score text and UI
-	private void drawUI(GL2 gl) {
+	private void drawGUI(GL2 gl) {
 		gl.glLoadIdentity();
 		GLUT glut = new GLUT();
 		gl.glLineWidth(2f);
@@ -351,7 +372,70 @@ public class GameEngine implements GLEventListener {
 		
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
+
+	/**Kill all objects on the screen
+	 * @param object Optional game object that will live after method
+	 */
+	public static void killAll(GameObject object) {
+		LinkedList<GameObject> allList = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
+		for (GameObject obj: allList) {
+			if (obj instanceof Player || obj instanceof Border || obj instanceof Camera || obj instanceof PowerUp || obj.equals(GameObject.ROOT)) {
+			} else {
+				GameObject.ALL_OBJECTS.remove(obj);
+					//was going to account for the given object here, 
+						//but its easier just to add it after
+			}
+		}
+		
+		//calling delete() on each object would be weird
+		BlackHole.ALL_THIS.clear();  //just remove the references (this should be easier)
+		ConnectedTriangle.ALL_THIS.clear();
+		HomingButterfly.ALL_THIS.clear();
+		HomingDiamond.ALL_THIS.clear();
+		PlayerBullet.ALL_THIS.clear();
+		TextPopup.ALL_THIS.clear();
+		ShieldedClone.ALL_THIS.clear();
+		ShySquare.ALL_THIS.clear();
+		SimpleSpinner.ALL_THIS.clear();
+		SplitingSquare.ALL_THIS.clear();
+		
+		//particles of the death screen (was at 100 but caused lag, now 25) [settings?]
+		for (int i = 0; i < 25; i++) {
+			for (int j = 0; j < 20; j++) {
+				MovingObject p = new Particle(2, GameEngine.WHITE, 0.7, Particle.DEFAULT_DRAG);
+				p.x = playerPos[0];
+				p.y = playerPos[1];
+				p.dx = GameEngine.rand.nextDouble()*Math.cos(360*i/20)*50;
+				p.dy = GameEngine.rand.nextDouble()*Math.sin(360*i/20)*50;
+			}
+		}
+		if (object != null) {
+			GameObject.ALL_OBJECTS.add(object); //now it exists to draw on the killScreen
+		}
+	}
+
+	/**Checks if the game isn't in the kill screen mode
+	 * @return true, if you can spawn objects - must check here first 
+	 */
+	public static boolean canSpawn() {
+		return (killCountdown == 0);
+	}
+	
+	public static void lostLife(GameObject obj) {
+		GameEngine.killAll(obj);
+		
+		killCountdown = GameEngine.KILL_SCREEN_TIME;
+		killObj = obj;
+		
+		if (curGame.getLives() < 0) { //no lives left
+			TheGame.reloadMenu(curGame);
+		}
+	}
 	
 	@Override
-	public void dispose(GLAutoDrawable drawable) { }
+	public void dispose(GLAutoDrawable drawable) {
+		//maybe save the game as "autosave" using curGame data
+			//called by system when the window is closed
+		System.out.println(GameEngine.curGame.toString());
+	}
 }

@@ -12,12 +12,3 @@ void main (void)
 
 //using stpq to reference different indexes
   //warning - version specific -  using a tedious [0] and [1] option above
-
-  
-  //void main() {
-//	if (gl_TexCoord[0].st != 0) { //if no texture given	
-//		gl_FragColor = texture2D(texture1, gl_TexCoord[0].st) * gl_Color;
-//	} else { //for untextured things
-//		gl_FragColor = gl_Color;
-//	}
-//}

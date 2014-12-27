@@ -22,9 +22,7 @@ import javax.swing.Timer;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
-
-//not sure whether thisfile/GameEngine/newfile should handle the actual position of the spawning objects 
-//idea for different spawning sets, like only clones ..... (just increasing numbers of them)
+//Handles menus and other things
 //rather large class...
 
 public class TheGame {
@@ -40,7 +38,8 @@ public class TheGame {
 	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
 	private Random random;
 	
-	private JCheckBox particles;
+	private JCheckBox particles; //settings (from the checkboxes)
+//	private JCheckBox particles; //add others... (thats not 'and')
 	
 	private int boardWidth = 16, boardHeight = 12; //at least 4 please
 	private double scale = 10; //you know, it kind of works, as easy as this number is 
@@ -58,7 +57,7 @@ public class TheGame {
 		system.initMenu();
 	}
 	
-	//draw menu
+	//draw the menu
 	public void initMenu() {
 		random = new Random();
 
@@ -195,18 +194,19 @@ public class TheGame {
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
-		this.engine = new GameEngine(boardWidth, boardHeight, scale, new GameState(10000, this.particles.isSelected()));
-		theFrame.setLocationRelativeTo(null);
+		this.engine = new GameEngine(new GameState(boardWidth, boardHeight, scale, 10000, this.particles.isSelected()));
+		this.theFrame.setLocationRelativeTo(null);
 		
 		this.gamePanel = new GLJPanel(glcapabilities);
 		this.gamePanel.addGLEventListener(engine);
 		
 		this.theFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 		
-		if (gameWidth.getText().matches("$[0-9]+^") || gameHeight.getText().matches("$[0-9]+^")) {
+			//matches just numbers
+		if (gameWidth.getText().matches("[0-9]+") || gameHeight.getText().matches("[0-9]+")) {
 			int width = Integer.parseInt(gameWidth.getText());
 			int height = Integer.parseInt(gameHeight.getText());
-			if (width > 800 && height > 600) { //minimum size
+			if (width >= 800 && height >= 600) { //minimum size you should have
 				this.theFrame.setSize(width, height);
 			} else {
 				this.theFrame.setSize(pixelWidth, pixelHeight);
@@ -214,6 +214,7 @@ public class TheGame {
 		} else {
 			this.theFrame.setSize(pixelWidth, pixelHeight);
 		}
+		
 		this.theFrame.setName("GridWars - Jake Murphy");
 		this.theFrame.setVisible(true);
 		this.theFrame.setFocusable(true);
@@ -234,7 +235,6 @@ public class TheGame {
         this.gamePanel.addMouseListener(Mouse.theMouse);
         
         this.gamePanel.requestFocus();
-//        this.gamePanel.setLocation(menuPanel.getLocation());
         this.theFrame.setLocationRelativeTo(null);
         
         this.animator = new FPSAnimator(60);
@@ -242,12 +242,16 @@ public class TheGame {
         this.animator.start();
     }
 	
-	public static void reloadMenu(String name, int score) {
-		
+	public static void reloadMenu(GameState state) {
+		//TODO (its the call back to menu when death occurs)
+		System.out.println("(lost all lives, from reloadMenu)");
 	}
 	
     //spawning. simple. Look at SpawnHandler for better spawning logic
     private void newEnemy() {
+    	if (!GameEngine.canSpawn()) {
+    		return;
+    	}
     	int a = random.nextInt(13);
     	GameObject s = null;
     	switch (a) {

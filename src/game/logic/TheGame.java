@@ -1,21 +1,26 @@
 package game.logic;
 import game.objects.*;
+
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.Random;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -25,7 +30,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 //Handles menus and other things
 //rather large class...
 
-public class TheGame {
+public class TheGame implements ActionListener {
 
 	private JFrame theFrame; //reuseable frame that 
 	private JPanel menuPanel; //for the menu
@@ -50,7 +55,12 @@ public class TheGame {
 	private JTextField gameWidth;
 	private JTextField gameHeight;
 	
-	public static LeaderBoard board;
+	private GridBagConstraints gbLayout;
+	private static JTextArea board;
+	
+	private ButtonGroup group;
+	private final String easyB = "Easy", medB = "Med", hardB = "Hard";
+	
 	
  	public static void main(String[] args) {
 		TheGame system = new TheGame();
@@ -71,44 +81,66 @@ public class TheGame {
 		newGamePanel.setLayout(new GridBagLayout());
 		newGamePanel.setBorder(BorderFactory.createTitledBorder("New Game"));
 		
-		GridBagConstraints c = new GridBagConstraints();
+		
 		////////////////////////////////////////////////
+		////Game Mode
+		
+		GridBagConstraints a = new GridBagConstraints();
+		
+		JRadioButton buttonEasy = new JRadioButton(easyB);
+		buttonEasy.setActionCommand(LeaderBoard.EASY);
+		
+		JRadioButton buttonMed = new JRadioButton(medB);
+		buttonMed.setActionCommand(LeaderBoard.MED);
+		
+		JRadioButton buttonHard = new JRadioButton(hardB);
+		buttonHard.setActionCommand(LeaderBoard.HARD);
+		
+		JButton go = new JButton("Go");
+		go.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+		            AbstractButton button = buttons.nextElement();
 
-		JPanel headPanel = new JPanel();
-		headPanel.setLayout(new GridBagLayout());
-		
-		JTextArea t = new JTextArea("Welcome to NotGridWars2\nArrow keys/WASD to move, right/left mouse button do things");
-		t.setEditable(false);
-		headPanel.add(t, c);
-		
-		////////////////////////////////////////////////
-		JButton buttonEasy = new JButton("Easy");
-		buttonEasy.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				initGame(0);
+		            if (button.isSelected()) {
+		                initGame(button.getText());
+		            }
+		        }
 			}
 		});
-		newGamePanel.add(buttonEasy, c);
 		
-		JButton buttonMed = new JButton("Med");
-		buttonMed.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				initGame(1);
-			}
-		});
-		newGamePanel.add(buttonMed, c);
+		group = new ButtonGroup();
+		group.add(buttonEasy);
+		group.add(buttonMed);
+		group.add(buttonHard);
 		
-		JButton buttonHard = new JButton("Hard");
-		buttonHard.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				initGame(2);
-			}
-		});
-		newGamePanel.add(buttonHard, c);
-		//////////////////////////////////////////////////
+		buttonMed.setSelected(true); //because its hard coded somewhere else i think (in this file)
+		
+		buttonEasy.addActionListener(this);
+		buttonMed.addActionListener(this);
+		buttonHard.addActionListener(this);
+
+		
+		a.fill = GridBagConstraints.HORIZONTAL;
+		
+		a.gridx = 0;
+		a.gridy = 0;
+		a.gridheight = 4;
+		newGamePanel.add(go, a);
+		
+		a.gridheight = 1;
+		a.gridx++;
+		a.gridy++;
+		newGamePanel.add(buttonEasy, a);
+		a.gridy++;
+		newGamePanel.add(buttonMed, a);
+		a.gridy++;
+		newGamePanel.add(buttonHard, a);
+		
+		
+		////////////////////////////////////////////////// 
+		////Settings
 		GridBagConstraints c2 = new GridBagConstraints();
 		
 		JPanel settingsPanel = new JPanel();
@@ -133,48 +165,43 @@ public class TheGame {
 		c2.gridy++;
 		gameHeight = new JTextField("768");
 		settingsPanel.add(gameHeight, c2);
-		//////////////////////////////////////////////////
-		
-		JPanel scoresPanel = new JPanel();
-		scoresPanel.setLayout(new GridBagLayout());
-		GridBagConstraints scoresC = new GridBagConstraints();
-		scoresC.gridx = 0;
-		scoresC.insets = new Insets(3,3,3,3);
-		
-		LeaderBoard l0 = new LeaderBoard(LeaderBoard.EASY, false);
-		scoresPanel.add(l0, scoresC);
-		l0.writeScore(-1); //how you write the score
-		scoresC.gridx++;
-		LeaderBoard l1 = new LeaderBoard(LeaderBoard.MED, false);
-		scoresPanel.add(l1, scoresC);
-		l1.writeScore(-1); //how you write the score
-		scoresC.gridx++;
-		LeaderBoard l2 = new LeaderBoard(LeaderBoard.HARD, false);
-		scoresPanel.add(l2, scoresC);
-		l2.writeScore(-1); //how you write the score
-		//////////////////////////////////////////////////
-		
-		//something else im sure
 		
 		//////////////////////////////////////////////////
-		c.gridy = 0;
-		c.gridx = 0;
-		c.gridwidth = 2;
-		menuPanel.add(headPanel, c);
+		////Heading Info + positions		
 		
-		c.gridy++;
-		c.gridwidth = 1;
-		menuPanel.add(newGamePanel, c);
+		gbLayout = new GridBagConstraints();
+		gbLayout.fill = GridBagConstraints.HORIZONTAL;
+		gbLayout.insets = new Insets(6,6,6,6);
+		
+		JPanel headPanel = new JPanel();
+		headPanel.setLayout(new GridBagLayout());
+		
+		JTextArea t = new JTextArea("Welcome to NotGridWars2\nArrow keys/WASD to move, right/left mouse button do things");
+		t.setEditable(false);
+		headPanel.add(t, gbLayout);
+		
+		gbLayout.gridy = 0;
+		gbLayout.gridx = 0;
+		gbLayout.gridwidth = 2;
+		menuPanel.add(headPanel, gbLayout);
+		
+		gbLayout.gridy++;
+		gbLayout.gridwidth = 1;
+		menuPanel.add(newGamePanel, gbLayout);
 
-		c.gridx++;
-		menuPanel.add(settingsPanel, c);
+		gbLayout.gridy++;
+		menuPanel.add(settingsPanel, gbLayout);
 		
-		c.gridx = 0;
-		c.gridy++;
-		c.gridwidth = 2;
-		menuPanel.add(scoresPanel, c);
+		///////Scoreboard
+		board = LeaderBoard.getLeaderBoard(LeaderBoard.MED);
+		
+		gbLayout.gridx++;
+		gbLayout.gridy = 1;
+		gbLayout.gridheight = 2;
+		menuPanel.add(board, gbLayout);
 		
 		//////////////////////////////////////////////////
+		////Other Things
 		theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		theFrame.setName("Menu - Jake Murphy");
 		
@@ -188,8 +215,12 @@ public class TheGame {
 	}
 	
 	//because its in the same file the settings dont't need to be passed in [:D]
-	private void initGame(int diff) {
+	private void initGame(String diff) {
 		menuPanel.setVisible(false);
+		
+		//TODO
+		//might just make a note here, the 'diff' input to this method isn't being used
+		//TODO
 		
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
@@ -202,7 +233,7 @@ public class TheGame {
 		
 		this.theFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 		
-			//matches just numbers
+			//matches just numbers [hopefully]
 		if (gameWidth.getText().matches("[0-9]+") || gameHeight.getText().matches("[0-9]+")) {
 			int width = Integer.parseInt(gameWidth.getText());
 			int height = Integer.parseInt(gameHeight.getText());
@@ -243,8 +274,9 @@ public class TheGame {
     }
 	
 	public static void reloadMenu(GameState state) {
-		//TODO (its the call back to menu when death occurs)
-		System.out.println("(lost all lives, from reloadMenu)");
+		//TODO (ask for name and other things)
+		System.out.println("(lost all lives)\n   - reloadMenu");
+		LeaderBoard.writeScore(LeaderBoard.EASY, state.getScore(), "ME");
 	}
 	
     //spawning done simple. Look at SpawnHandler for better spawning logic
@@ -274,5 +306,19 @@ public class TheGame {
     	}
     	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
     }
+
+	
+    
+    //rewrite the leaderboard to represent the current difficulty set
+    @Override
+	public void actionPerformed(ActionEvent evt) {
+    	menuPanel.remove(board);
+    	
+    	board = LeaderBoard.getLeaderBoard(evt.getActionCommand());
+    	menuPanel.add(board, gbLayout);
+    	
+    	theFrame.revalidate();
+    	theFrame.repaint();
+	}
 
 }

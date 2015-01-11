@@ -13,80 +13,52 @@ import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
+//TODO - rewrite please so that it stores the info in itself, rather than to file
+/* things to store in file: (noting that the file needs to be rewritten)
+   * Game Stats (long term stats):
+        * highest score
+        * highest multiplier
+        * total kills
+        * powerups collected
+        * times died
+        * total score
+        * ???
+   * most recent record - method
+   * files containing each record set (name + score)
+   * 
+ * Also requires a method that saves to file on abrupt exit of program
+ *    called from wherever makes sense
+*/
+
+
+
 //maybe returns text for a textarea rather than being one
-public class LeaderBoard extends JTextArea {
+public class LeaderBoard {//extends JTextArea {
 
 	public static final String 
-		HARD = "hard", MED = "medium", EASY = "easy";
+		HARD = "hard.txt", MED = "medium.txt", EASY = "easy.txt";
 	
-	private static final long serialVersionUID = 1L;
-	private LinkedList<Record> records;
-	private String file;
 	
-	//TODO - rewrite please so that it stores the info in itself, rather than to file
-	/* things to store in file: (noting that the file needs to be rewritten)
-	   * Stats in the curGame
-	   * Game Stats (long term stats):
-	        * highest score
-	        * highest multiplier
-	        * total kills
-	        * powerups collected
-	        * times died
-	        * total score
-	        * ???
-	   * most recent record
-	   * ???
-	   * 
-	 * Also requires a method that saves to file on abrupt exit of program
-	 *    called from wherever makes sense
-	*/
-	private File saveFile;
-	
-	//is just a text area
-	LeaderBoard(String gameType, boolean editable) {
+	//writes scores to file (under the current difficulty)
+	public static void writeScore(String diff, int score, String name) {
+		File file = new File(diff);
 		
-		this.file = gameType;
-		if (this.file.equals(HARD) || this.file.equals(MED) || this.file.equals(EASY)) {
-			this.file  = this.file+".txt"; //<name>.txt
-			
-			this.saveFile = new File(this.file);
-		} else {
-			//try again
-		}
+		LinkedList<Record> records = new LinkedList<Record>();
 		
-		setEditable(editable); //no editing the textbox please
-		
-		this.records = new LinkedList<Record>(); //start to read records
-		try {
-			Scanner oldScores = new Scanner(new FileReader(this.file));
-			while(oldScores.hasNext()) {
-				this.records.add(new Record(oldScores.nextInt(), oldScores.next()));
-			}
-			oldScores.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		Collections.sort(this.records, new Comparator<Record>() {
-			public int compare(Record a, Record b) {
-				if (a.equals(b)) { return 0; }
-				if (a.getScore() <= b.getScore()) { 
-					return 1; // a
+		if (file.exists()) {
+			try {
+				Scanner scores = new Scanner(new FileReader(file));
+				while (scores.hasNext()) {
+					records.add(new Record(scores.nextInt(), scores.next()));
 				}
-				return -1; // b
+				scores.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
-		});
-	}
-	
-	
-	//add score to the current records and write to file them in order
-	public void addScore(int score, String name) {
-
-		Record temp = new Record(score, name);
-		if (this.records.contains(temp)) return; //there are duplicates sometimes
-		this.records.add(temp);
+		}
+		records.add(new Record(score, name));
 		
-		Collections.sort(this.records, new Comparator<Record>() { //sort the Record list
+		Collections.sort(records, new Comparator<Record>() {
 			public int compare(Record a, Record b) {
 				if (a.equals(b)) { return 0; }
 				if (a.getScore() <= b.getScore()) { 
@@ -96,43 +68,97 @@ public class LeaderBoard extends JTextArea {
 			}
 		});
 		
-		this.saveFile.delete();
-		this.saveFile = new File(this.file);
+		file.delete();
+		file = new File(diff);
 		
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(this.saveFile, true)));
+			out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (out == null) return; //freak out I guess
 		
-		int count = Math.min(this.records.size(), 10);
+		int count = Math.min(records.size(), 10);
 		for (int i = 0; i < count; i++) { //save the best min(records.size(), 15) to file
-			out.println(this.records.get(i));
+			out.println(records.get(i));
 		}
 		
 		out.close();
-		writeScore(score); //with the currently 
 	}
 	
+	//returns the best score (for use on
 
-	public void writeScore(int score) { //makes score bold
-		setText(this.file +" - LeaderBoard\n" + "Score\t|  Name\n"); //Heading
-
-		int count = 0;
-		for (Record i: this.records) {
-			if (i.getScore() == score) {
-				setText(getText() +"*" + i.toLineString() + "\n");
-			} else {
-				setText(getText() + i.toLineString() + "\n");
+	
+	public static void getBestScore(String diff) {
+		
+	}
+	
+	
+	////JTextArea stuff:
+	
+	
+	
+	//returns the TextArea of the scores (for displaying)
+	public static JTextArea getLeaderBoard(String diff) {
+		JTextArea area = new JTextArea();
+		area.setEditable(false);
+		
+		File file = new File(diff);
+		
+		String text = writeText(file);
+		
+		if (diff.equals(EASY)) {
+			area.setText("Easy Scores\n"+ text);
+		} else if (diff.equals(MED)) {
+			area.setText("Medium Scores\n" + text);
+		} else if (diff.equals(HARD)){
+			area.setText("Hard Scores\n" + text);
+		}
+		
+		return area;
+	}
+	
+	//returns a string containing the records for the given file
+	
+	//returns the text from the file for the text area 
+	private static String writeText(File file) {
+		LinkedList<Record> records = new LinkedList<Record>();
+		
+		if (file.exists()) {
+			try {
+				Scanner scores = new Scanner(new FileReader(file));
+				while (scores.hasNext()) {
+					records.add(new Record(scores.nextInt(), scores.next()));
+				}
+				scores.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
+		}
+		
+		Collections.sort(records, new Comparator<Record>() {
+			public int compare(Record a, Record b) {
+				if (a.equals(b)) { return 0; }
+				if (a.getScore() <= b.getScore()) { 
+					return 1; // a
+				}
+				return -1; // b
+			}
+		});
+		
+		String text = "";
+		
+		int count = 0;
+		for (Record i: records) {
+			text += (i.toLineString() + "\n");
+
 			if (count >= 10) break;
 			count++;
 		}
-		revalidate();
-		repaint();
+		
+		return text;
 	}
+
 }
 
 class Record {

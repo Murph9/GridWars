@@ -212,11 +212,13 @@ public class GameEngine implements GLEventListener {
 		if (killCountdown > 0) {
 			killCountdown -= dt;
 			
+			//TODO comment below section
+			
 			if (killCountdown <= 0) { //the respawn time
 				killCountdown = 0;
 				GameEngine.curGame.lostLife();
-			} else if (killCountdown <= GameEngine.KILL_SCREEN_TIME/2) { //the obj that hit you
-				GameObject.ALL_OBJECTS.remove(killObj);
+			} else if (killCountdown <= GameEngine.KILL_SCREEN_TIME/2) { 
+				GameObject.ALL_OBJECTS.remove(killObj); //the obj that hit you
 				GameEngine.player.x = 0;
 				GameEngine.player.y = 0;
 				GameEngine.player.dx = 0;
@@ -431,7 +433,7 @@ public class GameEngine implements GLEventListener {
 		killCountdown = GameEngine.KILL_SCREEN_TIME;
 		killObj = obj;
 		
-		if (curGame.getLives() < 0) { //no lives left
+		if (curGame.getLives() < 1) { //no lives left
 			TheGame.reloadMenu(curGame);
 		}
 	}

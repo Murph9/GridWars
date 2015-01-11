@@ -2,7 +2,9 @@ GridWars
 ========
 
 Well the git description should do, its a GridWars clone.
-Made by Jake Murphy 0447024028
+
+Made by Jake Murphy 
+Murph9y@gmail.com
 
 ========
 

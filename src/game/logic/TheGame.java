@@ -247,7 +247,7 @@ public class TheGame {
 		System.out.println("(lost all lives, from reloadMenu)");
 	}
 	
-    //spawning. simple. Look at SpawnHandler for better spawning logic
+    //spawning done simple. Look at SpawnHandler for better spawning logic
     private void newEnemy() {
     	if (!GameEngine.canSpawn()) {
     		return;

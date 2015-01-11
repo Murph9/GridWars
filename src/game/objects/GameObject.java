@@ -77,7 +77,9 @@ public class GameObject {
         	GameEngine.curGame.addScore(score);
         	
         	TextPopup s = new TextPopup(this.colour, score, 1, x-(size/2), y-0.1);
-        	s.angle = 0; //because annoying warning now that ive used it
+        	s.angle = 0; //because annoying warning is gone now that ive used it
+        	
+        	SoundEffect.SHOT.play(10, 0);
         }
     }
     

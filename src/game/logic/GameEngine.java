@@ -122,11 +122,15 @@ public class GameEngine implements GLEventListener {
         //enable textures
 		gl.glEnable(GL2.GL_TEXTURE_2D);
 		gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP); //Set wrap mode for texture in S direction
-    	gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP);//Set wrap mode for texture in T direction
+    	gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP); //Set wrap mode for texture in T direction
 		
 		gl.glEnable(GL2.GL_BLEND); //alpha blending (you know transparency)
 		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA); //special blending
 		
+		//smoothing, TODO setting
+		gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
+		gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
+		gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
 		
 		// create a new shader object that we can reference later to activate it.
 		shader = new ShaderControl();

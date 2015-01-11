@@ -1,4 +1,5 @@
 package game.logic;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -7,12 +8,14 @@ import javax.sound.sampled.*;
 
 
 public enum SoundEffect {
+	//TODO makes better ones
+	//lots of others needed
 	SHOT("sounds/bullet1.wav"), //bullet shoot 
 	BULLET_KILL("sounds/bullet_hit.wav"), //bullet die 
 	POWERUP("sounds/Powerup.wav"),   // powerup
 	POWERUP2("sounds/Powerup2.wav"),         // gong
 	SHOOT("sounds/shot.wav");       // bullet
-	//lots of others
+
 	
 	// Nested class for specifying volume
 	public static enum Volume {
@@ -46,7 +49,7 @@ public enum SoundEffect {
 	}
 	
 	// Play or Re-play the sound effect from the beginning, by rewinding.
-	public void play() {
+	public void play(int level, float pan) { //pan not used yet TODO
 		if (volume != Volume.MUTE) {
 			if (clip.isRunning()) {
 				clip.stop();   // Stop the player if it is still running
@@ -56,7 +59,7 @@ public enum SoundEffect {
 		}
 		
 		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-		gainControl.setValue(-10.0f); // Reduce volume by 10 decibels.
+		gainControl.setValue(-level); // Reduce volume by level decibels.
 	}
 	
 	// Optional static method to pre-load all the sound files.

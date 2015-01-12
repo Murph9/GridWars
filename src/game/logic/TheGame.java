@@ -19,6 +19,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
@@ -43,8 +44,9 @@ public class TheGame implements ActionListener {
 	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
 	private Random random;
 	
-	private JCheckBox particles; //settings (from the checkboxes)
-//	private JCheckBox particles; //add others... (thats not 'and')
+	//settings checkboxes - add others... (thats not 'and')
+	private JCheckBox particles;
+	private JCheckBox antialiasing;
 	
 	private int boardWidth = 16, boardHeight = 12; //at least 4 please
 	private double scale = 10; //you know, it kind of works, as easy as this number is 
@@ -147,24 +149,49 @@ public class TheGame implements ActionListener {
 		settingsPanel.setLayout(new GridBagLayout());
 		settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
 		
+		//labels
 		c2.gridx = 0;
 		c2.gridy = 0;
+		settingsPanel.add(new JLabel("Width"), c2);
+
+		c2.gridx++;
+		settingsPanel.add(new JLabel("Height"), c2);
+
+		c2.fill = GridBagConstraints.HORIZONTAL;
+		
+		//textboxes
+		c2.gridy++;
+		c2.gridx = 0;
+		gameWidth = new JTextField("1024"); //read both from settinfsgs later
+		settingsPanel.add(gameWidth, c2);
+		
+		c2.gridx++;
+		gameHeight = new JTextField("768");
+		settingsPanel.add(gameHeight, c2);
+
+		//checkboxes
+		c2.gridwidth = 2;
+		c2.gridx = 0;
+		c2.gridy++;
 		JCheckBox settings = new JCheckBox("Yay check box");
 		settingsPanel.add(settings, c2);
 		
 		c2.gridy++;
-		this.particles = new JCheckBox("Particles");
-		this.particles.setSelected(true); //defaults to on (read from settings later)
-		settingsPanel.add(this.particles, c2);
+		particles = new JCheckBox("Particles");
+		particles.setSelected(true); //defaults to on (read from settings later)
+		settingsPanel.add(particles, c2);
+		
+		c2.gridy++;
+		antialiasing = new JCheckBox("Antialiasing");
+		antialiasing.setSelected(true);
+		settingsPanel.add(antialiasing, c2);
 		
 		c2.gridy = 0;
 		c2.gridx++;
-		gameWidth = new JTextField("1024"); //read both from settinfsgs later
-		settingsPanel.add(gameWidth, c2);
+		
 		
 		c2.gridy++;
-		gameHeight = new JTextField("768");
-		settingsPanel.add(gameHeight, c2);
+		
 		
 		//////////////////////////////////////////////////
 		////Heading Info + positions		
@@ -219,12 +246,16 @@ public class TheGame implements ActionListener {
 		
 		//TODO
 		//might just make a note here, the 'diff' input to this method isn't being used
-		//TODO
+			//thats because its meant to be called to the spawner
+				//but the player speed relative to everything needs to be changed
 		
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
-		this.engine = new GameEngine(new GameState(boardWidth, boardHeight, scale, 10000, this.particles.isSelected()));
+		//TODO change for leaderboard
+		this.engine = new GameEngine(new GameState(boardWidth, boardHeight, scale, LeaderBoard.getBestScore(LeaderBoard.EASY), 
+				new boolean[] {this.particles.isSelected(), this.antialiasing.isSelected()} ));
+		
 		this.theFrame.setLocationRelativeTo(null);
 		
 		this.gamePanel = new GLJPanel(glcapabilities);
@@ -270,10 +301,15 @@ public class TheGame implements ActionListener {
         this.animator = new FPSAnimator(60);
         this.animator.add(gamePanel);
         this.animator.start();
+        
+        
+        
+        //////
+        LeaderBoard.writeSettings(1024, 728, new boolean[] { true, true });
     }
 	
 	public static void reloadMenu(GameState state) {
-		//TODO (ask for name and other things)
+		//TODO (ask for name)
 		System.out.println("(lost all lives)\n   - reloadMenu");
 		LeaderBoard.writeScore(LeaderBoard.EASY, state.getScore(), "ME");
 	}
@@ -307,7 +343,6 @@ public class TheGame implements ActionListener {
     }
 
 	
-    
     //rewrite the leaderboard to represent the current difficulty set
     @Override
 	public void actionPerformed(ActionEvent evt) {

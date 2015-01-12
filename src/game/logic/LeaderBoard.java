@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
-//TODO - rewrite please so that it stores the info in itself, rather than to file
+//TODO
 /* things to store in file: (noting that the file needs to be rewritten)
    * Game Stats (long term stats):
         * highest score
@@ -37,7 +37,73 @@ public class LeaderBoard {//extends JTextArea {
 
 	public static final String 
 		HARD = "hard.txt", MED = "medium.txt", EASY = "easy.txt";
+	private static final String STATS = "stats.txt", SETTINGS = "settings.txt",
+			SCREEN_WIDTH = "width ", SCREEN_HEIGHT = "height ",
+			IF_PARTICLES = "particles ", IF_ANTIALIASING = "antialiasing "; //.... [note the space]
 	
+	/*
+	//Current game values
+	private int score, totalKills;
+	
+	private double bulletSpeed;
+	
+	//Settings:
+	private int width, height;
+	private double scale;
+	
+	private boolean ifParticles; //should have more than on/off options
+	private boolean ifAliasing;
+	*/
+	
+	//returns a int[]: width, height, other boolean (1 = true)
+	public static int[] readSettings() {
+		return null;
+		//TODO got bored of files
+	}
+	
+	
+	//change settings
+	public static void writeSettings(int width, int height, boolean[] settings) {
+		File file = new File(SETTINGS);
+		
+		PrintWriter out = null;
+		try {
+			file.createNewFile(); //only works if it doesn't exist
+			out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		out.println(SCREEN_WIDTH + new Integer(width).toString());
+		out.println(SCREEN_HEIGHT+ new Integer(height).toString());
+		
+		out.println(IF_PARTICLES + settings[0]);
+		out.println(IF_ANTIALIASING + settings[1]);
+		
+		out.close();
+	}
+	
+	
+	//adds to the stats.txt file
+	public static void addToStats(GameState state) {
+		File file = new File(STATS);
+		
+		PrintWriter out = null;
+		try {
+			file.createNewFile(); //only works if it doesn't exist
+			out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//TODO, got lost...
+		
+		out.close();
+	}
+	
+	//returns the stats saved in the stats.txt
+	public static String getStats() {
+		return "";
+	}
 	
 	//writes scores to file (under the current difficulty)
 	public static void writeScore(String diff, int score, String name) {
@@ -48,15 +114,16 @@ public class LeaderBoard {//extends JTextArea {
 		if (file.exists()) {
 			try {
 				Scanner scores = new Scanner(new FileReader(file));
-				while (scores.hasNext()) {
+				while (scores.hasNext()) { //write scores to list
 					records.add(new Record(scores.nextInt(), scores.next()));
 				}
 				scores.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				return;
 			}
 		}
-		records.add(new Record(score, name));
+		records.add(new Record(score, name)); //add new record
 		
 		Collections.sort(records, new Comparator<Record>() {
 			public int compare(Record a, Record b) {
@@ -86,26 +153,52 @@ public class LeaderBoard {//extends JTextArea {
 		out.close();
 	}
 	
-	//returns the best score (for use on
-
-	
-	public static void getBestScore(String diff) {
+	//returns the best score for the UI best score function
+	public static int getBestScore(String diff) {
+		File file = new File(diff);
 		
+		LinkedList<Record> records = new LinkedList<Record>();
+		
+		if (file.exists()) {
+			try {
+				Scanner scores = new Scanner(new FileReader(file));
+				while (scores.hasNext()) { //write scores to list
+					records.add(new Record(scores.nextInt(), scores.next()));
+				}
+				scores.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				return 0;
+			}
+		}
+		
+		Collections.sort(records, new Comparator<Record>() {
+			public int compare(Record a, Record b) {
+				if (a.equals(b)) { return 0; }
+				if (a.getScore() <= b.getScore()) { 
+					return 1; // a
+				}
+				return -1; // b
+			}
+		});
+		
+		return records.getFirst().getScore();
 	}
 	
 	
 	////JTextArea stuff:
-	
-	
-	
+
 	//returns the TextArea of the scores (for displaying)
 	public static JTextArea getLeaderBoard(String diff) {
 		JTextArea area = new JTextArea();
 		area.setEditable(false);
 		
 		File file = new File(diff);
+		if (!file.exists()) {
+			throw new IllegalArgumentException("Input file must exist for this method");
+		}
 		
-		String text = writeText(file);
+		String text = getText(file);
 		
 		if (diff.equals(EASY)) {
 			area.setText("Easy Scores\n"+ text);
@@ -121,7 +214,7 @@ public class LeaderBoard {//extends JTextArea {
 	//returns a string containing the records for the given file
 	
 	//returns the text from the file for the text area 
-	private static String writeText(File file) {
+	private static String getText(File file) {
 		LinkedList<Record> records = new LinkedList<Record>();
 		
 		if (file.exists()) {

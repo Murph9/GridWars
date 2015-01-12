@@ -36,7 +36,7 @@ public class GameState {
 	private boolean ifAliasing;
 	
 	
-	GameState(int width, int height, double scale, int record, boolean ifParticles) { 
+	GameState(int width, int height, double scale, int record, boolean[] settings) { 
 			//note how anything not here is initalised to 0.
 		this.lastRecord = record;
 		
@@ -52,8 +52,8 @@ public class GameState {
 		this.height = height;
 		this.scale = scale;
 		
-		this.ifParticles = ifParticles;
-		this.ifAliasing = true; //hasn't been tested to cause lag yet
+		this.ifParticles = settings[0];
+		this.ifAliasing = settings[1]; //hasn't been tested to cause lag yet
 	}
 	
 	//time dependant things updated here

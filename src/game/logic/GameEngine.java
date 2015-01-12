@@ -127,10 +127,11 @@ public class GameEngine implements GLEventListener {
 		gl.glEnable(GL2.GL_BLEND); //alpha blending (you know transparency)
 		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA); //special blending
 		
-		//smoothing, TODO setting
-		gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
-		gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
-		gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
+		if (curGame.ifAliasing()) {
+			gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
+			gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
+			gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
+		}
 		
 		// create a new shader object that we can reference later to activate it.
 		shader = new ShaderControl();
@@ -239,7 +240,7 @@ public class GameEngine implements GLEventListener {
 			return;
 		}
 		
-		//lag handling TODO:
+		//lag handling TODO
 //		dt = 0.036;
 
 		List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);

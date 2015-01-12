@@ -33,6 +33,7 @@ public class GameState {
 	private double scale;
 	
 	private boolean ifParticles; //should have more than on/off options
+	private boolean ifAliasing;
 	
 	
 	GameState(int width, int height, double scale, int record, boolean ifParticles) { 
@@ -50,7 +51,9 @@ public class GameState {
 		this.width = width;
 		this.height = height;
 		this.scale = scale;
+		
 		this.ifParticles = ifParticles;
+		this.ifAliasing = true; //hasn't been tested to cause lag yet
 	}
 	
 	//time dependant things updated here
@@ -169,6 +172,7 @@ public class GameState {
 	public int     getHeight()   { return height;      }
 	public double  getScale()    { return scale;       }
 	public boolean ifParticles() { return ifParticles; }
+	public boolean ifAliasing()  { return ifAliasing;  }
 	
 	public String toString() {
 		return "Powerups: sh:" +hasShield +", sb:"+hasSideBullets +", rb:"+hasRearBullets +", bs:"+hasBouncyShot +", ss:"+hasSuperShot

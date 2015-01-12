@@ -168,10 +168,9 @@ public class TheGame implements ActionListener {
 		
 		//////////////////////////////////////////////////
 		////Heading Info + positions		
-		
 		gbLayout = new GridBagConstraints();
 		gbLayout.fill = GridBagConstraints.HORIZONTAL;
-		gbLayout.insets = new Insets(6,6,6,6);
+		gbLayout.insets = new Insets(5,5,5,5);
 		
 		JPanel headPanel = new JPanel();
 		headPanel.setLayout(new GridBagLayout());
@@ -192,7 +191,7 @@ public class TheGame implements ActionListener {
 		gbLayout.gridy++;
 		menuPanel.add(settingsPanel, gbLayout);
 		
-		///////Scoreboard
+		////Scoreboard
 		board = LeaderBoard.getLeaderBoard(LeaderBoard.MED);
 		
 		gbLayout.gridx++;

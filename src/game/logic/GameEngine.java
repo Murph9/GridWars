@@ -30,17 +30,15 @@ public class GameEngine implements GLEventListener {
 			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, LIGHT_YELLOW = {1,1,0.2,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, BLUE = {0.2,0.2,1,0.5}, 
 			ORANGE = {1,0.6,0,0.5}, REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 
+	public static final String EASY_D = "easy", MEDIUM_D = "medium", HARD_D = "hard", EXT = ".txt";
+	
 	public static final Random rand = new Random();
 		//just because ease of use, ive heard making a random object is slow
 	
 	private static final double KILL_SCREEN_TIME = 2;
 		//for measuring the respawn times
 	
-	////State values
-	public static int viewHeight;
-	public static int viewWidth;
-	
-	public static GameState curGame; //holds the game state info, like lives...
+	public static GameState curGame; //holds the game state info, like lives, diff and board size...
 	private double curAspect; //for the GUI positioning
 	
 	public static Player player;
@@ -50,7 +48,6 @@ public class GameEngine implements GLEventListener {
 	public static Camera myCamera;
 	
 	private long myTime;
-	private long startTime;
 	
 	private static double killCountdown; //if killscreen
 	private static GameObject killObj;
@@ -60,11 +57,10 @@ public class GameEngine implements GLEventListener {
 	/**Instantiates a new game engine.
 	 * @param state the state of the incoming game with fields set
 	 */
-	public GameEngine(GameState state) {
-		Border border = new Border(state.getWidth(), state.getHeight());
+	public GameEngine(GameState state, int pixelWidth, int pixelHeight) {
+		Border border = new Border(state.getBoardWidth(), state.getBoardHeight());
 		border.setSize(1); //just incase it stopped being 1 (removes warning)
 		
-		startTime = System.currentTimeMillis();
 		myCamera = new Camera();
 		myCamera.setSize(state.getScale());
 		
@@ -140,14 +136,15 @@ public class GameEngine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		//init sounds
+		//init sounds TODO settings
 		SoundEffect.init();
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		GameEngine.viewHeight = drawable.getHeight();
-		GameEngine.viewWidth  = drawable.getWidth();
+		curGame.setPixelHeight(drawable.getHeight());
+		curGame.setPixelWidth(drawable.getWidth());
+		
 		update();
 
 		GL2 gl = drawable.getGL().getGL2();
@@ -275,7 +272,7 @@ public class GameEngine implements GLEventListener {
 		//record
 			String record = " "+curGame.getRecord();
 			gl.glPushMatrix();
-			gl.glTranslated(-0.98*curAspect,0.8,0);
+			gl.glTranslated(-1*curAspect,0.8,0);
 			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
 		
 			for (int i = 0; i < record.length(); i++) {
@@ -362,7 +359,7 @@ public class GameEngine implements GLEventListener {
 			
 			
 		//time
-			int a = (int)(myTime-startTime)/100;
+			int a = (int)curGame.getTime();
 			int b = a % 10;
 			a /= 10;
 			String time = "  "+a+"."+b; //math so its in the form ddddd.d
@@ -428,6 +425,7 @@ public class GameEngine implements GLEventListener {
 		return (killCountdown == 0);
 	}
 	
+	
 	public static void lostLife(GameObject obj) {
 		GameEngine.killAll(obj);
 		
@@ -441,8 +439,9 @@ public class GameEngine implements GLEventListener {
 	
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
-		//maybe save the game as "autosave" using curGame data
-			//called by system when the window is closed
+		//called by system when the window is closed
+
 		System.out.println(GameEngine.curGame.toString());
+		LeaderBoard.writeScore(curGame.getDifficulty(), curGame.getScore(), "_auto", (int)curGame.getTime());
 	}
 }

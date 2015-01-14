@@ -29,7 +29,7 @@ import javax.swing.Timer;
 import com.jogamp.opengl.util.FPSAnimator;
 
 //Handles menus and other things
-//rather large class...
+//rather large class... TODO put the menu stuff somewhere else
 
 public class TheGame implements ActionListener {
 
@@ -51,8 +51,8 @@ public class TheGame implements ActionListener {
 	private int boardWidth = 16, boardHeight = 12; //at least 4 please
 	private double scale = 10; //you know, it kind of works, as easy as this number is 
 	
-	private final int pixelWidth = 1024;
-	private final int pixelHeight = 768;
+	private static final int DEFAULT_PIXEL_WIDTH = 1024;
+	private static final int DEFAULT_PIXEL_HEIGHT= 768;
 
 	private JTextField gameWidth;
 	private JTextField gameHeight;
@@ -90,13 +90,13 @@ public class TheGame implements ActionListener {
 		GridBagConstraints a = new GridBagConstraints();
 		
 		JRadioButton buttonEasy = new JRadioButton(easyB);
-		buttonEasy.setActionCommand(LeaderBoard.EASY);
+		buttonEasy.setActionCommand(GameEngine.EASY_D);
 		
 		JRadioButton buttonMed = new JRadioButton(medB);
-		buttonMed.setActionCommand(LeaderBoard.MED);
+		buttonMed.setActionCommand(GameEngine.MEDIUM_D);
 		
 		JRadioButton buttonHard = new JRadioButton(hardB);
-		buttonHard.setActionCommand(LeaderBoard.HARD);
+		buttonHard.setActionCommand(GameEngine.HARD_D);
 		
 		JButton go = new JButton("Go");
 		go.addActionListener(new ActionListener() {
@@ -106,7 +106,8 @@ public class TheGame implements ActionListener {
 		            AbstractButton button = buttons.nextElement();
 
 		            if (button.isSelected()) {
-		                initGame(button.getText());
+		                initGame(button.getActionCommand());
+		                return;
 		            }
 		        }
 			}
@@ -162,11 +163,11 @@ public class TheGame implements ActionListener {
 		//textboxes
 		c2.gridy++;
 		c2.gridx = 0;
-		gameWidth = new JTextField("1024"); //read both from settinfsgs later
+		gameWidth = new JTextField("null");
 		settingsPanel.add(gameWidth, c2);
 		
 		c2.gridx++;
-		gameHeight = new JTextField("768");
+		gameHeight = new JTextField("null");
 		settingsPanel.add(gameHeight, c2);
 
 		//checkboxes
@@ -178,20 +179,11 @@ public class TheGame implements ActionListener {
 		
 		c2.gridy++;
 		particles = new JCheckBox("Particles");
-		particles.setSelected(true); //defaults to on (read from settings later)
 		settingsPanel.add(particles, c2);
 		
 		c2.gridy++;
 		antialiasing = new JCheckBox("Antialiasing");
-		antialiasing.setSelected(true);
 		settingsPanel.add(antialiasing, c2);
-		
-		c2.gridy = 0;
-		c2.gridx++;
-		
-		
-		c2.gridy++;
-		
 		
 		//////////////////////////////////////////////////
 		////Heading Info + positions		
@@ -219,12 +211,20 @@ public class TheGame implements ActionListener {
 		menuPanel.add(settingsPanel, gbLayout);
 		
 		////Scoreboard
-		board = LeaderBoard.getLeaderBoard(LeaderBoard.MED);
+		board = LeaderBoard.getLeaderBoard(GameEngine.MEDIUM_D);
 		
 		gbLayout.gridx++;
 		gbLayout.gridy = 1;
 		gbLayout.gridheight = 2;
 		menuPanel.add(board, gbLayout);
+		
+		//////////////////////////////////////////////////
+		int[] fileSettings = LeaderBoard.readSettings();
+		gameWidth.setText(""+fileSettings[0]);
+		gameHeight.setText(""+fileSettings[1]);
+		
+		particles.setSelected(fileSettings[2] == 1);
+		antialiasing.setSelected(fileSettings[3] == 1);
 		
 		//////////////////////////////////////////////////
 		////Other Things
@@ -249,12 +249,34 @@ public class TheGame implements ActionListener {
 			//thats because its meant to be called to the spawner
 				//but the player speed relative to everything needs to be changed
 		
+		//matches just numbers [hopefully]
+		if (!(gameWidth.getText().matches("[0-9]+") && gameHeight.getText().matches("[0-9]+"))) {
+			System.err.println("Game width and height must be an integer");
+		}
+		
+		int pixelWidth = Integer.parseInt(gameWidth.getText());
+		int pixelHeight = Integer.parseInt(gameHeight.getText());
+		
 		GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
-		//TODO change for leaderboard
-		this.engine = new GameEngine(new GameState(boardWidth, boardHeight, scale, LeaderBoard.getBestScore(LeaderBoard.EASY), 
-				new boolean[] {this.particles.isSelected(), this.antialiasing.isSelected()} ));
+		this.engine = new GameEngine(new GameState(boardWidth, boardHeight, diff, scale, 
+				new boolean[] {this.particles.isSelected(), this.antialiasing.isSelected()} ), pixelWidth, pixelHeight);
+		
+		int[] options = new int[]{-1, -1};
+		if (this.particles.isSelected())
+			options[0] = 1;
+		else 
+			options[0] = 0;
+		
+		if (this.antialiasing.isSelected())
+			options[1] = 1; 
+		else 
+			options[1] = 0;
+		
+		
+        //then write settings to file
+        LeaderBoard.writeSettings(pixelWidth, pixelHeight, options);
 		
 		this.theFrame.setLocationRelativeTo(null);
 		
@@ -263,17 +285,10 @@ public class TheGame implements ActionListener {
 		
 		this.theFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 		
-			//matches just numbers [hopefully]
-		if (gameWidth.getText().matches("[0-9]+") || gameHeight.getText().matches("[0-9]+")) {
-			int width = Integer.parseInt(gameWidth.getText());
-			int height = Integer.parseInt(gameHeight.getText());
-			if (width >= 800 && height >= 600) { //minimum size you should have
-				this.theFrame.setSize(width, height);
-			} else {
-				this.theFrame.setSize(pixelWidth, pixelHeight);
-			}
-		} else {
+		if (pixelWidth >= 800 && pixelHeight >= 600) { //minimum size you should have
 			this.theFrame.setSize(pixelWidth, pixelHeight);
+		} else {
+			this.theFrame.setSize(TheGame.DEFAULT_PIXEL_WIDTH, TheGame.DEFAULT_PIXEL_HEIGHT);
 		}
 		
 		this.theFrame.setName("GridWars - Jake Murphy");
@@ -301,17 +316,12 @@ public class TheGame implements ActionListener {
         this.animator = new FPSAnimator(60);
         this.animator.add(gamePanel);
         this.animator.start();
-        
-        
-        
-        //////
-        LeaderBoard.writeSettings(1024, 728, new boolean[] { true, true });
     }
 	
 	public static void reloadMenu(GameState state) {
 		//TODO (ask for name)
 		System.out.println("(lost all lives)\n   - reloadMenu");
-		LeaderBoard.writeScore(LeaderBoard.EASY, state.getScore(), "ME");
+		LeaderBoard.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
 	}
 	
     //spawning done simple. Look at SpawnHandler for better spawning logic

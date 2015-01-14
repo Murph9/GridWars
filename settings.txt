@@ -1,4 +1,4 @@
 width 1024
 height 728
-particles true
-antialiasing true
+particles 1
+antialiasing 1

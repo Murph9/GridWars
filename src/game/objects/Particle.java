@@ -46,20 +46,20 @@ public class Particle extends MovingObject {
 		
 		//can't use the helper function here ;(
 			//because the size of the object is used as 'small'
-		if (x > GameEngine.curGame.getWidth()) {
+		if (x > GameEngine.curGame.getBoardWidth()) {
 			dx = -dx;
-			x = GameEngine.curGame.getWidth();
-		} else if (x < -GameEngine.curGame.getWidth()) {
+			x = GameEngine.curGame.getBoardWidth();
+		} else if (x < -GameEngine.curGame.getBoardWidth()) {
 			dx = -dx;
-			x = -GameEngine.curGame.getWidth();
+			x = -GameEngine.curGame.getBoardWidth();
 		}
 		
-		if (y > GameEngine.curGame.getHeight()) {
+		if (y > GameEngine.curGame.getBoardHeight()) {
 			dy = -dy;
-			y = GameEngine.curGame.getHeight();
-		} else if (y < -GameEngine.curGame.getHeight()) {
+			y = GameEngine.curGame.getBoardHeight();
+		} else if (y < -GameEngine.curGame.getBoardHeight()) {
 			dy = -dy;
-			y = -GameEngine.curGame.getHeight();
+			y = -GameEngine.curGame.getBoardHeight();
 		}
 		
 		if (!inOrbit) {

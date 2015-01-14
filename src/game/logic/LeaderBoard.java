@@ -8,67 +8,81 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
 //TODO
-/* things to store in file: (noting that the file needs to be rewritten)
-   * Game Stats (long term stats):
-        * highest score
-        * highest multiplier
-        * total kills
-        * powerups collected
-        * times died
-        * total score
-        * ???
-   * most recent record - method
-   * files containing each record set (name + score)
-   * 
- * Also requires a method that saves to file on abrupt exit of program
- *    called from wherever makes sense
-*/
+//things to store in file:
 
+public class LeaderBoard { //no longer extends JTextArea, just returns one if asked
 
-
-//maybe returns text for a textarea rather than being one
-public class LeaderBoard {//extends JTextArea {
-
-	public static final String 
-		HARD = "hard.txt", MED = "medium.txt", EASY = "easy.txt";
-	private static final String STATS = "stats.txt", SETTINGS = "settings.txt",
+	//note the spaces:
+	private static final String STATS = "stats.txt", 
+			HIGHEST_SCORE = "high_score ", HIGHEST_MULTI = "high_multiplier ",
+			TOTAL_POWERUPS = "total_powerups ",	TOTAL_KILLS = "total_kills ", 
+			TOTAL_SCORE = "total_score ", TOTAL_TIME = "total_time ", TOTAL_DEATHS = "total_deaths ",
+			LONGEST_GAME = "longest_game ";
+	
+	private static final String SETTINGS = "settings.txt",
 			SCREEN_WIDTH = "width ", SCREEN_HEIGHT = "height ",
-			IF_PARTICLES = "particles ", IF_ANTIALIASING = "antialiasing "; //.... [note the space]
+			IF_PARTICLES = "particles ", IF_ANTIALIASING = "antialiasing ";
 	
-	/*
-	//Current game values
-	private int score, totalKills;
 	
-	private double bulletSpeed;
+	///////////////////////
+	//SETTINGS:
 	
-	//Settings:
-	private int width, height;
-	private double scale;
-	
-	private boolean ifParticles; //should have more than on/off options
-	private boolean ifAliasing;
-	*/
-	
-	//returns a int[]: width, height, other boolean (1 = true)
+	//returns a int[]: width, height, other boolean (1 = true, 0 - false - same as java)
 	public static int[] readSettings() {
-		return null;
-		//TODO got bored of files
+		File file = new File(SETTINGS);
+
+		int width = -1, height = -1, particles = -1, antialiasing = -1;
+		
+		if (file.exists()) {
+			try {
+				Scanner scores = new Scanner(new FileReader(file));
+				while (scores.hasNext()) {
+					String text = scores.next() + " "; //because everything was spaced... TODO FIX THIS MESS
+					if (text.equals(SCREEN_WIDTH)) width = scores.nextInt();
+					else if (text.equals(SCREEN_HEIGHT)) height = scores.nextInt();
+					
+					else if (text.equals(IF_PARTICLES)) particles = scores.nextInt(); 
+					else if (text.equals(IF_ANTIALIASING)) antialiasing = scores.nextInt();
+					
+					else {
+						scores.next(); //although it shouldn't ever get here
+						System.out.println("wow, you broke it good");
+					}
+				}
+				scores.close();
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+		} else { //default values are below
+			width = 1024;
+			height = 728;
+			particles = 1;
+			antialiasing = 1;
+			
+			writeSettings(width, height, new int[]{particles, antialiasing});
+				//simpler?, maybe
+		}
+		
+		return new int[] {width, height, particles, antialiasing};
 	}
 	
-	
-	//change settings
-	public static void writeSettings(int width, int height, boolean[] settings) {
+	//change settings (not many so far) works though
+	public static void writeSettings(int width, int height, int[] settings) {
 		File file = new File(SETTINGS);
 		
 		PrintWriter out = null;
 		try {
-			file.createNewFile(); //only works if it doesn't exist
+			file.delete(); //because it will append otherwise
+			file.createNewFile(); //will always work here
 			out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -83,10 +97,29 @@ public class LeaderBoard {//extends JTextArea {
 		out.close();
 	}
 	
+
+	/////////////////////////
+	//STATS: TODO
 	
-	//adds to the stats.txt file
+	//adds to the stats.txt file TODO
 	public static void addToStats(GameState state) {
 		File file = new File(STATS);
+		
+		Scanner stats = null;
+		HashMap<String, Integer> statSet = null;
+		try {
+			stats = new Scanner(new FileReader(file));
+			
+			statSet = new HashMap<String, Integer>();
+			while (stats.hasNext()) {
+				statSet.put(stats.next(), stats.nextInt());
+			}
+			stats.close();
+			
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		
 		
 		PrintWriter out = null;
 		try {
@@ -95,7 +128,6 @@ public class LeaderBoard {//extends JTextArea {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//TODO, got lost...
 		
 		out.close();
 	}
@@ -103,27 +135,33 @@ public class LeaderBoard {//extends JTextArea {
 	//returns the stats saved in the stats.txt
 	public static String getStats() {
 		return "";
+		//TODO
 	}
 	
+	
+	//////////////////////////
+	//SCORES:
+	
 	//writes scores to file (under the current difficulty)
-	public static void writeScore(String diff, int score, String name) {
+	public static void writeScore(String diff, int score, String name, int time) {
+		diff += GameEngine.EXT;
+
 		File file = new File(diff);
 		
 		LinkedList<Record> records = new LinkedList<Record>();
 		
-		if (file.exists()) {
-			try {
-				Scanner scores = new Scanner(new FileReader(file));
-				while (scores.hasNext()) { //write scores to list
-					records.add(new Record(scores.nextInt(), scores.next()));
-				}
-				scores.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				return;
+		try {
+			Scanner scores = new Scanner(new FileReader(file));
+			while (scores.hasNext()) { //write scores to list
+				records.add(new Record(scores.nextInt(), scores.next(), scores.nextInt()));
 			}
+			scores.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return;
 		}
-		records.add(new Record(score, name)); //add new record
+
+		records.add(new Record(score, name, time)); //add new record
 		
 		Collections.sort(records, new Comparator<Record>() {
 			public int compare(Record a, Record b) {
@@ -155,6 +193,9 @@ public class LeaderBoard {//extends JTextArea {
 	
 	//returns the best score for the UI best score function
 	public static int getBestScore(String diff) {
+		diff += GameEngine.EXT;
+		System.out.println(diff);
+		
 		File file = new File(diff);
 		
 		LinkedList<Record> records = new LinkedList<Record>();
@@ -163,7 +204,7 @@ public class LeaderBoard {//extends JTextArea {
 			try {
 				Scanner scores = new Scanner(new FileReader(file));
 				while (scores.hasNext()) { //write scores to list
-					records.add(new Record(scores.nextInt(), scores.next()));
+					records.add(new Record(scores.nextInt(), scores.next(), scores.nextInt()));
 				}
 				scores.close();
 			} catch (FileNotFoundException e) {
@@ -182,17 +223,23 @@ public class LeaderBoard {//extends JTextArea {
 			}
 		});
 		
-		return records.getFirst().getScore();
-	}
+//		if (records.isEmpty()) {
+//			return 0;
+//		} else {
+			return records.getFirst().getScore();
+		}
+//	}
 	
 	
-	////JTextArea stuff:
+	////////////////////////
+	//JTextArea stuff:
 
 	//returns the TextArea of the scores (for displaying)
 	public static JTextArea getLeaderBoard(String diff) {
 		JTextArea area = new JTextArea();
 		area.setEditable(false);
 		
+		diff += GameEngine.EXT;
 		File file = new File(diff);
 		if (!file.exists()) {
 			throw new IllegalArgumentException("Input file must exist for this method");
@@ -200,18 +247,16 @@ public class LeaderBoard {//extends JTextArea {
 		
 		String text = getText(file);
 		
-		if (diff.equals(EASY)) {
+		if (diff.equals(GameEngine.EASY_D + GameEngine.EXT)) {
 			area.setText("Easy Scores\n"+ text);
-		} else if (diff.equals(MED)) {
+		} else if (diff.equals(GameEngine.MEDIUM_D + GameEngine.EXT)) {
 			area.setText("Medium Scores\n" + text);
-		} else if (diff.equals(HARD)){
+		} else if (diff.equals(GameEngine.HARD_D + GameEngine.EXT)){
 			area.setText("Hard Scores\n" + text);
 		}
 		
 		return area;
 	}
-	
-	//returns a string containing the records for the given file
 	
 	//returns the text from the file for the text area 
 	private static String getText(File file) {
@@ -221,7 +266,7 @@ public class LeaderBoard {//extends JTextArea {
 			try {
 				Scanner scores = new Scanner(new FileReader(file));
 				while (scores.hasNext()) {
-					records.add(new Record(scores.nextInt(), scores.next()));
+					records.add(new Record(scores.nextInt(), scores.next(), scores.nextInt()));
 				}
 				scores.close();
 			} catch (FileNotFoundException e) {
@@ -254,25 +299,27 @@ public class LeaderBoard {//extends JTextArea {
 
 }
 
+
 class Record {
 	private int score;
 	private String name;
+	private int time;
 	
-	Record (int score, String name) {
+	Record (int score, String name, int time) {
 		this.score = score;
 		this.name = name;
+		this.time = time;
 	}
 	
-	public int getScore() {
-		return this.score; 
-	}
+	public int getTime()  { return this.time;  }
+	public int getScore() { return this.score; }
 	
 	public String toString() { //for saving to file
-		return (score + "\t " + name);
+		return (score + "\t " + name + "\t " + time);
 	}
 	
 	public String toLineString() { //for writing to leader board
-		return (score + "\t|  "+ name);
+		return (score + "\t|  "+ name + "\t| " + time);
 	}
 	
 	public boolean equals(Object o) {

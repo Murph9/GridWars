@@ -18,6 +18,12 @@ Structure of the project:
 
 --------
 
+0.29 LeaderBoard Start, Menu Arranging... (others)
+- there was a break here and i forgot most of the stuff i did, sorry
+
+
+--------
+
 0.28 Menu 2:
 - Added to the menu screen is 2 textboxes that let you change the size of the window (although its still moveable anyway)
 - ScorePopup makes a second appearance with a multiplier and powerup notification (position fixed)

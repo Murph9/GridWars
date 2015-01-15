@@ -7,6 +7,10 @@ import java.net.URL;
 import javax.sound.sampled.*;
 
 
+/**
+ * Audio playing and handling.
+ * @author Another random internet user
+ */
 public enum SoundEffect {
 	//TODO makes better ones
 	//lots of others needed

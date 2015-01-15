@@ -17,7 +17,7 @@ import javax.media.opengl.glu.GLU;
  * panel.addMouseListener(Mouse.theMouse);
  * panel.addMouseMotionListener(Mouse.theMouse);
  *
- * @author malcolmr
+ * @author malcolmr - taken from a assignment at UNSW course COMP3421
  */
 public class Mouse extends MouseAdapter {
 

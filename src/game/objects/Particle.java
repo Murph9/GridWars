@@ -32,7 +32,7 @@ public class Particle extends MovingObject {
 		this.inOrbit = false;
 		this.drag = drag;
 		
-		if (!GameEngine.curGame.ifParticles()) {
+		if (!GameEngine.curSettings.ifParticles()) {
 			amHit(false);
 		}
 	}
@@ -46,20 +46,20 @@ public class Particle extends MovingObject {
 		
 		//can't use the helper function here ;(
 			//because the size of the object is used as 'small'
-		if (x > GameEngine.curGame.getBoardWidth()) {
+		if (x > GameEngine.curSettings.getBoardWidth()) {
 			dx = -dx;
-			x = GameEngine.curGame.getBoardWidth();
-		} else if (x < -GameEngine.curGame.getBoardWidth()) {
+			x = GameEngine.curSettings.getBoardWidth();
+		} else if (x < -GameEngine.curSettings.getBoardWidth()) {
 			dx = -dx;
-			x = -GameEngine.curGame.getBoardWidth();
+			x = -GameEngine.curSettings.getBoardWidth();
 		}
 		
-		if (y > GameEngine.curGame.getBoardHeight()) {
+		if (y > GameEngine.curSettings.getBoardHeight()) {
 			dy = -dy;
-			y = GameEngine.curGame.getBoardHeight();
-		} else if (y < -GameEngine.curGame.getBoardHeight()) {
+			y = GameEngine.curSettings.getBoardHeight();
+		} else if (y < -GameEngine.curSettings.getBoardHeight()) {
 			dy = -dy;
-			y = -GameEngine.curGame.getBoardHeight();
+			y = -GameEngine.curSettings.getBoardHeight();
 		}
 		
 		if (!inOrbit) {

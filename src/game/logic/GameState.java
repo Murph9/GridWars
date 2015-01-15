@@ -4,8 +4,10 @@ import game.objects.*;
 @SuppressWarnings("unused") //alot of 's' that i just don't need to see here 
 				//(im using the eclipse editor if you hadn't figured already)
 
-/**Nice class to handle the current game state, handed to the game engine
- * to use. Has a lot of read only variables and should only contain info for this game
+/**Handles the current game state, including all information on scoring and powerups.
+ * 
+ * Used by the GameEngine
+ * Has a lot of read only variables and should only contain info for this game
  * @author Jake Murphy
  */
 public class GameState {
@@ -17,41 +19,31 @@ public class GameState {
 	
 	//player states
 	private double 
-			hasShield, hasSideBullets, hasRearBullets, 
-			hasBouncyShot, hasSuperShot;
+			hasShield, hasSideBullets, hasRearBullets, hasBouncyShot, hasSuperShot;
 	
 	//Current game values
-	private int 
-		lastRecord, score, lives, multiplier, kills;
-	private String diff;
+	private String difficulty;
+	
+	private int lastRecord, score, lives, multiplier, kills;
 	
 	private int bombCount;
 	private int bulletCount;
 	private double bulletSpeed;
 	private double time;
 	
-	//for the long term stats file: (TODO more)
+	//for the long term stats file: (more needed i think)
 	private int deaths, totalKills, powerupCount, heighestMulti;
-	
-	//Settings:
-	private int pixelWidth, pixelHeight;
-	private int boardWidth, boardHeight;
-	private double scale;
-	
-	private boolean ifParticles; //should have more than on/off options
-	private boolean ifAliasing;
-	
 	
 	/**
 	 * @param boardWidth - boardwidth
 	 * @param boardHeight - boardheight
 	 * @param diff - game difficulty
 	 * @param scale - zoom level (usually 10)
-	 * @param settings - list of settings defined by TheGame
 	 */
-	GameState(int boardWidth, int boardHeight, String diff, double scale, boolean[] settings) { 
+	GameState(String difficulty) {
 			//note how anything not here is initalised to 0.
-		this.lastRecord = LeaderBoard.getBestScore(diff);
+		this.lastRecord = LeaderBoard.getBestScore(difficulty);
+		this.difficulty = difficulty;
 		
 		lives = 3;
 		multiplier = 1;
@@ -59,16 +51,6 @@ public class GameState {
 		bombCount = 3;
 		bulletCount = 4;
 		bulletSpeed = 1; //how to change the intial bullet speed
-		
-		//part of settings
-		this.diff = diff;
-		
-		this.boardWidth = boardWidth;
-		this.boardHeight = boardHeight;
-		this.scale = scale;
-		
-		this.ifParticles = settings[0]; //definately helps
-		this.ifAliasing = settings[1]; //hasn't been tested to cause lag yet
 	}
 	
 	//time dependant things updated here
@@ -168,13 +150,6 @@ public class GameState {
 		}
 	}
 
-	public void setPixelHeight(int height) {
-		this.pixelHeight = height;
-	}
-	public void setPixelWidth(int width) {
-		this.pixelWidth = width;
-	}
-	
 	
 	//Getters:
 	public void gotShield()     { hasShield      = POWERUP_LENGTH; }
@@ -189,6 +164,8 @@ public class GameState {
 	public int getMultiplier() { return multiplier; }
 	public int getKills()      { return kills;      }
 	public double getTime()    { return time*10;    }
+
+	public String getDifficulty() {	return difficulty; }
 	
 	public int getTotalDeaths(){ return deaths;     }
 	public int getTotalKills() { return totalKills; }
@@ -202,17 +179,6 @@ public class GameState {
 	public boolean ifRearShot()   { return (hasRearBullets > 0); }
 	public boolean ifBouncyShot() { return (hasBouncyShot > 0);  }
 	public boolean ifSuperShot()  { return (hasSuperShot > 0);   }
-	
-	//thinking of compressing this to a settings file..
-	public int getPixelWidth()  { return pixelWidth;  }
-	public int getPixelHeight() { return pixelHeight; }
-	public int getBoardWidth()  { return boardWidth;  }
-	public int getBoardHeight() { return boardHeight; }
-	
-	public double  getScale()    { return scale;       }
-	public String  getDifficulty(){return diff;        }
-	public boolean ifParticles() { return ifParticles; }
-	public boolean ifAliasing()  { return ifAliasing;  }
 	
 	public String toString() { //has been outdated
 		return "Closed score = "+score;

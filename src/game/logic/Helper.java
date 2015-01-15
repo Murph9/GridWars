@@ -3,7 +3,11 @@ import game.objects.*;
 
 import javax.media.opengl.GL2;
 
-//class for just cleaning up some of the files (mainly methods that do simple long things)
+/** Cleans GameObjects' actions (lots of very similar code)
+ * 
+ * just cleaning up some of the files (mainly methods that do simple long things)
+ * @author Jake Murphy
+ */
 public class Helper {
 	
 	public static final int NOTHING = 0;
@@ -42,24 +46,24 @@ public class Helper {
 	 * @param type if bouncy (use the static fields: NOTHING, BOUNCE, SPLAT )
 	 */
 	public static void keepInside(MovingObject a, int type) {
-		if (a.x > GameEngine.curGame.getBoardWidth()-(a.size/2)) {
+		if (a.x > GameEngine.curSettings.getBoardWidth()-(a.size/2)) {
 			if (type == BOUNCE) a.dx = -a.dx;
 			else if (type == SPLAT)	a.dx = 0;
-			a.x = GameEngine.curGame.getBoardWidth()-(a.size/2);
-		} else if (a.x < -GameEngine.curGame.getBoardWidth()+(a.size/2)) {
+			a.x = GameEngine.curSettings.getBoardWidth()-(a.size/2);
+		} else if (a.x < -GameEngine.curSettings.getBoardWidth()+(a.size/2)) {
 			if (type == BOUNCE) a.dx = -a.dx;
 			else if (type == SPLAT)	a.dx = 0;
-			a.x = -GameEngine.curGame.getBoardWidth()+(a.size/2);
+			a.x = -GameEngine.curSettings.getBoardWidth()+(a.size/2);
 		}
 		
-		if (a.y > GameEngine.curGame.getBoardHeight()-(a.size/2)) {
+		if (a.y > GameEngine.curSettings.getBoardHeight()-(a.size/2)) {
 			if (type == BOUNCE) a.dy = -a.dy;
 			else if (type == SPLAT)	a.dy = 0;
-			a.y = GameEngine.curGame.getBoardHeight()-(a.size/2);
-		} else if (a.y < -GameEngine.curGame.getBoardHeight()+(a.size/2)) {
+			a.y = GameEngine.curSettings.getBoardHeight()-(a.size/2);
+		} else if (a.y < -GameEngine.curSettings.getBoardHeight()+(a.size/2)) {
 			if (type == BOUNCE) a.dy = -a.dy;
 			else if (type == SPLAT)	a.dy = 0;
-			a.y = -GameEngine.curGame.getBoardHeight()+(a.size/2);
+			a.y = -GameEngine.curSettings.getBoardHeight()+(a.size/2);
 		}
 	}
 
@@ -77,7 +81,7 @@ public class Helper {
 			{0,0,0,1    }};
 
 			//the aspect can be computed from here:
-		int[] t = new int[] {GameEngine.curGame.getPixelWidth(), GameEngine.curGame.getPixelHeight()}; 
+		int[] t = new int[] {GameEngine.curSettings.getPixelWidth(), GameEngine.curSettings.getPixelHeight()}; 
 		double ar = (double)t[0] / (double)t[1];
         double[][] viewProj = null;
 		if (ar >= 1) {

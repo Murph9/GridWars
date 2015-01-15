@@ -8,6 +8,10 @@ import javax.media.opengl.GL2;
 
 // The shader control class.
 // loads and starts/stops shaders.
+
+/**Shader control (unsuprisingly)
+ * @author Random internet user, i had the link at the bottom but its not there anymore
+ */
 public class ShaderControl {
 	
     private int vertexShaderProgram;

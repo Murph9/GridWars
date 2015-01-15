@@ -1,4 +1,8 @@
-width 1024
-height 728
-particles 1
-antialiasing 1
+pixel_width 1024
+pixel_height 729
+board_width 16
+board_height 12
+scale 10.0
+sound true
+particles true
+antialiasing true

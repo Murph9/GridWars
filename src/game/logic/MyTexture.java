@@ -1,5 +1,5 @@
 package game.logic;
-//Shamefully stolen from the week7 lecture notes...
+//
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +14,10 @@ import javax.media.opengl.GLProfile;
 import com.jogamp.opengl.util.awt.ImageUtil;
 import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
+
+/**Shamefully stolen from the week7 lecture notes...
+ * @author {redacted} course COMP3421 at UNSW
+ */
 
 public class MyTexture {
 	private boolean mipMapEnabled = true;

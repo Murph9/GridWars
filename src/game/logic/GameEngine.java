@@ -12,9 +12,15 @@ import javax.media.opengl.GLEventListener;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 
-//does all the back-end logic..
+/**
+ * Handles all moving objects and all OpenGL initialisation.
+ * 
+ * @author Jake Murphy
+ */
 public class GameEngine implements GLEventListener {
 
+	//TODO clean below
+	
 	////Textures
 	public static MyTexture[] textures;
 	public static final int TEXTURE_SIZE = 35; //space for more (and order space)
@@ -38,12 +44,14 @@ public class GameEngine implements GLEventListener {
 	private static final double KILL_SCREEN_TIME = 2;
 		//for measuring the respawn times
 	
-	public static GameState curGame; //holds the game state info, like lives, diff and board size...
+	public static GameState curGame; //so every file can access these
+	public static GameSettings curSettings;
+	
 	private double curAspect; //for the GUI positioning
 	
 	public static Player player;
 	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; 
-				//updated each 'update()' for speed of access, all methods use this
+				//updated each 'update()' for speed of access, all methods should use this
 	
 	public static Camera myCamera;
 	
@@ -57,21 +65,18 @@ public class GameEngine implements GLEventListener {
 	/**Instantiates a new game engine.
 	 * @param state the state of the incoming game with fields set
 	 */
-	public GameEngine(GameState state, int pixelWidth, int pixelHeight) {
-		Border border = new Border(state.getBoardWidth(), state.getBoardHeight());
+	public GameEngine(GameState state, GameSettings settings) {
+		Border border = new Border(settings.getBoardWidth(), settings.getBoardHeight());
 		border.setSize(1); //just incase it stopped being 1 (removes warning)
 		
 		myCamera = new Camera();
-		myCamera.setSize(state.getScale());
+		myCamera.setSize(settings.getScale());
 		
 		GameEngine.player = new Player(1, GameEngine.WHITE);
 		textures = new MyTexture[TEXTURE_SIZE];
 		
-		//kill screen shouldn't be activated yet
-        GameEngine.killCountdown = 0;
-        GameEngine.killObj = null;
-		
 		curGame = state;
+		curSettings = settings;
 	}
 	
 	public static double[] getPlayerPos(){  return playerPos; }
@@ -123,7 +128,7 @@ public class GameEngine implements GLEventListener {
 		gl.glEnable(GL2.GL_BLEND); //alpha blending (you know transparency)
 		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA); //special blending
 		
-		if (curGame.ifAliasing()) {
+		if (curSettings.ifAliasing()) {
 			gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
@@ -136,14 +141,17 @@ public class GameEngine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		//init sounds TODO settings
-		SoundEffect.init();
+		//init sounds
+		if (curSettings.ifSound()) {
+			SoundEffect.init();
+			//blah blah..
+		}
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		curGame.setPixelHeight(drawable.getHeight());
-		curGame.setPixelWidth(drawable.getWidth());
+		curSettings.setPixelHeight(drawable.getHeight());
+		curSettings.setPixelWidth(drawable.getWidth());
 		
 		update();
 
@@ -181,21 +189,15 @@ public class GameEngine implements GLEventListener {
 		gl.glPopMatrix();
 
 		shader.dontUseShader(gl);
-		//finding the screen resolution [could be useful later]
-//		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//		int width = (int)screenSize.getWidth();
-//		int height = (int)screenSize.getHeight();
-//		System.out.println(width + " " + height);
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-			int height) {
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
 		// tell the camera and the mouse that the screen has reshaped
 		GL2 gl = drawable.getGL().getGL2();
 		
 		myCamera.reshape(gl, x, y, width, height);
-		this.curAspect = (double)width / (double)height; //so the GUI is fine
+		curAspect = (double)width / (double)height; //so the GUI is fine
 		
 		// this has to happen after myCamera.reshape() to use the new projection matrix
 		Mouse.theMouse.reshape(gl);
@@ -210,7 +212,7 @@ public class GameEngine implements GLEventListener {
 		if (killCountdown > 0) {
 			killCountdown -= dt;
 			
-			//TODO comment below section
+			//TODO comment the section below
 			
 			if (killCountdown <= 0) { //the respawn time
 				killCountdown = 0;

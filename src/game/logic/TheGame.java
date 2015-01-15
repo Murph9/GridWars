@@ -31,6 +31,11 @@ import com.jogamp.opengl.util.FPSAnimator;
 //Handles menus and other things
 //rather large class... TODO put the menu stuff somewhere else
 
+/**Main menu and game initialisation.
+ * 
+ * @author Jake Murphy
+ */
+
 public class TheGame implements ActionListener {
 
 	private JFrame theFrame; //reuseable frame that 
@@ -45,6 +50,7 @@ public class TheGame implements ActionListener {
 	private Random random;
 	
 	//settings checkboxes - add others... (thats not 'and')
+	private JCheckBox sound;
 	private JCheckBox particles;
 	private JCheckBox antialiasing;
 	
@@ -106,8 +112,7 @@ public class TheGame implements ActionListener {
 		            AbstractButton button = buttons.nextElement();
 
 		            if (button.isSelected()) {
-		                initGame(button.getActionCommand());
-		                return;
+		            	initGame(button.getActionCommand());
 		            }
 		        }
 			}
@@ -174,16 +179,16 @@ public class TheGame implements ActionListener {
 		c2.gridwidth = 2;
 		c2.gridx = 0;
 		c2.gridy++;
-		JCheckBox settings = new JCheckBox("Yay check box");
-		settingsPanel.add(settings, c2);
-		
-		c2.gridy++;
 		particles = new JCheckBox("Particles");
 		settingsPanel.add(particles, c2);
 		
 		c2.gridy++;
 		antialiasing = new JCheckBox("Antialiasing");
 		settingsPanel.add(antialiasing, c2);
+		
+		c2.gridy++;
+		sound = new JCheckBox("Sound");
+		settingsPanel.add(sound, c2);
 		
 		//////////////////////////////////////////////////
 		////Heading Info + positions		
@@ -219,12 +224,13 @@ public class TheGame implements ActionListener {
 		menuPanel.add(board, gbLayout);
 		
 		//////////////////////////////////////////////////
-		int[] fileSettings = LeaderBoard.readSettings();
-		gameWidth.setText(""+fileSettings[0]);
-		gameHeight.setText(""+fileSettings[1]);
+		GameSettings fileSettings = LeaderBoard.readSettings();
+		gameWidth.setText(""+fileSettings.getPixelWidth());
+		gameHeight.setText(""+fileSettings.getPixelHeight());
 		
-		particles.setSelected(fileSettings[2] == 1);
-		antialiasing.setSelected(fileSettings[3] == 1);
+		particles.setSelected(fileSettings.ifParticles());
+		antialiasing.setSelected(fileSettings.ifAliasing());
+		sound.setSelected(fileSettings.ifSound());
 		
 		//////////////////////////////////////////////////
 		////Other Things
@@ -241,7 +247,7 @@ public class TheGame implements ActionListener {
 	}
 	
 	//because its in the same file the settings dont't need to be passed in [:D]
-	private void initGame(String diff) {
+	private void initGame(String difficulty) {
 		menuPanel.setVisible(false);
 		
 		//TODO
@@ -252,32 +258,29 @@ public class TheGame implements ActionListener {
 		//matches just numbers [hopefully]
 		if (!(gameWidth.getText().matches("[0-9]+") && gameHeight.getText().matches("[0-9]+"))) {
 			System.err.println("Game width and height must be an integer");
+			return;
 		}
+		
+
+        GLProfile glprofile = GLProfile.getDefault();
+		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
 		int pixelWidth = Integer.parseInt(gameWidth.getText());
 		int pixelHeight = Integer.parseInt(gameHeight.getText());
 		
-		GLProfile glprofile = GLProfile.getDefault();
-		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
-		
-		this.engine = new GameEngine(new GameState(boardWidth, boardHeight, diff, scale, 
-				new boolean[] {this.particles.isSelected(), this.antialiasing.isSelected()} ), pixelWidth, pixelHeight);
-		
-		int[] options = new int[]{-1, -1};
-		if (this.particles.isSelected())
-			options[0] = 1;
-		else 
-			options[0] = 0;
-		
-		if (this.antialiasing.isSelected())
-			options[1] = 1; 
-		else 
-			options[1] = 0;
-		
+		GameSettings set = new GameSettings(pixelWidth, pixelHeight, boardWidth, boardHeight, scale);
+		set.setIfAliasing(antialiasing.isSelected());
+		set.setIfSound(sound.isSelected());
+		set.setIfParticles(particles.isSelected());
 		
         //then write settings to file
-        LeaderBoard.writeSettings(pixelWidth, pixelHeight, options);
-		
+        LeaderBoard.writeSettings(set);
+        
+        this.engine = new GameEngine(new GameState(difficulty), set);
+        
+        //////////////////////////////
+        //JOGL Stuff:
+        
 		this.theFrame.setLocationRelativeTo(null);
 		
 		this.gamePanel = new GLJPanel(glcapabilities);
@@ -285,7 +288,7 @@ public class TheGame implements ActionListener {
 		
 		this.theFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
 		
-		if (pixelWidth >= 800 && pixelHeight >= 600) { //minimum size you should have
+		if (pixelWidth >= 800 && pixelHeight >= 600) { //the game really only works on resolutions bigger than this
 			this.theFrame.setSize(pixelWidth, pixelHeight);
 		} else {
 			this.theFrame.setSize(TheGame.DEFAULT_PIXEL_WIDTH, TheGame.DEFAULT_PIXEL_HEIGHT);
@@ -311,7 +314,7 @@ public class TheGame implements ActionListener {
         this.gamePanel.addMouseListener(Mouse.theMouse);
         
         this.gamePanel.requestFocus();
-        this.theFrame.setLocationRelativeTo(null);
+        this.theFrame.setLocationRelativeTo(null); //middle of the screen
         
         this.animator = new FPSAnimator(60);
         this.animator.add(gamePanel);

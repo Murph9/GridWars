@@ -14,10 +14,11 @@ import java.util.Scanner;
 
 import javax.swing.JTextArea;
 
-//TODO
-//things to store in file:
-
-public class LeaderBoard { //no longer extends JTextArea, just returns one if asked
+/**Handles all file reading through static methods.
+ * 
+ * @author Jake Murphy
+ */
+public class LeaderBoard {
 
 	//note the spaces:
 	private static final String STATS = "stats.txt", 
@@ -27,56 +28,87 @@ public class LeaderBoard { //no longer extends JTextArea, just returns one if as
 			LONGEST_GAME = "longest_game ";
 	
 	private static final String SETTINGS = "settings.txt",
-			SCREEN_WIDTH = "width ", SCREEN_HEIGHT = "height ",
-			IF_PARTICLES = "particles ", IF_ANTIALIASING = "antialiasing ";
+			PIXEL_WIDTH = "pixel_width ", PIXEL_HEIGHT = "pixel_height ",
+			BOARD_WIDTH = "board_width ", BOARD_HEIGHT = "board_height ", SCALE = "scale ",
+			IF_PARTICLES = "particles ", IF_ANTIALIASING = "antialiasing ", IF_SOUND = "sound ";
 	
 	
 	///////////////////////
 	//SETTINGS:
 	
 	//returns a int[]: width, height, other boolean (1 = true, 0 - false - same as java)
-	public static int[] readSettings() {
+	public static GameSettings readSettings() {
 		File file = new File(SETTINGS);
 
-		int width = -1, height = -1, particles = -1, antialiasing = -1;
+		int pixel_width = -1, pixel_height = -1, board_width = -1, board_height = -1;
+		double scale = -1;
+		boolean	particles = true, antialiasing = true, sound = true;
 		
 		if (file.exists()) {
 			try {
 				Scanner scores = new Scanner(new FileReader(file));
 				while (scores.hasNext()) {
 					String text = scores.next() + " "; //because everything was spaced... TODO FIX THIS MESS
-					if (text.equals(SCREEN_WIDTH)) width = scores.nextInt();
-					else if (text.equals(SCREEN_HEIGHT)) height = scores.nextInt();
+					if (text.equals(PIXEL_WIDTH)) pixel_width = scores.nextInt();
+					else if (text.equals(PIXEL_HEIGHT)) pixel_height = scores.nextInt();
 					
-					else if (text.equals(IF_PARTICLES)) particles = scores.nextInt(); 
-					else if (text.equals(IF_ANTIALIASING)) antialiasing = scores.nextInt();
+					else if (text.equals(BOARD_WIDTH)) board_width = scores.nextInt();
+					else if (text.equals(BOARD_HEIGHT)) board_height = scores.nextInt();
+
+					else if (text.equals(SCALE)) scale = scores.nextDouble();
+					
+					else if (text.equals(IF_SOUND)) sound = scores.nextBoolean();
+					else if (text.equals(IF_PARTICLES)) particles = scores.nextBoolean(); 
+					else if (text.equals(IF_ANTIALIASING)) antialiasing = scores.nextBoolean();
 					
 					else {
-						scores.next(); //although it shouldn't ever get here
-						System.out.println("wow, you broke it good");
+						//rewrite is needed but, for testing this will just say:
+						System.out.println("Reverting back to default settings, as something broke.\nOld settings moved to old_<>");
+						File oldSettings = new File("old_"+SETTINGS);
+						file.renameTo(oldSettings);
+						
+						GameSettings b = new GameSettings();
+						pixel_width = 1024;
+						pixel_height = 728;
+						sound = true;
+						particles = true;
+						antialiasing = true;
+						
+						file.delete();
+						writeSettings(b);
+						scores.close();
+						return b;
 					}
 				}
 				scores.close();
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				
 			}
 			
-		} else { //default values are below
-			width = 1024;
-			height = 728;
-			particles = 1;
-			antialiasing = 1;
+		} else { //default settings are are below
+			pixel_width = 1024;
+			pixel_height = 728;
+			sound = true;
+			particles = true;
+			antialiasing = true;
 			
-			writeSettings(width, height, new int[]{particles, antialiasing});
-				//simpler?, maybe
+			GameSettings a = new GameSettings();
+			writeSettings(a); //so it now exists to read from
+			return a;
 		}
 		
-		return new int[] {width, height, particles, antialiasing};
+		GameSettings set = new GameSettings(pixel_width, pixel_height, board_width, board_height, scale);
+		set.setIfAliasing(antialiasing);
+		set.setIfParticles(particles);
+		set.setIfSound(sound); //wouldn't fit into constructor
+		
+		return set;
 	}
 	
 	//change settings (not many so far) works though
-	public static void writeSettings(int width, int height, int[] settings) {
+	public static void writeSettings(GameSettings settings) {
 		File file = new File(SETTINGS);
 		
 		PrintWriter out = null;
@@ -88,11 +120,16 @@ public class LeaderBoard { //no longer extends JTextArea, just returns one if as
 			e.printStackTrace();
 		}
 		
-		out.println(SCREEN_WIDTH + new Integer(width).toString());
-		out.println(SCREEN_HEIGHT+ new Integer(height).toString());
+		out.println(PIXEL_WIDTH + settings.getPixelWidth());
+		out.println(PIXEL_HEIGHT+ settings.getPixelHeight());
 		
-		out.println(IF_PARTICLES + settings[0]);
-		out.println(IF_ANTIALIASING + settings[1]);
+		out.println(BOARD_WIDTH + settings.getBoardWidth());
+		out.println(BOARD_HEIGHT+ settings.getBoardHeight());
+		out.println(SCALE + settings.getScale());
+		
+		out.println(IF_SOUND + settings.ifSound());
+		out.println(IF_PARTICLES + settings.ifParticles());
+		out.println(IF_ANTIALIASING + settings.ifAliasing());
 		
 		out.close();
 	}
@@ -194,7 +231,6 @@ public class LeaderBoard { //no longer extends JTextArea, just returns one if as
 	//returns the best score for the UI best score function
 	public static int getBestScore(String diff) {
 		diff += GameEngine.EXT;
-		System.out.println(diff);
 		
 		File file = new File(diff);
 		

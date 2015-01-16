@@ -18,8 +18,14 @@ public class Particle extends MovingObject {
 	
 	private double thickness;
 	
+	private boolean ifBlackHoleParticle;
+	
 	Particle() {
 		this(2, GameEngine.WHITE, 0.7, 1.065); //default settings
+	}
+	
+	Particle(int a) {
+		this(2, GameEngine.WHITE, 0.7, 1.065);
 	}
 	
 	public Particle(double thickness, double[] colour, double time, double drag) {
@@ -32,15 +38,24 @@ public class Particle extends MovingObject {
 		this.inOrbit = false;
 		this.drag = drag;
 		
+		ifBlackHoleParticle = false;
+		
 		if (!GameEngine.curSettings.ifParticles()) {
 			amHit(false);
 		}
 	}
 
+	/** Setting to prevent decay near a blackhole
+	 */
+	public void isBblackHoleParticle() {
+		ifBlackHoleParticle = true;
+	}
+	
 	@Override
 	public void update(double dt) {
 		x += dx*dt*speed;
 		y += dy*dt*speed;
+		System.out.println(Particle.ALL_THIS.size());
 		
 		this.angle = Math.atan2(dy, dx);
 		
@@ -88,30 +103,30 @@ public class Particle extends MovingObject {
 	//this is if you want orbiting particles (looks kind of weird at the moment)
 		//causes lag and needs refining 
 	public void blackHole() {
-//		for (BlackHole h: BlackHole.ALL_THIS) {
-//			if (!h.isInert()) {
-//				double distx = h.x - x;
-//				double disty = h.y - y;
-//				double dist = Math.sqrt(distx*distx + disty*disty);
-//				
-//				if (dist < h.size*BlackHole.SUCK_RADIUS) {
-//					decayTimer = 1; //so we don't decay
-//					
-//					if (dist < h.size*BlackHole.SUCK_RADIUS/2) {
-//						dy -= (h.x - x)*2 + h.dy;
-//						dx += (h.y - y)*2 + h.dx;
-//					} else {
-//						dy -= (h.x - x) + h.dy;
-//						dx += (h.y - y) + h.dx;
-//					}
-//					double speed = Math.sqrt(dx*dx + dy*dy);
-//					if (speed > this.speed*3) {
-//						dx /= speed;
-//						dy /= speed;
-//					}
-//				}
-//			}
-//		} 
+		if (!ifBlackHoleParticle) {
+			return;
+		}
+		for (BlackHole h: BlackHole.ALL_THIS) {
+			if (!h.isInert()) {
+				double ddx = h.x - x;
+				double ddy = h.y - y;
+				double dist = Math.sqrt(ddx*ddx + ddy*ddy);
+				
+				
+				if (dist < h.size*BlackHole.SUCK_RADIUS/2 && dist > 0.01) {
+					inOrbit = true;
+					
+					ddx /= dist;
+					ddy /= dist;
+					
+					dx += ddx/2; //+h.dx/4;
+					dy += ddy/2; //+h.dy/4;
+					
+				} else {
+					inOrbit = false;
+				}
+			}
+		} 
 	}
 	
 	public void drawSelf(GL2 gl) {

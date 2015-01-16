@@ -286,6 +286,10 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S){
 			yNegAccel = false;
 		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { //escape is a good pause button I think
+			GameEngine.togglePause();
+		}
 	}
 
 	@Override

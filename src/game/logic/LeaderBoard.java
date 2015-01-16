@@ -181,7 +181,7 @@ public class LeaderBoard {
 	
 	//writes scores to file (under the current difficulty)
 	public static void writeScore(String diff, int score, String name, int time) {
-		diff += GameEngine.EXT;
+		diff += GameEngine.EXT_D;
 
 		File file = new File(diff);
 		
@@ -230,7 +230,7 @@ public class LeaderBoard {
 	
 	//returns the best score for the UI best score function
 	public static int getBestScore(String diff) {
-		diff += GameEngine.EXT;
+		diff += GameEngine.EXT_D;
 		
 		File file = new File(diff);
 		
@@ -275,7 +275,7 @@ public class LeaderBoard {
 		JTextArea area = new JTextArea();
 		area.setEditable(false);
 		
-		diff += GameEngine.EXT;
+		diff += GameEngine.EXT_D;
 		File file = new File(diff);
 		if (!file.exists()) {
 			throw new IllegalArgumentException("Input file must exist for this method");
@@ -283,11 +283,11 @@ public class LeaderBoard {
 		
 		String text = getText(file);
 		
-		if (diff.equals(GameEngine.EASY_D + GameEngine.EXT)) {
+		if (diff.equals(GameEngine.EASY_D + GameEngine.EXT_D)) {
 			area.setText("Easy Scores\n"+ text);
-		} else if (diff.equals(GameEngine.MEDIUM_D + GameEngine.EXT)) {
+		} else if (diff.equals(GameEngine.MEDIUM_D + GameEngine.EXT_D)) {
 			area.setText("Medium Scores\n" + text);
-		} else if (diff.equals(GameEngine.HARD_D + GameEngine.EXT)){
+		} else if (diff.equals(GameEngine.HARD_D + GameEngine.EXT_D)){
 			area.setText("Hard Scores\n" + text);
 		}
 		

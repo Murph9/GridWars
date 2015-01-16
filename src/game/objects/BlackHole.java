@@ -13,7 +13,7 @@ public class BlackHole extends MovingObject {
 	public static final ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
 	public static final int SUCK_RADIUS = 6;
 	
-	public static final int MAX_SPEED = 2; //yeah kinda slow
+	public static final int MAX_SPEED = 1; //yeah kinda slow
 	
 	private boolean isInert;
 	private int numCount; //number of objects consumed
@@ -38,8 +38,8 @@ public class BlackHole extends MovingObject {
 	}
 	
 	public void giveObject(double x, double y) {
-		dx += x/2; //objects give it speed
-		dy += y/2;
+		dx += x/6; //objects give it speed
+		dy += y/6;
 		numCount++;
 		hitPoints += 2; //because it would be too easy on 1
 		size += 0.025; //so it can grow
@@ -59,11 +59,15 @@ public class BlackHole extends MovingObject {
 		//particle effects yay
 		double rand = GameEngine.rand.nextDouble();
 		if (!isInert && rand < ((float)numCount/(float)maxNum)) {
-			MovingObject a = new Particle(3, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 1, 1.04);
-			a.x = x;
-			a.y = y;
-			a.dx = (GameEngine.rand.nextDouble()*2-1)*10 + dx;
-			a.dy = (GameEngine.rand.nextDouble()*2-1)*10 + dy;
+			Particle a = new Particle(3, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 1, 1.04);
+			double angle = GameEngine.rand.nextDouble()*Math.PI;
+			
+			a.x = x + Math.sin(angle);
+			a.y = y + Math.cos(angle);
+			a.dx = Math.cos(angle)*10 + dx;
+			a.dy = Math.sin(angle)*10 + dy;
+			
+			a.isBblackHoleParticle();
 		}
 		
 		Helper.keepInside(this, Helper.BOUNCE);
@@ -80,8 +84,8 @@ public class BlackHole extends MovingObject {
 		
 		speed = Math.sqrt(dx*dx + dy*dy); 
 		if (speed != 0 && speed > 1) {
-			dx *= MAX_SPEED/speed;
-			dy *= MAX_SPEED/speed;
+			dx = dx/speed;
+			dy = dy/speed;
 		}
 	}
 	

@@ -88,7 +88,7 @@ public class GameState {
 	public void useBomb() {
 		if (bombCount > 0) {
 			bombCount--;
-			GameEngine.killAll(null);
+			GameEngine.killAll(null, true);
 			kills = 0;
 			multiplier = 1;
 			hasShield = 2;

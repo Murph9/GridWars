@@ -87,11 +87,11 @@ public class GameObject {
     //things to use in sub classes:
     public void drawSelf(GL2 gl) {
         // should be called after binding the texture
-    	
     	gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
     	Helper.square(gl);
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     }
+    
     public void update(double dt) {
     	// do nothing
     }

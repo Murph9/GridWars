@@ -15,28 +15,28 @@ import java.util.Scanner;
 import javax.swing.JTextArea;
 
 /**Handles all file reading through static methods.
- * 
  * @author Jake Murphy
  */
 public class LeaderBoard {
 
-	//note the spaces:
+	//Statistics
 	private static final String STATS = "stats.txt", 
-			HIGHEST_SCORE = "high_score ", HIGHEST_MULTI = "high_multiplier ",
-			TOTAL_POWERUPS = "total_powerups ",	TOTAL_KILLS = "total_kills ", 
-			TOTAL_SCORE = "total_score ", TOTAL_TIME = "total_time ", TOTAL_DEATHS = "total_deaths ",
-			LONGEST_GAME = "longest_game ";
-	
+			HIGHEST_SCORE = "high_score", HIGHEST_MULTI = "high_multiplier",
+			TOTAL_POWERUPS = "total_powerups",	TOTAL_KILLS = "total_kills", 
+			TOTAL_SCORE = "total_score", TOTAL_TIME = "total_time", TOTAL_DEATHS = "total_deaths",
+			LONGEST_GAME = "longest_game";
+
+	//Settings
 	private static final String SETTINGS = "settings.txt",
-			PIXEL_WIDTH = "pixel_width ", PIXEL_HEIGHT = "pixel_height ",
-			BOARD_WIDTH = "board_width ", BOARD_HEIGHT = "board_height ", SCALE = "scale ",
-			IF_PARTICLES = "particles ", IF_ANTIALIASING = "antialiasing ", IF_SOUND = "sound ";
+			PIXEL_WIDTH = "pixel_width", PIXEL_HEIGHT = "pixel_height",
+			BOARD_WIDTH = "board_width", BOARD_HEIGHT = "board_height", SCALE = "scale",
+			IF_PARTICLES = "particles", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound";
 	
 	
 	///////////////////////
 	//SETTINGS:
 	
-	//returns a int[]: width, height, other boolean (1 = true, 0 - false - same as java)
+	//returns a int[]: width, height, other boolean (1 = true, 0 = false - same as java)
 	public static GameSettings readSettings() {
 		File file = new File(SETTINGS);
 
@@ -48,7 +48,7 @@ public class LeaderBoard {
 			try {
 				Scanner scores = new Scanner(new FileReader(file));
 				while (scores.hasNext()) {
-					String text = scores.next() + " "; //because everything was spaced... TODO FIX THIS MESS
+					String text = scores.next(); //because everything was spaced... TODO FIX THIS MESS
 					if (text.equals(PIXEL_WIDTH)) pixel_width = scores.nextInt();
 					else if (text.equals(PIXEL_HEIGHT)) pixel_height = scores.nextInt();
 					
@@ -120,41 +120,81 @@ public class LeaderBoard {
 			e.printStackTrace();
 		}
 		
-		out.println(PIXEL_WIDTH + settings.getPixelWidth());
-		out.println(PIXEL_HEIGHT+ settings.getPixelHeight());
+		out.println(PIXEL_WIDTH +" "+ settings.getPixelWidth());
+		out.println(PIXEL_HEIGHT+" "+ settings.getPixelHeight());
 		
-		out.println(BOARD_WIDTH + settings.getBoardWidth());
-		out.println(BOARD_HEIGHT+ settings.getBoardHeight());
-		out.println(SCALE + settings.getScale());
+		out.println(BOARD_WIDTH +" "+ settings.getBoardWidth());
+		out.println(BOARD_HEIGHT+" "+ settings.getBoardHeight());
+		out.println(SCALE +" "+ settings.getScale());
 		
-		out.println(IF_SOUND + settings.ifSound());
-		out.println(IF_PARTICLES + settings.ifParticles());
-		out.println(IF_ANTIALIASING + settings.ifAliasing());
+		out.println(IF_SOUND +" "+ settings.ifSound());
+		out.println(IF_PARTICLES +" "+ settings.ifParticles());
+		out.println(IF_ANTIALIASING +" "+ settings.ifAliasing());
 		
 		out.close();
 	}
 	
 
 	/////////////////////////
-	//STATS: TODO
+	//STATS:
 	
-	//adds to the stats.txt file TODO
+	//adds the new stats to the stats.txt file
 	public static void addToStats(GameState state) {
 		File file = new File(STATS);
 		
 		Scanner stats = null;
-		HashMap<String, Integer> statSet = null;
+		int hiScore = 0, multi = 0, powerups = 0, kills = 0, totalScore = 0, time = 0, deaths = 0, longest = 0;
+		
+		
 		try {
+			if (!file.exists()) {
+				createNewStats(file);
+			}
 			stats = new Scanner(new FileReader(file));
+
 			
-			statSet = new HashMap<String, Integer>();
 			while (stats.hasNext()) {
-				statSet.put(stats.next(), stats.nextInt());
+				String next = stats.next();
+				int INT = stats.nextInt();
+				
+				if (next.equals(HIGHEST_SCORE)) {
+					hiScore = Math.max(INT, state.getScore());
+				} else if (next.equals(HIGHEST_MULTI)) {
+					multi = Math.max(INT, state.getMultiplier());
+				} else if (next.equals(TOTAL_POWERUPS)) {
+					powerups = INT + state.getPowerUpCount();
+				} else if (next.equals(TOTAL_KILLS)) {
+					kills = INT + state.getTotalKills();
+				} else if (next.equals(TOTAL_SCORE)) {
+					totalScore = INT + state.getScore();
+				} else if (next.equals(TOTAL_TIME)) {
+					time = INT + (int)state.getTime();
+				} else if (next.equals(TOTAL_DEATHS)) {
+					deaths = INT + state.getTotalDeaths();
+				} else if (next.equals(LONGEST_GAME)) {
+					longest = Math.max(INT, (int)state.getTime());
+				}
 			}
 			stats.close();
 			
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
+			file.delete();
+			file.createNewFile();
+			
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+			
+			out.println(HIGHEST_SCORE + " " + hiScore);
+			out.println(HIGHEST_MULTI + " " + multi); //simple default values
+			out.println(TOTAL_POWERUPS + " " + powerups);
+			out.println(TOTAL_KILLS + " " + kills);
+			out.println(TOTAL_SCORE + " " + totalScore);
+			out.println(TOTAL_TIME + " " + time);
+			out.println(TOTAL_DEATHS + " " + deaths);
+			out.println(LONGEST_GAME + " " + longest);
+			
+			out.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		
@@ -168,15 +208,56 @@ public class LeaderBoard {
 		
 		out.close();
 	}
+
+	private static void createNewStats(File file) throws IOException {
+		file.createNewFile();
+		
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+		
+		out.println(HIGHEST_SCORE + " 0");
+		out.println(HIGHEST_MULTI + " 0"); //simple default values
+		out.println(TOTAL_POWERUPS + " 0");
+		out.println(TOTAL_KILLS + " 0");
+		out.println(TOTAL_SCORE + " 0");
+		out.println(TOTAL_TIME + " 0");
+		out.println(TOTAL_DEATHS + " 0");
+		out.println(LONGEST_GAME + " 0");
+		
+		out.close();
+	}
 	
+
 	//returns the stats saved in the stats.txt
 	public static String getStats() {
-		return "";
-		//TODO
+		File file = new File(STATS);
+		
+		Scanner stats = null;
+		HashMap<String, Integer> statSet = null;
+		try {
+			if (!file.exists()) {
+				createNewStats(file);
+			}
+			stats = new Scanner(new FileReader(file));
+
+			statSet = new HashMap<String, Integer>();
+			while (stats.hasNext()) {
+				statSet.put(stats.next(), stats.nextInt());
+			}
+			stats.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String out = "";
+		for (String a: statSet.keySet()) {
+			out = out + a + " " + statSet.get(a).toString() + "\n";
+		}
+		
+		return out;
 	}
 	
 	
-	//////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////
 	//SCORES:
 	
 	//writes scores to file (under the current difficulty)

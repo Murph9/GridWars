@@ -169,6 +169,7 @@ public class GameState {
 	
 	public int getTotalDeaths(){ return deaths;     }
 	public int getTotalKills() { return totalKills; }
+	public int getPowerUpCount(){return powerupCount;}
 	
 	public int    getBombCount()   { return bombCount;   }
 	public int    getBulletCount() { return bulletCount; }

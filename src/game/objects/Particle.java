@@ -55,7 +55,6 @@ public class Particle extends MovingObject {
 	public void update(double dt) {
 		x += dx*dt*speed;
 		y += dy*dt*speed;
-		System.out.println(Particle.ALL_THIS.size());
 		
 		this.angle = Math.atan2(dy, dx);
 		

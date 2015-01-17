@@ -77,8 +77,9 @@ public class TheGame implements ActionListener {
 	
 	//draw the menu
 	public void initMenu() {
+		System.out.println(LeaderBoard.getStats());
+		
 		random = new Random();
-
 		theFrame = new JFrame();
 		
 		menuPanel = new JPanel();
@@ -325,6 +326,8 @@ public class TheGame implements ActionListener {
 		//TODO (ask for name)
 		System.out.println("(lost all lives)\n   - reloadMenu");
 		LeaderBoard.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
+		LeaderBoard.addToStats(state);
+		System.out.println(LeaderBoard.getStats());
 	}
 	
     //spawning done simple. Look at SpawnHandler for better spawning logic

@@ -145,7 +145,6 @@ public class LeaderBoard {
 		Scanner stats = null;
 		int hiScore = 0, multi = 0, powerups = 0, kills = 0, totalScore = 0, time = 0, deaths = 0, longest = 0;
 		
-		
 		try {
 			if (!file.exists()) {
 				createNewStats(file);
@@ -250,7 +249,7 @@ public class LeaderBoard {
 		}
 		String out = "";
 		for (String a: statSet.keySet()) {
-			out = out + a + " " + statSet.get(a).toString() + "\n";
+			out = out + a + ":\t " + statSet.get(a).toString() + "\n";
 		}
 		
 		return out;
@@ -279,7 +278,10 @@ public class LeaderBoard {
 			return;
 		}
 
-		records.add(new Record(score, name, time)); //add new record
+		Record incoming = new Record(score, name, time);
+		if (!records.contains(incoming)) { //no duplicates please
+			records.add(incoming);
+		}
 		
 		Collections.sort(records, new Comparator<Record>() {
 			public int compare(Record a, Record b) {
@@ -445,7 +447,7 @@ class Record {
 		if (o == this) return true;
 		Record in = (Record) o;
 		
-		if (score == in.score && name.equals(in.name)) {
+		if (score == in.score && name.equals(in.name)) { //deliberately ignoring time
 			return true;
 		}
 		return false;

@@ -8,7 +8,7 @@ import javax.media.opengl.GL2;
 
 public class Particle extends MovingObject {
 
-	public static final double DEFAULT_DRAG = 1.065;
+	public static final double DEFAULT_DRAG = 1.05;
 	public final static ArrayList<Particle> ALL_THIS = new ArrayList<Particle>();
 	
 	private boolean inOrbit;
@@ -106,14 +106,16 @@ public class Particle extends MovingObject {
 			return;
 		}
 		for (BlackHole h: BlackHole.ALL_THIS) {
-			if (!h.isInert()) {
+			if (!h.isInert() && h.canAcceptParticle()) {
 				double ddx = h.x - x;
 				double ddy = h.y - y;
 				double dist = Math.sqrt(ddx*ddx + ddy*ddy);
 				
 				
 				if (dist < h.size*BlackHole.SUCK_RADIUS/2 && dist > 0.01) {
-					inOrbit = true;
+					inOrbit = true; //they don't decay when in orbit
+//					decayTimer *= 1.2; //please don't they don't go away
+					h.giveParticle();
 					
 					ddx /= dist;
 					ddy /= dist;

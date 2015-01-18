@@ -1,5 +1,4 @@
 package game.logic;
-import game.objects.*;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -8,7 +7,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
-import java.util.Random;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
@@ -20,11 +18,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.Timer;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -44,10 +42,6 @@ public class TheGame implements ActionListener {
 	private GLJPanel gamePanel; //for the GameEngine
 	private FPSAnimator animator;
 	private GameEngine engine;
-	
-	private Timer timer;
-	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
-	private Random random;
 	
 	//settings checkboxes - add others... (thats not 'and')
 	private JCheckBox sound;
@@ -77,9 +71,6 @@ public class TheGame implements ActionListener {
 	
 	//draw the menu
 	public void initMenu() {
-		System.out.println(LeaderBoard.getStats());
-		
-		random = new Random();
 		theFrame = new JFrame();
 		
 		menuPanel = new JPanel();
@@ -93,9 +84,6 @@ public class TheGame implements ActionListener {
 		
 		////////////////////////////////////////////////
 		////Game Mode
-		
-		GridBagConstraints a = new GridBagConstraints();
-		
 		JRadioButton buttonEasy = new JRadioButton(easyB);
 		buttonEasy.setActionCommand(GameEngine.EASY_D);
 		
@@ -104,6 +92,17 @@ public class TheGame implements ActionListener {
 		
 		JRadioButton buttonHard = new JRadioButton(hardB);
 		buttonHard.setActionCommand(GameEngine.HARD_D);
+		
+		group = new ButtonGroup();
+		group.add(buttonEasy);
+		group.add(buttonMed);
+		group.add(buttonHard);
+		
+		buttonMed.setSelected(true); //because its hard coded somewhere else i think (in this file)
+		
+		buttonEasy.addActionListener(this);
+		buttonMed.addActionListener(this);
+		buttonHard.addActionListener(this);
 		
 		JButton go = new JButton("Go");
 		go.addActionListener(new ActionListener() {
@@ -119,18 +118,15 @@ public class TheGame implements ActionListener {
 			}
 		});
 		
-		group = new ButtonGroup();
-		group.add(buttonEasy);
-		group.add(buttonMed);
-		group.add(buttonHard);
+		JButton stats = new JButton("stats");
+		stats.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, LeaderBoard.getStats());
+			}
+		});
 		
-		buttonMed.setSelected(true); //because its hard coded somewhere else i think (in this file)
-		
-		buttonEasy.addActionListener(this);
-		buttonMed.addActionListener(this);
-		buttonHard.addActionListener(this);
-
-		
+		GridBagConstraints a = new GridBagConstraints();
 		a.fill = GridBagConstraints.HORIZONTAL;
 		
 		a.gridx = 0;
@@ -146,6 +142,11 @@ public class TheGame implements ActionListener {
 		newGamePanel.add(buttonMed, a);
 		a.gridy++;
 		newGamePanel.add(buttonHard, a);
+		
+		a.gridwidth = 2;
+		a.gridx = 0;
+		a.gridy++;
+		newGamePanel.add(stats, a);
 		
 		
 		////////////////////////////////////////////////// 
@@ -277,7 +278,7 @@ public class TheGame implements ActionListener {
         //then write settings to file
         LeaderBoard.writeSettings(set);
         
-        this.engine = new GameEngine(new GameState(difficulty), set);
+        this.engine = new GameEngine(new SpawnHandler(difficulty), new GameState(difficulty), set);
         
         //////////////////////////////
         //JOGL Stuff:
@@ -300,14 +301,6 @@ public class TheGame implements ActionListener {
 		this.theFrame.setFocusable(true);
 		this.theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				newEnemy();
-			}
-		};
-		this.timer = new Timer(TIME_INTERVAL, taskPerformer);
-		this.timer.start();
-        
         this.gamePanel.addKeyListener(GameEngine.player);
         this.gamePanel.addMouseListener(GameEngine.player);
         
@@ -323,41 +316,11 @@ public class TheGame implements ActionListener {
     }
 	
 	public static void reloadMenu(GameState state) {
-		//TODO (ask for name)
+		//TODO (ask for name) (TODO maybe before the play button, you input your name with special words for weird spawns?)
 		System.out.println("(lost all lives)\n   - reloadMenu");
 		LeaderBoard.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
 		LeaderBoard.addToStats(state);
-		System.out.println(LeaderBoard.getStats());
 	}
-	
-    //spawning done simple. Look at SpawnHandler for better spawning logic
-    private void newEnemy() {
-    	if (!GameEngine.canSpawn()) {
-    		return;
-    	}
-    	int a = random.nextInt(13);
-    	GameObject s = null;
-    	switch (a) {
-    	case 0: case 1: case 2:
-    		s = new SimpleSpinner();    	break;
-    	case 3: case 4:
-    		s = new HomingDiamond();   		break;
-    	case 5: case 6:
-    		s = new SplitingSquare();		break;
-    	case 7:
-    		s = new ShieldedClone();    	break;
-    	case 8:
-    		s = new SnakeHead();    		break;
-    	case 9: case 10:
-    		s = new ShySquare();			break;
-    	case 11:
-    		s = new BlackHole();   			break;
-    	case 12:
-    		s = new ConnectedTriangle();	break;
-    	}
-    	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
-    }
-
 	
     //rewrite the leaderboard to represent the current difficulty set
     @Override

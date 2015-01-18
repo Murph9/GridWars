@@ -15,12 +15,16 @@ public class BlackHole extends MovingObject {
 	
 	public static final int MAX_SPEED = 1; //yeah kinda slow
 	
+	public static final int MAX_PARTICLES = 20; //low TODO balance
+	
 	private boolean isInert;
 	private int numCount; //number of objects consumed
 				//as in NumNumNumNum [aggressively eating]
 	
 	private int maxNum; //if hit points hits this number it will explode
 	private int hitPoints; //hits it will take to destroy, increases on nums
+	
+	private int particleCount; //count of orbiting particles, visual indication of how many hits remaining = cool
 	
 	public BlackHole() {
 		this(1, GameEngine.RED);
@@ -34,7 +38,7 @@ public class BlackHole extends MovingObject {
 		hitPoints = 10; //starts with hit points of 10 shots to kill
 		ALL_THIS.add(this);
 		
-		score = 150; //default score value 
+		score = 150; //default score value
 	}
 	
 	public void giveObject(double x, double y) {
@@ -50,22 +54,34 @@ public class BlackHole extends MovingObject {
 	
 	public void shotAt() { isInert = false; }
 	public boolean isInert() { return isInert; }
+	public boolean canAcceptParticle() { 
+		return (particleCount < hitPoints);
+	} 
+	
+	public void giveParticle() {
+		particleCount++;
+	}
 	
 	@Override
 	public void update(double dt) {
 		x += dx*dt*MAX_SPEED;
 		y += dy*dt*MAX_SPEED;
 		
-		//particle effects yay
+		particleCount = 0;
+		
+		//particle effects yay - maybe fix spawning positions later
 		double rand = GameEngine.rand.nextDouble();
-		if (!isInert && rand < ((float)numCount/(float)maxNum)) {
+		if (!isInert && rand < ((float)numCount/(float)maxNum)){
 			Particle a = new Particle(3, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 1, 1.04);
-			double angle = GameEngine.rand.nextDouble()*Math.PI;
+			double angle = GameEngine.rand.nextDouble()*Math.PI*2;
 			
-			a.x = x + Math.sin(angle);
-			a.y = y + Math.cos(angle);
-			a.dx = Math.cos(angle)*10 + dx;
-			a.dy = Math.sin(angle)*10 + dy;
+			double sin = Math.sin(angle); //because speed
+			double cos = Math.cos(angle);
+			
+			a.x = x + sin;
+			a.y = y + cos;
+			a.dx = dx + cos*10;
+			a.dy = dy + sin*10;
 			
 			a.isBblackHoleParticle();
 		}
@@ -139,7 +155,7 @@ public class BlackHole extends MovingObject {
 		hitPoints--;
 		size -= 0.01;
 		if (hitPoints <= 0) {
-			delete(true); //as in shot
+			delete(true);
 		}
 	}
 	

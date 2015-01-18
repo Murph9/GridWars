@@ -66,7 +66,7 @@ public class GameEngine implements GLEventListener {
 	/**Instantiates a new game engine.
 	 * @param state the state of the incoming game with fields set
 	 */
-	public GameEngine(GameState state, GameSettings settings) {
+	public GameEngine(SpawnHandler spawnner, GameState state, GameSettings settings) {
 		Border border = new Border(settings.getBoardWidth(), settings.getBoardHeight());
 		border.setSize(1); //just incase it stopped being 1 (removes warning)
 		
@@ -144,7 +144,8 @@ public class GameEngine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		//init sounds
+		//init sounds (TODO if something accidently calls this it will crash)
+			//try and just mute it instead
 		if (curSettings.ifSound()) {
 			SoundEffect.init();
 			//blah blah..
@@ -391,6 +392,18 @@ public class GameEngine implements GLEventListener {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
+
+	@Override
+	public void dispose(GLAutoDrawable drawable) {
+		//called by system when the window is closed
+
+		System.out.println(GameEngine.curGame.toString());
+		LeaderBoard.writeScore(curGame.getDifficulty(), curGame.getScore(), "_auto", (int)curGame.getTime());
+	}
+	
+	
+	///////////////////////////// STATIC
+	
 	/**Kill all objects on the screen (excluding Player,Border,Camera,Powerups,ROOT)
 	 * @param object Optional game object that will not be deleted after method
 	 */
@@ -460,12 +473,12 @@ public class GameEngine implements GLEventListener {
 		killObj = obj;
 		
 		if (curGame.getLives() < 1) { //no lives left
+			GameEngine.togglePause();
 			TheGame.reloadMenu(curGame);
-		}
+		} //TODO must stop itsself (somehow)
 	}
 	
 	public static void togglePause() {
-		// TODO Auto-generated method stub
 		if (GameEngine.killCountdown > 0) {
 			return;
 		}
@@ -473,14 +486,6 @@ public class GameEngine implements GLEventListener {
 		
 		TextPopup text = new TextPopup(WHITE, "Paused", 0.1, playerPos[0]-0.8, playerPos[1]+1.2);
 		text.angle = 0;
-	}
-	
-	@Override
-	public void dispose(GLAutoDrawable drawable) {
-		//called by system when the window is closed
-
-		System.out.println(GameEngine.curGame.toString());
-		LeaderBoard.writeScore(curGame.getDifficulty(), curGame.getScore(), "_auto", (int)curGame.getTime());
 	}
 	
 }

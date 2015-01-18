@@ -1,8 +1,8 @@
-high_score 5725
+high_score 255887
 high_multiplier 2
 total_powerups 0
-total_kills 94
-total_score 8025
-total_time 691
-total_deaths 12
-longest_game 363
+total_kills 3268
+total_score 889608
+total_time 8093
+total_deaths 24
+longest_game 2014

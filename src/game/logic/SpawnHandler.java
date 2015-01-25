@@ -1,19 +1,8 @@
 package game.logic;
-import game.objects.BlackHole;
-import game.objects.ConnectedTriangle;
-import game.objects.GameObject;
-import game.objects.HomingDiamond;
-import game.objects.ShieldedClone;
-import game.objects.ShySquare;
-import game.objects.SimpleSpinner;
-import game.objects.SnakeHead;
-import game.objects.SplitingSquare;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import game.objects.*;
+
 import java.util.Random;
-
-import javax.swing.Timer;
 
 
 //handles the spawning of objects, initalsed with the difficulty of the object
@@ -49,19 +38,7 @@ import javax.swing.Timer;
 //thinking about having "waves" of things spawn: (in order) (with swarms in the transition, either around the player or on the edge)	
 	//maybe the transition is slower on easy difficulty?
 	//correct gameplay should be (on as many levels as possible) easy/hard/easy/hard/...
-		//this is a known good gameplay mechanic
-/* Sv |  
- * Dv |
- *    | Ss
- *    | P
- *    | DsH
- *    | PY
- * Pv | 1L
- * Bv | 
- *           
- * 
- */
-
+		//this is a known good gameplay mechanic (also works for movies)
 
 
 ////////////////////////////
@@ -77,24 +54,15 @@ import javax.swing.Timer;
 
 public class SpawnHandler {
 	
-	private static int TIME_INTERVAL = 250; //500 seems the best so far, 250 is just hard
+	private static final double SPAWN_TIME = 0.25;
 	
-	private String type;
-	private Timer timer;
+	private String diff;
+	private double timer;
 	private Random random;
 
-	public SpawnHandler(String type) {
-		this.type = type;
+	public SpawnHandler(String difficulty) {
+		this.diff = difficulty;
 
-		ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				newEnemy();
-			}
-		};
-		this.timer = new Timer(TIME_INTERVAL, taskPerformer);
-			//might have to be an object thats updated
-		this.timer.start();
-		
 		this.random = new Random();
 	}
 	
@@ -127,6 +95,17 @@ public class SpawnHandler {
     	int boardWidth = GameEngine.curSettings.getBoardWidth();
     	int boardHeight = GameEngine.curSettings.getBoardHeight();
     	
-    	s.setPosition(new double[]{(random.nextInt(2)*2-1)*(boardWidth-0.5), (random.nextInt(2)*2-1)*(boardHeight-0.5)});
+    	s.x = (random.nextInt(2)*2-1)*(boardWidth-0.5);
+    	s.y = (random.nextInt(2)*2-1)*(boardHeight-0.5);
     }
+
+
+	public void update(double dt) {
+		timer -= dt;
+		
+		if (timer < 0) {
+			newEnemy();
+			timer = SPAWN_TIME;
+		}
+	}
 }

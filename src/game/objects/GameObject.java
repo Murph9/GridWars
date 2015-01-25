@@ -79,7 +79,7 @@ public class GameObject {
         	TextPopup s = new TextPopup(this.colour, score, 1, x-(size/2), y-0.1);
         	s.angle = 0; //because annoying warning is gone now that ive used it
         	
-        	SoundEffect.SHOT.play(10, 0);
+        	SoundEffect.OBJECT_KILL.play(10, 0);
         }
     }
     

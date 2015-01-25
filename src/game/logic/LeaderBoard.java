@@ -1,4 +1,6 @@
 package game.logic;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +14,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 /**Handles all file reading through static methods.
@@ -25,12 +29,14 @@ public class LeaderBoard {
 			TOTAL_POWERUPS = "total_powerups",	TOTAL_KILLS = "total_kills", 
 			TOTAL_SCORE = "total_score", TOTAL_TIME = "total_time", TOTAL_DEATHS = "total_deaths",
 			LONGEST_GAME = "longest_game";
+		//other ideas: times played, 
 
 	//Settings
 	private static final String SETTINGS = "settings.txt",
 			PIXEL_WIDTH = "pixel_width", PIXEL_HEIGHT = "pixel_height",
 			BOARD_WIDTH = "board_width", BOARD_HEIGHT = "board_height", SCALE = "scale",
-			IF_PARTICLES = "particles", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound";
+			IF_PARTICLES = "particles", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
+			NAME = "name";
 	
 	
 	///////////////////////
@@ -43,6 +49,7 @@ public class LeaderBoard {
 		int pixel_width = -1, pixel_height = -1, board_width = -1, board_height = -1;
 		double scale = -1;
 		boolean	particles = true, antialiasing = true, sound = true;
+		String name = "null";
 		
 		if (file.exists()) {
 			try {
@@ -55,6 +62,7 @@ public class LeaderBoard {
 					else if (text.equals(BOARD_WIDTH)) board_width = scores.nextInt();
 					else if (text.equals(BOARD_HEIGHT)) board_height = scores.nextInt();
 
+					else if (text.equals(NAME)) name = scores.next();
 					else if (text.equals(SCALE)) scale = scores.nextDouble();
 					
 					else if (text.equals(IF_SOUND)) sound = scores.nextBoolean();
@@ -73,6 +81,7 @@ public class LeaderBoard {
 						sound = true;
 						particles = true;
 						antialiasing = true;
+						name = "me";
 						
 						file.delete();
 						writeSettings(b);
@@ -93,6 +102,7 @@ public class LeaderBoard {
 			sound = true;
 			particles = true;
 			antialiasing = true;
+			name = "me";
 			
 			GameSettings a = new GameSettings();
 			writeSettings(a); //so it now exists to read from
@@ -103,6 +113,7 @@ public class LeaderBoard {
 		set.setIfAliasing(antialiasing);
 		set.setIfParticles(particles);
 		set.setIfSound(sound); //wouldn't fit into constructor
+		set.setName(name);
 		
 		return set;
 	}
@@ -126,6 +137,8 @@ public class LeaderBoard {
 		out.println(BOARD_WIDTH +" "+ settings.getBoardWidth());
 		out.println(BOARD_HEIGHT+" "+ settings.getBoardHeight());
 		out.println(SCALE +" "+ settings.getScale());
+		
+		out.println(NAME +" "+ settings.getName());
 		
 		out.println(IF_SOUND +" "+ settings.ifSound());
 		out.println(IF_PARTICLES +" "+ settings.ifParticles());
@@ -354,7 +367,11 @@ public class LeaderBoard {
 	//JTextArea stuff:
 
 	//returns the TextArea of the scores (for displaying)
-	public static JTextArea getLeaderBoard(String diff) {
+	public static JPanel getLeaderBoard(String diff) {
+		
+		JPanel frame = new JPanel();
+		frame.setLayout(new GridBagLayout());
+		
 		JTextArea area = new JTextArea();
 		area.setEditable(false);
 		
@@ -365,16 +382,29 @@ public class LeaderBoard {
 		}
 		
 		String text = getText(file);
+		area.setText(text);
+		
+		JLabel label = null;
 		
 		if (diff.equals(GameEngine.EASY_D + GameEngine.EXT_D)) {
-			area.setText("Easy Scores\n"+ text);
+			label = new JLabel("Easy Records");
 		} else if (diff.equals(GameEngine.MEDIUM_D + GameEngine.EXT_D)) {
-			area.setText("Medium Scores\n" + text);
+			label = new JLabel("Medium Records");
 		} else if (diff.equals(GameEngine.HARD_D + GameEngine.EXT_D)){
-			area.setText("Hard Scores\n" + text);
+			label = new JLabel("Hard Records");
+		} else {
+			throw new IllegalArgumentException("Please use one of the default difficulties");
 		}
 		
-		return area;
+		GridBagConstraints g = new GridBagConstraints();
+		g.gridx = 0;
+		g.gridy = 0;
+		frame.add(label, g);
+		
+		g.gridy++;
+		frame.add(area, g);
+
+		return frame;
 	}
 	
 	//returns the text from the file for the text area 
@@ -407,7 +437,7 @@ public class LeaderBoard {
 		
 		int count = 0;
 		for (Record i: records) {
-			text += (i.toLineString() + "\n");
+			text += ("\n" + i.toLineString());
 
 			if (count >= 10) break;
 			count++;

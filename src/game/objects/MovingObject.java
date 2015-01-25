@@ -73,8 +73,9 @@ public abstract class MovingObject extends GameObject {
 			}
 		}
 	}
-	//Every subclass must have this method:
-		//how do i add a private method here?
+	
+	//Every subclass must have these methods:
+		//how do i add a private method here? TODO
 	public abstract void update(double dt);
 	public abstract void selfCol();
 }

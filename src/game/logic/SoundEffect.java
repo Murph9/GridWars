@@ -13,8 +13,19 @@ import javax.sound.sampled.*;
  */
 public enum SoundEffect {
 	//TODO makes better ones
-	//lots of others needed
-	SHOT("sounds/bullet1.wav"), //bullet shoot 
+	/*lots of others needed:
+		bullet shoot, hit, bounce
+		blackhole everything; hit, die, explode, spawn. ( and constant pulsing)
+		life lost
+		powerup
+		object spawn sound
+		???
+	*/
+	
+	//Good:
+	OBJECT_KILL("sounds/bullet1.wav"), //bullet shoot 
+
+	//Bad:
 	BULLET_KILL("sounds/bullet_hit.wav"), //bullet die 
 	POWERUP("sounds/Powerup.wav"),   // powerup
 	POWERUP2("sounds/Powerup2.wav"),         // gong
@@ -52,7 +63,10 @@ public enum SoundEffect {
 		}
 	}
 	
-	// Play or Re-play the sound effect from the beginning, by rewinding.
+	/** Play sound from beginning, simple.
+	 * @param level Decibles from maximum sound (0 = loudest, 100 = softest)
+	 * @param pan Not implemented
+	 */
 	public void play(int level, float pan) { //pan not used yet TODO
 		if (volume != Volume.MUTE) {
 			if (clip.isRunning()) {
@@ -71,7 +85,5 @@ public enum SoundEffect {
 		values(); // calls the constructor for all the elements
 	}
 }
-
-
 
 //http://www3.ntu.edu.sg/home/ehchua/programming/java/J8c_PlayingSound.html

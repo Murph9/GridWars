@@ -45,6 +45,7 @@ public class GameEngine implements GLEventListener {
 	public static final Random rand = new Random();
 		//just because ease of use, ive heard making a random object is slow [unconfirmed]
 	
+	public SpawnHandler spawner;
 	public static GameState curGame; //so every file can access these
 	public static GameSettings curSettings;
 	
@@ -63,8 +64,7 @@ public class GameEngine implements GLEventListener {
 	
 	private ShaderControl shader; //might have an option to change this later
 	
-	/**Instantiates a new game engine.
-	 * @param state the state of the incoming game with fields set
+	/**Instantiates a new game engine, should have an animator called on this as well.
 	 */
 	public GameEngine(SpawnHandler spawnner, GameState state, GameSettings settings) {
 		Border border = new Border(settings.getBoardWidth(), settings.getBoardHeight());
@@ -76,10 +76,13 @@ public class GameEngine implements GLEventListener {
 		GameEngine.player = new Player(1, GameEngine.WHITE);
 		textures = new MyTexture[TEXTURE_SIZE];
 		
+		spawner = spawnner;
 		curGame = state;
 		curSettings = settings;
 		
 		isPaused = false;
+		
+		//TODO player's relative speed at different difficulties
 	}
 	
 	public static double[] getPlayerPos(){  return playerPos; }
@@ -144,11 +147,9 @@ public class GameEngine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		//init sounds (TODO if something accidently calls this it will crash)
-			//try and just mute it instead
+		SoundEffect.init(); //TODO other volumes; HIGH and LOW
 		if (curSettings.ifSound()) {
-			SoundEffect.init();
-			//blah blah..
+			SoundEffect.volume = SoundEffect.Volume.MUTE;
 		}
 	}
 
@@ -235,11 +236,13 @@ public class GameEngine implements GLEventListener {
 		}
 		
 		//lag handling TODO
-//		dt = 0.036;
+		dt = 0.016; //seems to work at this point, as its always the same
 		
 		if (isPaused) {
 			//no updates
 		} else {
+			spawner.update(dt); //needs to spawn objects before objects are updated
+			
 			// update all objects
 			List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 			for (GameObject g: objects) {
@@ -257,7 +260,7 @@ public class GameEngine implements GLEventListener {
 		GL2 gl = drawable.getGL().getGL2();
 		
 		myCamera.reshape(gl, x, y, width, height);
-		curAspect = (double)width / (double)height; //so the GUI is fine
+		curAspect = (double)width / (double)height; //so the GUI elements are fine
 		
 		// this has to happen after myCamera.reshape() to use the new projection matrix
 		Mouse.theMouse.reshape(gl);
@@ -397,8 +400,14 @@ public class GameEngine implements GLEventListener {
 	public void dispose(GLAutoDrawable drawable) {
 		//called by system when the window is closed
 
-		System.out.println(GameEngine.curGame.toString());
-		LeaderBoard.writeScore(curGame.getDifficulty(), curGame.getScore(), "_auto", (int)curGame.getTime());
+//		System.out.println(GameEngine.curGame.toString());
+		//TODO possible double up between lostLife due to this being called when lostLife closes game engine
+		
+		LeaderBoard.writeScore(curGame.getDifficulty(), curGame.getScore(), "auto_"+curSettings.getName(), (int)curGame.getTime());
+		
+		LeaderBoard.addToStats(curGame);
+		
+		System.out.println(LeaderBoard.getStats() + "\t from dispose(), GameEngine");
 	}
 	
 	
@@ -474,8 +483,8 @@ public class GameEngine implements GLEventListener {
 		
 		if (curGame.getLives() < 1) { //no lives left
 			GameEngine.togglePause();
-			TheGame.reloadMenu(curGame);
-		} //TODO must stop itsself (somehow)
+			TheGame.reloadMenu(curGame, curSettings.getName());
+		} //TODO must stop itself (somehow, maybe through a "pause" like thing)
 	}
 	
 	public static void togglePause() {

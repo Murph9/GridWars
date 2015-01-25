@@ -11,7 +11,7 @@ public class SimpleSpinner extends MovingObject {
 	public final static ArrayList<SimpleSpinner> ALL_THIS = new ArrayList<SimpleSpinner>();
 	
 	public int rotSpeed = 180; //if not set
-	private static final int myMaxSpeed = 2;
+	private static final int MAX_SPEED = 3;
 	
 	public SimpleSpinner() {
 		this(1, GameEngine.PURPLE);
@@ -39,7 +39,7 @@ public class SimpleSpinner extends MovingObject {
 		selfCol();
 		
 		double speed = Math.sqrt(dx*dx+dy*dy);
-		if (speed != 0 && speed > myMaxSpeed) {
+		if (speed != 0 && speed > MAX_SPEED) {
 			dx /= speed;
 			dy /= speed;
 		}

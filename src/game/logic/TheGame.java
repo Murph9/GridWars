@@ -57,8 +57,10 @@ public class TheGame implements ActionListener {
 	private JTextField gameWidth;
 	private JTextField gameHeight;
 	
+	private JTextField nameField;
+	
 	private GridBagConstraints gbLayout;
-	private static JTextArea board;
+	private static JPanel leaderBoard;
 	
 	private ButtonGroup group;
 	private final String easyB = "Easy", medB = "Med", hardB = "Hard";
@@ -143,11 +145,27 @@ public class TheGame implements ActionListener {
 		a.gridy++;
 		newGamePanel.add(buttonHard, a);
 		
-		a.gridwidth = 2;
-		a.gridx = 0;
-		a.gridy++;
-		newGamePanel.add(stats, a);
+		///////////////////////////////////////////////////////
+		////Other
 		
+		JPanel otherPanel = new JPanel();
+		otherPanel.setLayout(new GridBagLayout());
+		otherPanel.setBorder(BorderFactory.createTitledBorder("Other"));
+		a = new GridBagConstraints();
+		a.insets = new Insets(3, 3, 3, 3);
+		
+		a.gridx = 0;
+		a.gridy = 0;
+		a.gridwidth = 2;
+		otherPanel.add(stats, a);
+
+		a.gridy++;
+		a.gridwidth = 1;
+		otherPanel.add(new JLabel("Name"), a);
+
+		a.gridx++;
+		nameField = new JTextField("null*");
+		otherPanel.add(nameField, a);
 		
 		////////////////////////////////////////////////// 
 		////Settings
@@ -162,25 +180,24 @@ public class TheGame implements ActionListener {
 		c2.gridy = 0;
 		settingsPanel.add(new JLabel("Width"), c2);
 
-		c2.gridx++;
+		c2.gridy++;
 		settingsPanel.add(new JLabel("Height"), c2);
 
 		c2.fill = GridBagConstraints.HORIZONTAL;
 		
-		//textboxes
-		c2.gridy++;
-		c2.gridx = 0;
-		gameWidth = new JTextField("null");
+		//textboxesdd
+		c2.gridx++;
+		c2.gridy = 0;
+		gameWidth = new JTextField("null*");
 		settingsPanel.add(gameWidth, c2);
 		
-		c2.gridx++;
-		gameHeight = new JTextField("null");
+		c2.gridy++;
+		gameHeight = new JTextField("null*");
 		settingsPanel.add(gameHeight, c2);
 
 		//checkboxes
-		c2.gridwidth = 2;
-		c2.gridx = 0;
-		c2.gridy++;
+		c2.gridx = 3;
+		c2.gridy = 0;
 		particles = new JCheckBox("Particles");
 		settingsPanel.add(particles, c2);
 		
@@ -213,22 +230,29 @@ public class TheGame implements ActionListener {
 		gbLayout.gridy++;
 		gbLayout.gridwidth = 1;
 		menuPanel.add(newGamePanel, gbLayout);
+		
+		gbLayout.gridy++;
+		menuPanel.add(otherPanel, gbLayout);
 
+		gbLayout.gridwidth = 2;
 		gbLayout.gridy++;
 		menuPanel.add(settingsPanel, gbLayout);
 		
 		////Scoreboard
-		board = LeaderBoard.getLeaderBoard(GameEngine.MEDIUM_D);
+		leaderBoard = LeaderBoard.getLeaderBoard(GameEngine.MEDIUM_D);
 		
 		gbLayout.gridx++;
 		gbLayout.gridy = 1;
+		gbLayout.gridwidth = 1;
 		gbLayout.gridheight = 2;
-		menuPanel.add(board, gbLayout);
+		menuPanel.add(leaderBoard, gbLayout);
 		
 		//////////////////////////////////////////////////
 		GameSettings fileSettings = LeaderBoard.readSettings();
 		gameWidth.setText(""+fileSettings.getPixelWidth());
 		gameHeight.setText(""+fileSettings.getPixelHeight());
+		
+		nameField.setText(fileSettings.getName());
 		
 		particles.setSelected(fileSettings.ifParticles());
 		antialiasing.setSelected(fileSettings.ifAliasing());
@@ -241,6 +265,8 @@ public class TheGame implements ActionListener {
 		
 		theFrame.pack();
 		theFrame.repaint();
+		
+		theFrame.setMinimumSize(theFrame.getSize()); //best GUI fix ever (and only one line)
 		theFrame.requestFocus();
 		theFrame.setLocationRelativeTo(null);
 		theFrame.setVisible(true);
@@ -251,11 +277,6 @@ public class TheGame implements ActionListener {
 	//because its in the same file the settings dont't need to be passed in [:D]
 	private void initGame(String difficulty) {
 		menuPanel.setVisible(false);
-		
-		//TODO
-		//might just make a note here, the 'diff' input to this method isn't being used
-			//thats because its meant to be called to the spawner
-				//but the player speed relative to everything needs to be changed
 		
 		//matches just numbers [hopefully]
 		if (!(gameWidth.getText().matches("[0-9]+") && gameHeight.getText().matches("[0-9]+"))) {
@@ -274,6 +295,8 @@ public class TheGame implements ActionListener {
 		set.setIfAliasing(antialiasing.isSelected());
 		set.setIfSound(sound.isSelected());
 		set.setIfParticles(particles.isSelected());
+		set.setName(nameField.getText());
+		
 		
         //then write settings to file
         LeaderBoard.writeSettings(set);
@@ -310,13 +333,12 @@ public class TheGame implements ActionListener {
         this.gamePanel.requestFocus();
         this.theFrame.setLocationRelativeTo(null); //middle of the screen
         
-        this.animator = new FPSAnimator(60);
+        this.animator = new FPSAnimator(60); //why is it fine that its 0 here?
         this.animator.add(gamePanel);
         this.animator.start();
     }
 	
-	public static void reloadMenu(GameState state) {
-		//TODO (ask for name) (TODO maybe before the play button, you input your name with special words for weird spawns?)
+	public static void reloadMenu(GameState state, String name) {
 		System.out.println("(lost all lives)\n   - reloadMenu");
 		LeaderBoard.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
 		LeaderBoard.addToStats(state);
@@ -325,10 +347,10 @@ public class TheGame implements ActionListener {
     //rewrite the leaderboard to represent the current difficulty set
     @Override
 	public void actionPerformed(ActionEvent evt) {
-    	menuPanel.remove(board);
+    	menuPanel.remove(leaderBoard);
     	
-    	board = LeaderBoard.getLeaderBoard(evt.getActionCommand());
-    	menuPanel.add(board, gbLayout);
+    	leaderBoard = LeaderBoard.getLeaderBoard(evt.getActionCommand());
+    	menuPanel.add(leaderBoard, gbLayout);
     	
     	theFrame.revalidate();
     	theFrame.repaint();

@@ -7,6 +7,9 @@ import javax.media.opengl.GL2;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 
+/** Extends GameObject with a decay that draws text at a global position.
+ * @author Jake Murphy
+ */
 public class TextPopup extends GameObject {
 	
 	public static final LinkedList<TextPopup> ALL_THIS = new LinkedList<TextPopup>();
@@ -32,7 +35,7 @@ public class TextPopup extends GameObject {
 		ALL_THIS.add(this);
 	}
 
-	public double[] getCollisionPosition() { //once again too big
+	public double[] getCollisionPosition() { //will never collide
 		return new double[]{Double.MAX_VALUE, Double.MAX_VALUE, 0};
 	}
 	
@@ -68,6 +71,5 @@ public class TextPopup extends GameObject {
 		gl.glPopMatrix(); // restore model view
 	}
 }
-
 
 //http://fivedots.coe.psu.ac.th/~ad/jg2/ch16/jogl2.pdf

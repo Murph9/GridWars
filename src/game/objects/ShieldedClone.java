@@ -5,8 +5,6 @@ import java.util.LinkedList;
 
 import javax.media.opengl.GL2;
 
-//TODO still kind of turns the wrong way sometimes
-
 
 public class ShieldedClone extends MovingObject {
 
@@ -74,6 +72,9 @@ public class ShieldedClone extends MovingObject {
 		double[] playerPos = GameEngine.getPlayerPos();
 		double angleToPlayer = Math.toDegrees(Math.atan2((playerPos[1]-y), (playerPos[0]-x)));
 
+		
+		//TODO still kind of turns the wrong way sometimes, LOOK AT SNAKE BODY ANGLE CODE
+		
 		lastAngle = lastAngle % 360;
 		
 		double absDiff = Math.abs(angleToPlayer - lastAngle + 360) % 360; //find the difference (positive)

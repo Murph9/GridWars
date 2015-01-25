@@ -26,10 +26,32 @@ public class Camera extends GameObject {
         myBackground = background;
     }
     
+    public double[] getCollisionPosition() {
+    	return new double[]{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY};
+    }
+    
     public void update (double dt) { //thought causing
     	double[] pos = GameEngine.getPlayerPos();
-    	this.x = pos[0]/3; //this makes it feel more like a game
-    	this.y = pos[1]/3; //TODO maths about making it use the board height and widths
+    	this.x = pos[0];//3; //this makes it feel more like a game
+    	this.y = pos[1];//3; //TODO scale with numbers below
+    	
+    	double pixelAspect = (double)(GameEngine.curSettings.getPixelWidth())/(double)(GameEngine.curSettings.getPixelHeight());
+    	int height = GameEngine.curSettings.getBoardHeight() + 1;
+    	int width = GameEngine.curSettings.getBoardWidth() + 1; //+1 is for buffer size
+    	
+    	if (this.y > (height - this.size)) {
+    		this.y = (height - this.size); //want to keep the camera from this.size from the edge
+    	}
+    	if (this.y < (-height + this.size)) {
+    		this.y = (-height + this.size);
+    	}
+    	
+    	if (this.x > (width - this.size*pixelAspect)) {
+    		this.x = (width - this.size*pixelAspect); //so camera is size*aspect from the edge
+    	}
+    	if (this.x < (-width + this.size*pixelAspect)) {
+    		this.x = (-width + this.size*pixelAspect);
+    	}
     }
     
     public void drawSelf(GL2 gl) {

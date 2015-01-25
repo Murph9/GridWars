@@ -11,6 +11,7 @@ import javax.media.opengl.GL2;
 
 /**Shader control (unsuprisingly)
  * @author Random internet user, i had the link at the bottom but its not there anymore
+ *  In my defence i have changed some of it
  */
 public class ShaderControl {
 	

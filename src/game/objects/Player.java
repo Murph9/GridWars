@@ -231,7 +231,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
 		Helper.square(gl);
 		
-		if (GameEngine.curGame.ifTempShield()) { //shield is active, UGLY PLEASE FIX
+		if (GameEngine.curGame.ifTempShield()) { //shield is active, UGLY PLEASE FIX TODO
 			gl.glPushMatrix();
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BLACKHOLE].getTextureId());
 			

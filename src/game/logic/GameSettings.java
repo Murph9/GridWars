@@ -9,7 +9,7 @@ package game.logic;
 
 public class GameSettings {
 	
-//	private String difficulty;
+	private String name;
 	
 	private int pixelWidth, pixelHeight;
 	private int boardWidth, boardHeight;
@@ -48,10 +48,13 @@ public class GameSettings {
 		ifSound = ni;
 	}
 	public void setIfParticles(boolean ni) {
-		ifParticles = ni;
+		ifParticles = ni; //i really don't know why its called ni (even with the holy grail reference) 
 	}
 	public void setIfAliasing(boolean ni) {
 		ifAliasing = ni;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public int getPixelWidth()  { return pixelWidth;  }
@@ -59,8 +62,8 @@ public class GameSettings {
 	public int getBoardWidth()  { return boardWidth;  }
 	public int getBoardHeight() { return boardHeight; }
 	
-	public double  getScale()      { return scale;       }
-//	public String  getDifficulty() { return difficulty;  }
+	public double getScale() { return scale; }
+	public String getName()  { return name;  }
 	
 	public boolean ifSound()       { return ifSound;     }
 	public boolean ifParticles()   { return ifParticles; }

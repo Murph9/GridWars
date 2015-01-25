@@ -54,6 +54,7 @@ public class BlackHole extends MovingObject {
 	
 	public void shotAt() { isInert = false; }
 	public boolean isInert() { return isInert; }
+	
 	public boolean canAcceptParticle() { 
 		return (particleCount < hitPoints);
 	} 

@@ -63,6 +63,7 @@ public class PlayerBullet extends MovingObject {
 		for (GameObject o: objects) {
 			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof PowerUp || o instanceof Particle) {
 				continue; //nothing, can't hit these things
+
 			} else if (o instanceof BlackHole) {
 				//special stuff (reflecting off their field)
 				BlackHole h = (BlackHole) o;
@@ -78,6 +79,7 @@ public class PlayerBullet extends MovingObject {
 					amHit(false);
 					h.amHit();
 				}
+				
 			} else {
 				double[] pos = o.getCollisionPosition();
 				if (o.getCollisionPosition()[0] == Double.MAX_VALUE) {

@@ -147,9 +147,11 @@ public class GameEngine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		SoundEffect.init(); //TODO other volumes; HIGH and LOW
+		SoundEffect.init(); //TODO other volumes: HIGH, MEDIUM and LOW
 		if (curSettings.ifSound()) {
-			SoundEffect.volume = SoundEffect.Volume.MUTE;
+			SoundEffect.volume = SoundEffect.Volume.HIGH;
+		} else {
+			SoundEffect.volume = SoundEffect.Volume.MUTE; //too easy i get it..
 		}
 	}
 

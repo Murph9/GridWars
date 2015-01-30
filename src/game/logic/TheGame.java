@@ -1,70 +1,35 @@
 package game.logic;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
-//Handles menus and other things
-//rather large class... TODO put the menu stuff somewhere else
-
-/**Main menu and game initialisation.
- * 
+/**Main menu init and game init, with any scores/settings
  * @author Jake Murphy
  */
 
-public class TheGame implements ActionListener {
+public class TheGame {
 
-	private JFrame theFrame; //reuseable frame that 
-	private JPanel menuPanel; //for the menu
+	/**The frame for the menu*/
+	private GameMenuGUI GUIFrame; 
 	
-	private GLJPanel gamePanel; //for the GameEngine
+	/**The frame for the game*/
+	private JFrame gameFrame;
+	
+	private GLJPanel gamePanel; //used by the GameEngine
 	private FPSAnimator animator;
 	private GameEngine engine;
 	
-	//settings checkboxes - add others... (thats not 'and')
-	private JCheckBox sound;
-	private JCheckBox particles;
-	private JCheckBox antialiasing;
+	private static final int DEFAULT_BOARD_WIDTH = 16; //at least 4x4
+	private static final int DEFAULT_BOARD_HEIGHT= 12; //here is default
 	
-	private int boardWidth = 16, boardHeight = 12; //at least 4 please
-	private double scale = 10; //you know, it kind of works, as easy as this number is 
-	
-	private static final int DEFAULT_PIXEL_WIDTH = 1024;
-	private static final int DEFAULT_PIXEL_HEIGHT= 768;
-
-	private JTextField gameWidth;
-	private JTextField gameHeight;
-	
-	private JTextField nameField;
-	
-	private GridBagConstraints gbLayout;
-	private static JPanel leaderBoard;
-	
-	private ButtonGroup group;
-	private final String easyB = "Easy", medB = "Med", hardB = "Hard";
-	
+	private static final int DEFAULT_PIXEL_WIDTH = 1024; //at least 800x600
+	private static final int DEFAULT_PIXEL_HEIGHT= 768; //default
 	
  	public static void main(String[] args) {
 		TheGame system = new TheGame();
@@ -73,230 +38,68 @@ public class TheGame implements ActionListener {
 	
 	//draw the menu
 	public void initMenu() {
-		theFrame = new JFrame();
+		gameFrame = new JFrame();
 		
-		menuPanel = new JPanel();
-		menuPanel.setLayout(new GridBagLayout());
-		theFrame.add(menuPanel);
-		
-		JPanel newGamePanel = new JPanel();
-		newGamePanel.setLayout(new GridBagLayout());
-		newGamePanel.setBorder(BorderFactory.createTitledBorder("New Game"));
-		
-		
-		////////////////////////////////////////////////
-		////Game Mode
-		JRadioButton buttonEasy = new JRadioButton(easyB);
-		buttonEasy.setActionCommand(GameEngine.EASY_D);
-		
-		JRadioButton buttonMed = new JRadioButton(medB);
-		buttonMed.setActionCommand(GameEngine.MEDIUM_D);
-		
-		JRadioButton buttonHard = new JRadioButton(hardB);
-		buttonHard.setActionCommand(GameEngine.HARD_D);
-		
-		group = new ButtonGroup();
-		group.add(buttonEasy);
-		group.add(buttonMed);
-		group.add(buttonHard);
-		
-		buttonMed.setSelected(true); //because its hard coded somewhere else i think (in this file)
-		
-		buttonEasy.addActionListener(this);
-		buttonMed.addActionListener(this);
-		buttonHard.addActionListener(this);
-		
-		JButton go = new JButton("Go");
-		go.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
-		            AbstractButton button = buttons.nextElement();
-
-		            if (button.isSelected()) {
-		            	initGame(button.getActionCommand());
-		            }
-		        }
-			}
-		});
-		
-		JButton stats = new JButton("stats");
-		stats.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, LeaderBoard.getStats());
-			}
-		});
-		
-		GridBagConstraints a = new GridBagConstraints();
-		a.fill = GridBagConstraints.HORIZONTAL;
-		
-		a.gridx = 0;
-		a.gridy = 0;
-		a.gridheight = 4;
-		newGamePanel.add(go, a);
-		
-		a.gridheight = 1;
-		a.gridx++;
-		a.gridy++;
-		newGamePanel.add(buttonEasy, a);
-		a.gridy++;
-		newGamePanel.add(buttonMed, a);
-		a.gridy++;
-		newGamePanel.add(buttonHard, a);
-		
-		///////////////////////////////////////////////////////
-		////Other
-		
-		JPanel otherPanel = new JPanel();
-		otherPanel.setLayout(new GridBagLayout());
-		otherPanel.setBorder(BorderFactory.createTitledBorder("Other"));
-		a = new GridBagConstraints();
-		a.insets = new Insets(3, 3, 3, 3);
-		
-		a.gridx = 0;
-		a.gridy = 0;
-		a.gridwidth = 2;
-		otherPanel.add(stats, a);
-
-		a.gridy++;
-		a.gridwidth = 1;
-		otherPanel.add(new JLabel("Name"), a);
-
-		a.gridx++;
-		nameField = new JTextField("null*");
-		otherPanel.add(nameField, a);
-		
-		////////////////////////////////////////////////// 
-		////Settings
-		GridBagConstraints c2 = new GridBagConstraints();
-		
-		JPanel settingsPanel = new JPanel();
-		settingsPanel.setLayout(new GridBagLayout());
-		settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
-		
-		//labels
-		c2.gridx = 0;
-		c2.gridy = 0;
-		settingsPanel.add(new JLabel("Width"), c2);
-
-		c2.gridy++;
-		settingsPanel.add(new JLabel("Height"), c2);
-
-		c2.fill = GridBagConstraints.HORIZONTAL;
-		
-		//textboxesdd
-		c2.gridx++;
-		c2.gridy = 0;
-		gameWidth = new JTextField("null*");
-		settingsPanel.add(gameWidth, c2);
-		
-		c2.gridy++;
-		gameHeight = new JTextField("null*");
-		settingsPanel.add(gameHeight, c2);
-
-		//checkboxes
-		c2.gridx = 3;
-		c2.gridy = 0;
-		particles = new JCheckBox("Particles");
-		settingsPanel.add(particles, c2);
-		
-		c2.gridy++;
-		antialiasing = new JCheckBox("Antialiasing");
-		settingsPanel.add(antialiasing, c2);
-		
-		c2.gridy++;
-		sound = new JCheckBox("Sound");
-		settingsPanel.add(sound, c2);
-		
-		//////////////////////////////////////////////////
-		////Heading Info + positions		
-		gbLayout = new GridBagConstraints();
-		gbLayout.fill = GridBagConstraints.HORIZONTAL;
-		gbLayout.insets = new Insets(5,5,5,5);
-		
-		JPanel headPanel = new JPanel();
-		headPanel.setLayout(new GridBagLayout());
-		
-		JTextArea t = new JTextArea("Welcome to NotGridWars2\nArrow keys/WASD to move, right/left mouse button do things");
-		t.setEditable(false);
-		headPanel.add(t, gbLayout);
-		
-		gbLayout.gridy = 0;
-		gbLayout.gridx = 0;
-		gbLayout.gridwidth = 2;
-		menuPanel.add(headPanel, gbLayout);
-		
-		gbLayout.gridy++;
-		gbLayout.gridwidth = 1;
-		menuPanel.add(newGamePanel, gbLayout);
-		
-		gbLayout.gridy++;
-		menuPanel.add(otherPanel, gbLayout);
-
-		gbLayout.gridwidth = 2;
-		gbLayout.gridy++;
-		menuPanel.add(settingsPanel, gbLayout);
-		
-		////Scoreboard
-		leaderBoard = LeaderBoard.getLeaderBoard(GameEngine.MEDIUM_D);
-		
-		gbLayout.gridx++;
-		gbLayout.gridy = 1;
-		gbLayout.gridwidth = 1;
-		gbLayout.gridheight = 2;
-		menuPanel.add(leaderBoard, gbLayout);
-		
-		//////////////////////////////////////////////////
-		GameSettings fileSettings = LeaderBoard.readSettings();
-		gameWidth.setText(""+fileSettings.getPixelWidth());
-		gameHeight.setText(""+fileSettings.getPixelHeight());
-		
-		nameField.setText(fileSettings.getName());
-		
-		particles.setSelected(fileSettings.ifParticles());
-		antialiasing.setSelected(fileSettings.ifAliasing());
-		sound.setSelected(fileSettings.ifSound());
+		GUIFrame = new GameMenuGUI(this);
 		
 		//////////////////////////////////////////////////
 		////Other Things
-		theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		theFrame.setName("Menu - Jake Murphy");
+		GUIFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GUIFrame.setName("Menu - Jake Murphy");
 		
-		theFrame.pack();
-		theFrame.repaint();
+		GUIFrame.pack();
+		GUIFrame.repaint();
 		
-		theFrame.setMinimumSize(theFrame.getSize()); //best GUI fix ever (and only one line)
-		theFrame.requestFocus();
-		theFrame.setLocationRelativeTo(null);
-		theFrame.setVisible(true);
-		
-		buttonEasy.requestFocus(); //for easy pressing of space bar to continue
+		GUIFrame.setMinimumSize(GUIFrame.getSize()); //best GUI fix ever (and only one line), must be called after pack()
+		GUIFrame.requestFocus();
+		GUIFrame.setLocationRelativeTo(null);
+		GUIFrame.setVisible(true);
 	}
 	
 	//because its in the same file the settings dont't need to be passed in [:D]
-	private void initGame(String difficulty) {
-		menuPanel.setVisible(false);
+	public void initGame(String difficulty) {
+		GUIFrame.setVisible(false);
 		
-		//matches just numbers [hopefully]
-		if (!(gameWidth.getText().matches("[0-9]+") && gameHeight.getText().matches("[0-9]+"))) {
-			System.err.println("Game width and height must be an integer");
+		if (!GUIFrame.hasValidScreenValues()) { //check if numbers
+			System.err.println("Screen width and height must be integers");
+			GUIFrame.setVisible(true);
 			return;
 		}
+		
+		if (!GUIFrame.hasValidBoardValues()) {
+			System.err.println("Board width and height must be integers");
+			GUIFrame.setVisible(true);
+			return;
+		}
+		//if either of these don't work .get#####Height() won't work, then need to work
 		
 
         GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		
-		int pixelWidth = Integer.parseInt(gameWidth.getText());
-		int pixelHeight = Integer.parseInt(gameHeight.getText());
+		int pixelWidth = GUIFrame.getPixelWidth();
+		int pixelHeight = GUIFrame.getPixelHeight();
 		
-		GameSettings set = new GameSettings(pixelWidth, pixelHeight, boardWidth, boardHeight, scale);
-		set.setIfAliasing(antialiasing.isSelected());
-		set.setIfSound(sound.isSelected());
-		set.setIfParticles(particles.isSelected());
-		set.setName(nameField.getText());
+		int boardWidth = GUIFrame.getBoardWidth();
+		int boardHeight = GUIFrame.getBoardHeight();
 		
+		if (pixelWidth >= 800 && pixelHeight >= 600) { //the game really only works on resolutions bigger than this
+			this.GUIFrame.setSize(pixelWidth, pixelHeight);
+		} else {
+			pixelWidth = TheGame.DEFAULT_PIXEL_WIDTH;
+			pixelHeight = TheGame.DEFAULT_PIXEL_HEIGHT;
+			System.out.println("setting defualt pixel sizes");
+		}
+		
+		if (boardWidth >= 4 && boardHeight >= 4) { //the game really only works on game fields bigger than this
+			this.GUIFrame.setSize(boardWidth, boardHeight);
+		} else {
+			boardWidth = TheGame.DEFAULT_BOARD_WIDTH;
+			boardHeight = TheGame.DEFAULT_BOARD_HEIGHT;
+			System.out.println("setting defualt game board sizes");
+		}
+		
+		GameSettings set = GUIFrame.getSettings();
 		
         //then write settings to file
         LeaderBoard.writeSettings(set);
@@ -306,54 +109,37 @@ public class TheGame implements ActionListener {
         //////////////////////////////
         //JOGL Stuff:
         
-		this.theFrame.setLocationRelativeTo(null);
+		gamePanel = new GLJPanel(glcapabilities);
+		gamePanel.addGLEventListener(engine);
 		
-		this.gamePanel = new GLJPanel(glcapabilities);
-		this.gamePanel.addGLEventListener(engine);
+		gameFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
+		gameFrame.setSize(pixelWidth, pixelHeight);
 		
-		this.theFrame.getContentPane().add(gamePanel, BorderLayout.CENTER);
-		
-		if (pixelWidth >= 800 && pixelHeight >= 600) { //the game really only works on resolutions bigger than this
-			this.theFrame.setSize(pixelWidth, pixelHeight);
-		} else {
-			this.theFrame.setSize(TheGame.DEFAULT_PIXEL_WIDTH, TheGame.DEFAULT_PIXEL_HEIGHT);
-		}
-		
-		this.theFrame.setName("GridWars - Jake Murphy");
-		this.theFrame.setVisible(true);
-		this.theFrame.setFocusable(true);
-		this.theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameFrame.setName("GridWars - Jake Murphy");
+		gameFrame.setVisible(true);
+		gameFrame.setFocusable(true);
+		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        this.gamePanel.addKeyListener(GameEngine.player);
-        this.gamePanel.addMouseListener(GameEngine.player);
+        gamePanel.addKeyListener(GameEngine.player);
+        gamePanel.addMouseListener(GameEngine.player);
         
-        this.gamePanel.addMouseMotionListener(Mouse.theMouse);
-        this.gamePanel.addMouseListener(Mouse.theMouse);
+        gamePanel.addMouseMotionListener(Mouse.theMouse);
+        gamePanel.addMouseListener(Mouse.theMouse);
         
-        this.gamePanel.requestFocus();
-        this.theFrame.setLocationRelativeTo(null); //middle of the screen
+        gamePanel.requestFocus();
+        gameFrame.setLocationRelativeTo(null); //middle of the screen
         
-        this.animator = new FPSAnimator(60); //why is it fine that its 0 here?
-        this.animator.add(gamePanel);
-        this.animator.start();
+        animator = new FPSAnimator(60); //why is it fine that its 0 here? [infinite FPS!!]
+        animator.add(gamePanel);
+        animator.start();
     }
 	
 	public static void reloadMenu(GameState state, String name) {
 		System.out.println("(lost all lives)\n   - reloadMenu");
 		LeaderBoard.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
 		LeaderBoard.addToStats(state);
-	}
-	
-    //rewrite the leaderboard to represent the current difficulty set
-    @Override
-	public void actionPerformed(ActionEvent evt) {
-    	menuPanel.remove(leaderBoard);
-    	
-    	leaderBoard = LeaderBoard.getLeaderBoard(evt.getActionCommand());
-    	menuPanel.add(leaderBoard, gbLayout);
-    	
-    	theFrame.revalidate();
-    	theFrame.repaint();
+		
+		
 	}
 
 }

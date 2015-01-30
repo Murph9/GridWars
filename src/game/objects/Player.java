@@ -310,6 +310,9 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
+		if(!GameEngine.canSpawn()) {
+			return;
+		}
 		if (arg0.getButton() == MouseEvent.BUTTON3) {
 			if (!GameEngine.curGame.ifTempShield())
 				GameEngine.curGame.useBomb();

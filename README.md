@@ -19,7 +19,7 @@ Structure of the project:
 --------
 
 0.29 LeaderBoard Start, Menu Arranging... (others)
-- there was a break here and i forgot most of the stuff i did, sorry
+- there was a break here and i forgot most of the stuff i did, sorry..
 
 
 --------

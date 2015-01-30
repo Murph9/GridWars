@@ -1,6 +1,7 @@
 package game.logic;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import javax.swing.JLabel;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -369,11 +370,8 @@ public class LeaderBoard {
 	//returns the TextArea of the scores (for displaying)
 	public static JPanel getLeaderBoard(String diff) {
 		
-		JPanel frame = new JPanel();
-		frame.setLayout(new GridBagLayout());
-		
-		JTextArea area = new JTextArea();
-		area.setEditable(false);
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
 		
 		diff += GameEngine.EXT_D;
 		File file = new File(diff);
@@ -381,34 +379,29 @@ public class LeaderBoard {
 			throw new IllegalArgumentException("Input file must exist for this method");
 		}
 		
-		String text = getText(file);
-		area.setText(text);
-		
-		JLabel label = null;
+		String label = "null";
 		
 		if (diff.equals(GameEngine.EASY_D + GameEngine.EXT_D)) {
-			label = new JLabel("Easy Records");
+			label = "Easy Records";
 		} else if (diff.equals(GameEngine.MEDIUM_D + GameEngine.EXT_D)) {
-			label = new JLabel("Medium Records");
+			label = "Medium Records";
 		} else if (diff.equals(GameEngine.HARD_D + GameEngine.EXT_D)){
-			label = new JLabel("Hard Records");
+			label = "Hard Records";
 		} else {
 			throw new IllegalArgumentException("Please use one of the default difficulties");
 		}
+		panel.setBorder(BorderFactory.createTitledBorder(label));
 		
 		GridBagConstraints g = new GridBagConstraints();
 		g.gridx = 0;
 		g.gridy = 0;
-		frame.add(label, g);
-		
-		g.gridy++;
-		frame.add(area, g);
+		panel.add(getScoresJPanel(file), g);
 
-		return frame;
+		return panel;
 	}
 	
-	//returns the text from the file for the text area 
-	private static String getText(File file) {
+	//as a jpanel
+	private static JPanel getScoresJPanel(File file) {
 		LinkedList<Record> records = new LinkedList<Record>();
 		
 		if (file.exists()) {
@@ -433,17 +426,51 @@ public class LeaderBoard {
 			}
 		});
 		
-		String text = "";
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		
+		String positionS = "";
+		String scoreS = "";
+		String nameS = "";
+		String timeS = "";
 		
 		int count = 0;
 		for (Record i: records) {
-			text += ("\n" + i.toLineString());
-
+			positionS += "\n" + (count+1);
+			scoreS += "\n" + i.getScore();
+			nameS += "\n" + i.getName();
+			timeS += "\n" + i.getTime();
+			
 			if (count >= 10) break;
 			count++;
 		}
 		
-		return text;
+		positionS = positionS.replaceFirst("^\n", "");
+		scoreS = scoreS.replaceFirst("^\n", "");
+		nameS = nameS.replaceFirst("^\n", "");
+		timeS = timeS.replaceFirst("^\n", "");
+		
+		JTextArea position = new JTextArea(positionS);
+		JTextArea score = new JTextArea(scoreS);
+		JTextArea name = new JTextArea(nameS);
+		JTextArea time = new JTextArea(timeS);
+		
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.fill = GridBagConstraints.BOTH;
+		c.insets = new Insets(4, 4, 4, 4);
+		c.gridx = 0;
+		c.gridy = 0;
+		panel.add(position, c);
+		c.gridx++;
+		panel.add(score, c);
+		c.gridx++;
+		panel.add(name, c);
+		c.gridx++;
+		panel.add(time, c);
+		
+		return panel;
 	}
 
 }
@@ -462,6 +489,7 @@ class Record {
 	
 	public int getTime()  { return this.time;  }
 	public int getScore() { return this.score; }
+	public String getName() { return this.name; }
 	
 	public String toString() { //for saving to file
 		return (score + "\t " + name + "\t " + time);
@@ -483,3 +511,46 @@ class Record {
 		return false;
 	}
 }
+
+
+
+
+//returns the text from the file for the text area
+//private static String getScoresText(File file) {
+//	LinkedList<Record> records = new LinkedList<Record>();
+//	
+//	if (file.exists()) {
+//		try {
+//			Scanner scores = new Scanner(new FileReader(file));
+//			while (scores.hasNext()) {
+//				records.add(new Record(scores.nextInt(), scores.next(), scores.nextInt()));
+//			}
+//			scores.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	Collections.sort(records, new Comparator<Record>() {
+//		public int compare(Record a, Record b) {
+//			if (a.equals(b)) { return 0; }
+//			if (a.getScore() <= b.getScore()) { 
+//				return 1; // a
+//			}
+//			return -1; // b
+//		}
+//	});
+//	
+//	String text = "";
+//	
+//	int count = 0;
+//	for (Record i: records) {
+//		text += ("\n" +(count+1) + " - " + i.toLineString());
+//
+//		if (count >= 10) break;
+//		count++;
+//	}
+//	text = text.replaceFirst("^\n", ""); //remove first newline...
+//	
+//	return text;
+//}

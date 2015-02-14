@@ -42,7 +42,7 @@ public class GameState {
 	 */
 	GameState(String difficulty) {
 			//note how anything not here is initalised to 0.
-		this.lastRecord = LeaderBoard.getBestScore(difficulty);
+		this.lastRecord = FileHelper.getBestScore(difficulty);
 		this.difficulty = difficulty;
 		
 		lives = 3;

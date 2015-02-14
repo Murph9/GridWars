@@ -39,8 +39,10 @@ public class TheGame {
 	//draw the menu
 	public void initMenu() {
 		gameFrame = new JFrame();
+		gameFrame.setTitle("GridWars");
 		
 		GUIFrame = new GameMenuGUI(this);
+		GUIFrame.setTitle("GridWars");
 		
 		//////////////////////////////////////////////////
 		////Other Things
@@ -102,7 +104,7 @@ public class TheGame {
 		GameSettings set = GUIFrame.getSettings();
 		
         //then write settings to file
-        LeaderBoard.writeSettings(set);
+        FileHelper.writeSettings(set);
         
         this.engine = new GameEngine(new SpawnHandler(difficulty), new GameState(difficulty), set);
         
@@ -136,8 +138,8 @@ public class TheGame {
 	
 	public static void reloadMenu(GameState state, String name) {
 		System.out.println("(lost all lives)\n   - reloadMenu");
-		LeaderBoard.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
-		LeaderBoard.addToStats(state);
+		FileHelper.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
+		FileHelper.addToStats(state);
 		
 		
 	}

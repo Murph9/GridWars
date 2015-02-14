@@ -1,6 +1,5 @@
 package game.logic;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,8 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 
 public class GameMenuGUI extends JFrame implements ActionListener {
 
@@ -29,26 +31,26 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 	JPanel menuPanel; //for the menu
 	
 	private double scale = 10; //you know, it kind of works, as easy as this number is 
-	
-	//settings checkboxes - add others... (thats not 'and')
-	JCheckBox sound;
-	JCheckBox particles;
-	JCheckBox antialiasing;
-	
-	JTextField pixelWidth;
-	JTextField pixelHeight;
-	
-	JTextField boardWidth;
-	JTextField boardHeight;
-	
-	JTextField nameField;
+		//TODO keep gameSize the sameish
 	
 	private GridBagConstraints gbLayout;
 	private static JPanel leaderBoard;
 	
 	private ButtonGroup group;
-	private final String easyB = "Easy", medB = "Med", hardB = "Hard";
 	
+	
+	//More settings?
+	JCheckBox particles;
+	JSpinner particleCount;
+	
+	JCheckBox sound;
+	JCheckBox antialiasing;
+	
+	JTextField pixelWidth, pixelHeight;
+	JTextField boardWidth, boardHeight;
+	
+	JTextField nameField;
+
 	
 	GameMenuGUI(final TheGame theGame) {
 		this.theGame = theGame;
@@ -57,23 +59,20 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		menuPanel.setLayout(new GridBagLayout());
 		this.add(menuPanel);
 
-//		menuPanel.setBackground(Color.WHITE); TODO - to think about
-//		object.setOpaque(false); will give it the background colour of the menuPanel
-		
 		JPanel newGamePanel = new JPanel();
 		newGamePanel.setLayout(new GridBagLayout());
 		newGamePanel.setBorder(BorderFactory.createTitledBorder("New Game"));
-		
+
 		
 		////////////////////////////////////////////////
 		////Game Mode
-		JRadioButton buttonEasy = new JRadioButton(easyB);
+		JRadioButton buttonEasy = new JRadioButton("Easy");
 		buttonEasy.setActionCommand(GameEngine.EASY_D);
 		
-		JRadioButton buttonMed = new JRadioButton(medB);
+		JRadioButton buttonMed = new JRadioButton("Med");
 		buttonMed.setActionCommand(GameEngine.MEDIUM_D);
 		
-		JRadioButton buttonHard = new JRadioButton(hardB);
+		JRadioButton buttonHard = new JRadioButton("Hard");
 		buttonHard.setActionCommand(GameEngine.HARD_D);
 		
 		group = new ButtonGroup();
@@ -105,7 +104,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		stats.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "\n"+LeaderBoard.getStats());
+				JOptionPane.showMessageDialog(null, "\n"+FileHelper.getStats());
 			}
 		});
 		
@@ -204,6 +203,13 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		particles = new JCheckBox("Particles");
 		settingsPanel.add(particles, set);
 		
+		set.gridx++;
+		particleCount = new JSpinner(new SpinnerNumberModel(0, 0, 100, 10));
+		settingsPanel.add(particleCount);
+		set.gridx++;
+		settingsPanel.add(new JLabel("%"));
+		
+		set.gridx = 0;
 		set.gridy++;
 		antialiasing = new JCheckBox("Antialiasing");
 		settingsPanel.add(antialiasing, set);
@@ -250,7 +256,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		menuPanel.add(settingsPanel, gbLayout);
 
 		////Scoreboard
-		leaderBoard = LeaderBoard.getLeaderBoard(GameEngine.MEDIUM_D);
+		leaderBoard = FileHelper.getLeaderBoard(GameEngine.MEDIUM_D);
 		
 		gbLayout.gridx = 1;
 		gbLayout.gridy = 1;
@@ -259,7 +265,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		menuPanel.add(leaderBoard, gbLayout);
 		
 		//////////////////////////////////////////////////
-		GameSettings fileSettings = LeaderBoard.readSettings();
+		GameSettings fileSettings = FileHelper.readSettings();
 		pixelWidth.setText(""+fileSettings.getPixelWidth());
 		pixelHeight.setText(""+fileSettings.getPixelHeight());
 		
@@ -271,6 +277,8 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		particles.setSelected(fileSettings.ifParticles());
 		antialiasing.setSelected(fileSettings.ifAliasing());
 		sound.setSelected(fileSettings.ifSound());
+		
+		particleCount.setValue(fileSettings.getParticleCount());
 	}
 	
 
@@ -279,7 +287,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
     	menuPanel.remove(leaderBoard);
     	
-    	leaderBoard = LeaderBoard.getLeaderBoard(evt.getActionCommand());
+    	leaderBoard = FileHelper.getLeaderBoard(evt.getActionCommand());
     	menuPanel.add(leaderBoard, gbLayout);
     	
     	this.revalidate();
@@ -315,12 +323,15 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		return Integer.parseInt(boardHeight.getText());
 	}
 
+	
 	public GameSettings getSettings() {
 		GameSettings set = new GameSettings(getPixelWidth(), getPixelHeight(), getBoardWidth(), getBoardHeight(), scale);
 		set.setIfAliasing(antialiasing.isSelected());
 		set.setIfSound(sound.isSelected());
 		set.setIfParticles(particles.isSelected());
 		set.setName(nameField.getText());
+		
+		set.setParticleCount((int)particleCount.getValue());
 		return set;
 	}
 }

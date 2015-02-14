@@ -19,6 +19,8 @@ public class GameSettings {
 	private boolean ifParticles;
 	private boolean ifAliasing;
 	
+	private int particleCount;
+	
 	GameSettings() {
 		this(1024, 728, 16, 12, 10); //default
 	}
@@ -42,19 +44,24 @@ public class GameSettings {
 		ifSound = true;
 		ifAliasing = true; //default, change with setters if needed
 		ifParticles = true;
+		particleCount = 100;
 	}
 	
 	public void setIfSound(boolean ni) {
 		ifSound = ni;
 	}
 	public void setIfParticles(boolean ni) {
-		ifParticles = ni; //i really don't know why its called ni (even with the holy grail reference) 
+		ifParticles = ni; 
+			//really don't know why its called ni (even with the holy grail reference) [can't type "in"] 
 	}
 	public void setIfAliasing(boolean ni) {
 		ifAliasing = ni;
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public void setParticleCount(int count) {
+		particleCount = count;
 	}
 	
 	public int getPixelWidth()  { return pixelWidth;  }
@@ -68,7 +75,8 @@ public class GameSettings {
 	public boolean ifSound()       { return ifSound;     }
 	public boolean ifParticles()   { return ifParticles; }
 	public boolean ifAliasing()    { return ifAliasing;  }
-
+	
+	public int getParticleCount()  { return particleCount; }
 
 
 	public void setPixelWidth(int width) {
@@ -77,5 +85,4 @@ public class GameSettings {
 	public void setPixelHeight(int height) {
 		pixelHeight= height;
 	}
-	
 }

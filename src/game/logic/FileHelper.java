@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 /**Handles all file reading through static methods.
  * @author Jake Murphy
  */
-public class LeaderBoard {
+public class FileHelper {
 
 	//Statistics
 	private static final String STATS = "stats.txt", 
@@ -36,7 +36,7 @@ public class LeaderBoard {
 	private static final String SETTINGS = "settings.txt",
 			PIXEL_WIDTH = "pixel_width", PIXEL_HEIGHT = "pixel_height",
 			BOARD_WIDTH = "board_width", BOARD_HEIGHT = "board_height", SCALE = "scale",
-			IF_PARTICLES = "particles", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
+			IF_PARTICLES = "particles", PARTICLE_COUNT = "particle_count", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
 			NAME = "name";
 	
 	
@@ -48,28 +48,30 @@ public class LeaderBoard {
 	public static GameSettings readSettings() {
 		File file = new File(SETTINGS);
 
-		int pixel_width = -1, pixel_height = -1, board_width = -1, board_height = -1;
+		int pixel_width = -1, pixel_height = -1, board_width = -1, board_height = -1, particleCount = 0;
 		double scale = -1;
 		boolean	particles = true, antialiasing = true, sound = true;
 		String name = "null";
 		
 		if (file.exists()) {
 			try {
-				Scanner scores = new Scanner(new FileReader(file));
-				while (scores.hasNext()) {
-					String text = scores.next(); //because everything was spaced... TODO FIX THIS MESS
-					if (text.equals(PIXEL_WIDTH)) pixel_width = scores.nextInt();
-					else if (text.equals(PIXEL_HEIGHT)) pixel_height = scores.nextInt();
+				Scanner settings = new Scanner(new FileReader(file));
+				while (settings.hasNext()) {
+					String text = settings.next(); //read it (don't really care for the order)
+					if (text.equals(PIXEL_WIDTH)) pixel_width = settings.nextInt();
+					else if (text.equals(PIXEL_HEIGHT)) pixel_height = settings.nextInt();
 					
-					else if (text.equals(BOARD_WIDTH)) board_width = scores.nextInt();
-					else if (text.equals(BOARD_HEIGHT)) board_height = scores.nextInt();
+					else if (text.equals(BOARD_WIDTH)) board_width = settings.nextInt();
+					else if (text.equals(BOARD_HEIGHT)) board_height = settings.nextInt();
 
-					else if (text.equals(NAME)) name = scores.next();
-					else if (text.equals(SCALE)) scale = scores.nextDouble();
+					else if (text.equals(NAME)) name = settings.next();
+					else if (text.equals(SCALE)) scale = settings.nextDouble();
 					
-					else if (text.equals(IF_SOUND)) sound = scores.nextBoolean();
-					else if (text.equals(IF_PARTICLES)) particles = scores.nextBoolean(); 
-					else if (text.equals(IF_ANTIALIASING)) antialiasing = scores.nextBoolean();
+					else if (text.equals(IF_SOUND)) sound = settings.nextBoolean();
+					else if (text.equals(IF_PARTICLES)) particles = settings.nextBoolean(); 
+					else if (text.equals(IF_ANTIALIASING)) antialiasing = settings.nextBoolean();
+					
+					else if (text.equals(PARTICLE_COUNT)) particleCount = settings.nextInt();
 					
 					else {
 						//rewrite is needed but, for testing this will just say:
@@ -84,14 +86,15 @@ public class LeaderBoard {
 						particles = true;
 						antialiasing = true;
 						name = "me";
+						particleCount = 100;
 						
 						file.delete();
 						writeSettings(b);
-						scores.close();
+						settings.close();
 						return b;
 					}
 				}
-				scores.close();
+				settings.close();
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -105,6 +108,7 @@ public class LeaderBoard {
 			particles = true;
 			antialiasing = true;
 			name = "me";
+			particleCount = 100;
 			
 			GameSettings a = new GameSettings();
 			writeSettings(a); //so it now exists to read from
@@ -116,6 +120,7 @@ public class LeaderBoard {
 		set.setIfParticles(particles);
 		set.setIfSound(sound); //wouldn't fit into constructor
 		set.setName(name);
+		set.setParticleCount(particleCount);
 		
 		return set;
 	}
@@ -145,6 +150,9 @@ public class LeaderBoard {
 		out.println(IF_SOUND +" "+ settings.ifSound());
 		out.println(IF_PARTICLES +" "+ settings.ifParticles());
 		out.println(IF_ANTIALIASING +" "+ settings.ifAliasing());
+		
+		out.println(PARTICLE_COUNT +" "+ settings.getParticleCount());
+		System.out.println(settings.getParticleCount());
 		
 		out.close();
 	}

@@ -7,3 +7,4 @@ name Murph
 sound true
 particles true
 antialiasing true
+particle_count 60

@@ -419,11 +419,11 @@ public class GameEngine implements GLEventListener {
 //		System.out.println(GameEngine.curGame.toString());
 		//TODO possible double up between lostLife and this when closing the game
 		
-		LeaderBoard.writeScore(curGame.getDifficulty(), curGame.getScore(), "auto_"+curSettings.getName(), (int)curGame.getTime());
+		FileHelper.writeScore(curGame.getDifficulty(), curGame.getScore(), "auto_"+curSettings.getName(), (int)curGame.getTime());
 		
-		LeaderBoard.addToStats(curGame);
+		FileHelper.addToStats(curGame);
 		
-		System.out.println(LeaderBoard.getStats() + "\t from dispose(), GameEngine");
+		System.out.println(FileHelper.getStats() + "\t from dispose(), GameEngine");
 	}
 	
 	

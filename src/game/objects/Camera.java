@@ -45,12 +45,19 @@ public class Camera extends GameObject {
     	if (this.y < (-height + this.size)) {
     		this.y = (-height + this.size);
     	}
+    	if (height - this.size < 0) {
+    		this.y = 0;
+    	}
+
     	
     	if (this.x > (width - this.size*pixelAspect)) {
     		this.x = (width - this.size*pixelAspect); //so camera is size*aspect from the edge
     	}
     	if (this.x < (-width + this.size*pixelAspect)) {
     		this.x = (-width + this.size*pixelAspect);
+    	}
+    	if (width - this.size*pixelAspect < 0) {
+    		this.x = 0;
     	}
     }
     

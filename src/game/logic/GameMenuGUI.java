@@ -87,7 +87,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		buttonMed.addActionListener(this);
 		buttonHard.addActionListener(this);
 		
-		JButton go = new JButton("Go");
+		JButton go = new JButton("Start");
 		go.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -101,11 +101,11 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 			}
 		});
 		
-		JButton stats = new JButton("stats");
+		JButton stats = new JButton("Stats");
 		stats.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, LeaderBoard.getStats());
+				JOptionPane.showMessageDialog(null, "\n"+LeaderBoard.getStats());
 			}
 		});
 		
@@ -114,16 +114,16 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		
 		a.gridx = 0;
 		a.gridy = 0;
-		a.gridheight = 4;
+		a.gridwidth = 6;
 		newGamePanel.add(go, a);
 		
-		a.gridheight = 1;
+		a.gridwidth = 1;
 		a.gridx++;
 		a.gridy++;
 		newGamePanel.add(buttonEasy, a);
-		a.gridy++;
+		a.gridx++;
 		newGamePanel.add(buttonMed, a);
-		a.gridy++;
+		a.gridx++;
 		newGamePanel.add(buttonHard, a);
 		
 		///////////////////////////////////////////////////////
@@ -137,17 +137,18 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		
 		a.gridx = 0;
 		a.gridy = 0;
-		a.gridwidth = 2;
-		otherPanel.add(stats, a);
-
-		a.gridy++;
 		a.gridwidth = 1;
-		otherPanel.add(new JLabel("Name"), a);
+		otherPanel.add(new JLabel("Name:"), a);
 
 		a.gridx++;
 		nameField = new JTextField("null*");
 		otherPanel.add(nameField, a);
 		
+		a.gridx = 0;
+		a.gridy++;
+		a.gridwidth = 2;
+		otherPanel.add(stats, a);
+
 		////////////////////////////////////////////////// 
 		////Settings
 		JPanel settingsPanel = new JPanel();
@@ -222,8 +223,10 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		JPanel headPanel = new JPanel();
 		headPanel.setLayout(new GridBagLayout());
 		
-		JTextArea t = new JTextArea("Welcome to NotGridWars2\nArrow keys/WASD to move, right/left mouse button do things");
+		JTextArea t = new JTextArea("Welcome to NotGridWars2\nArrow keys or WASD to move, "
+				+ "right/left mouse button do things.\nEsc is pause.");
 		t.setEditable(false);
+		t.setOpaque(false);
 		headPanel.add(t, gbLayout);
 		
 		gbLayout.gridy = 0;

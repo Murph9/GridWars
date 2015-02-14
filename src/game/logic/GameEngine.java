@@ -19,11 +19,6 @@ import com.jogamp.opengl.util.gl2.GLUT;
  */
 public class GameEngine implements GLEventListener {
 
-	//TODO clean below
-	
-	private static final double KILL_SCREEN_TIME = 2;
-		//for measuring the respawn times
-	
 	////Textures
 	public static MyTexture[] textures;
 	public static final int TEXTURE_SIZE = 35; //space for more (and order space)
@@ -40,7 +35,8 @@ public class GameEngine implements GLEventListener {
 			BLUE = {0.2,0.2,1,0.5},	ORANGE = {1,0.6,0,0.5}, REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 
 	public static final String 	EASY_D = "easy", MEDIUM_D = "medium", 
-								HARD_D = "hard", EXT_D = ".txt"; 
+								HARD_D = "hard", EXT_D = ".txt";
+	private static final double EASY_SPEED = 0.85, MEDIUM_SPEED = 1, HARD_SPEED = 1.25; //TODO balance
 	
 	public static final Random rand = new Random();
 		//just because ease of use, ive heard making a random object is slow [unconfirmed]
@@ -57,6 +53,10 @@ public class GameEngine implements GLEventListener {
 				//updated each 'update()' for speed of access, all methods should use this
 	
 	private long myTime;
+	
+	
+	private static final double KILL_SCREEN_TIME = 2;
+	//for measuring the respawn speed
 	
 	private static boolean isPaused;
 	private static double killCountdown; //if killscreen
@@ -81,8 +81,6 @@ public class GameEngine implements GLEventListener {
 		curSettings = settings;
 		
 		isPaused = false;
-		
-		//TODO player's relative speed at different difficulties
 	}
 	
 	public static double[] getPlayerPos(){  return playerPos; }
@@ -198,6 +196,9 @@ public class GameEngine implements GLEventListener {
 		shader.dontUseShader(gl);
 	}
 
+	
+	/** Updates all the game objects
+	 */
 	private void update() {
 		long time = System.currentTimeMillis();
 		double dt = (time - myTime) / 1000.0;
@@ -237,18 +238,31 @@ public class GameEngine implements GLEventListener {
 			return;
 		}
 		
-		//lag handling TODO
+		//lag handling TO?DO
 		dt = 0.016; //seems to work at this point, as its always the same
 		
 		if (isPaused) {
 			//no updates
 		} else {
-			spawner.update(dt); //needs to spawn objects before objects are updated
+			spawner.update(dt); //needs to spawn objects before objects are updated (because they spawn in the middle)
+
+			double newDt = dt; //because difficulties have a direct impact on object speed
+			if (curGame.getDifficulty().equals(GameEngine.EASY_D)) {
+				newDt = dt*EASY_SPEED;
+			} else if (curGame.getDifficulty().equals(GameEngine.MEDIUM_D)) {
+				newDt = dt*MEDIUM_SPEED;
+			} else if (curGame.getDifficulty().equals(GameEngine.HARD_D)) {
+				newDt = dt*HARD_SPEED;
+			}
 			
 			// update all objects
 			List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 			for (GameObject g: objects) {
-				g.update(dt);
+				if (g instanceof Player) {
+					g.update(dt);
+				} else {
+					g.update(newDt);
+				}
 			}
 
 			curGame.update(dt); //to count down the powerups timers
@@ -403,7 +417,7 @@ public class GameEngine implements GLEventListener {
 		//called by system when the window is closed
 
 //		System.out.println(GameEngine.curGame.toString());
-		//TODO possible double up between lostLife due to this being called when lostLife closes game engine
+		//TODO possible double up between lostLife and this when closing the game
 		
 		LeaderBoard.writeScore(curGame.getDifficulty(), curGame.getScore(), "auto_"+curSettings.getName(), (int)curGame.getTime());
 		
@@ -413,7 +427,7 @@ public class GameEngine implements GLEventListener {
 	}
 	
 	
-	///////////////////////////// STATIC
+	///////////////////////////// STATIC things
 	
 	/**Kill all objects on the screen (excluding Player,Border,Camera,Powerups,ROOT)
 	 * @param object Optional game object that will not be deleted after method
@@ -484,7 +498,6 @@ public class GameEngine implements GLEventListener {
 		killObj = obj;
 		
 		if (curGame.getLives() < 1) { //no lives left
-			GameEngine.togglePause();
 			TheGame.reloadMenu(curGame, curSettings.getName());
 		} //TODO must stop itself (somehow, maybe through a "pause" like thing)
 	}

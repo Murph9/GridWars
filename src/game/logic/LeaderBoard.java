@@ -40,7 +40,8 @@ public class LeaderBoard {
 			NAME = "name";
 	
 	
-	///////////////////////
+	
+	//////////////////////////////////////////////////////////////////////////////////
 	//SETTINGS:
 	
 	//returns a int[]: width, height, other boolean (1 = true, 0 = false - same as java)
@@ -149,7 +150,7 @@ public class LeaderBoard {
 	}
 	
 
-	/////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////
 	//STATS:
 	
 	//adds the new stats to the stats.txt file
@@ -239,7 +240,6 @@ public class LeaderBoard {
 		out.close();
 	}
 	
-
 	//returns the stats saved in the stats.txt
 	public static String getStats() {
 		File file = new File(STATS);
@@ -452,9 +452,13 @@ public class LeaderBoard {
 		timeS = timeS.replaceFirst("^\n", "");
 		
 		JTextArea position = new JTextArea(positionS);
+		position.setOpaque(false); //because of the ghastly white colour behind the text
 		JTextArea score = new JTextArea(scoreS);
+		score.setOpaque(false);
 		JTextArea name = new JTextArea(nameS);
+		name.setOpaque(false);
 		JTextArea time = new JTextArea(timeS);
+		time.setOpaque(false);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		

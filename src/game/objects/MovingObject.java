@@ -12,6 +12,7 @@ public abstract class MovingObject extends GameObject {
 	MovingObject(double size, double[] colour) {
 		this.colour = colour;
 		this.size = size;
+		this.spawnTimer = 0.6; //stock spawn time
 	}
 
 	public void setSpeed(double x, double y) {
@@ -26,9 +27,12 @@ public abstract class MovingObject extends GameObject {
 		super.amHit(ifPoints);
 		
 		if (! (this instanceof Particle)) {
-			if (this instanceof PlayerBullet) {
+			
+			double pCount = (double)GameEngine.settings.getParticleCount()/100d;
+			
+			if (this instanceof PlayerBullet) { //produces 4 (much more bullets than anything else)
 				int offset = GameEngine.rand.nextInt(180);
-				for (int i = 0; i < 4; i++) {
+				for (int i = 0; i < 4*pCount; i++) {
 					MovingObject p = new Particle(2, colour, 0.7, Particle.DEFAULT_DRAG);
 					p.x = x;
 					p.y = y;
@@ -37,7 +41,7 @@ public abstract class MovingObject extends GameObject {
 				}
 			} else {
 				int offset = GameEngine.rand.nextInt(180);
-				for (int i = 0; i < 8; i++) {
+				for (int i = 0; i < 8*pCount; i++) {
 					MovingObject p = new Particle(2, this.colour, 1, Particle.DEFAULT_DRAG);
 					p.x = x;
 					p.y = y;
@@ -75,7 +79,6 @@ public abstract class MovingObject extends GameObject {
 	}
 	
 	//Every subclass must have these methods:
-		//how do i add a private method here? TODO
-	public abstract void update(double dt);
-	public abstract void selfCol();
+	public abstract void update(double dt); //for anything that moves (or changes over time)
+	public abstract void selfCol(); //for object collision code in bullets
 }

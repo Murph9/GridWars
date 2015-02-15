@@ -12,9 +12,13 @@ import javax.media.opengl.GLEventListener;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 
+//TODO Object spawn delay
+//TODO Idea for gameplay slow down when blackhole is exploded from numing (mixed with a overpowering sound to help)
+//TODO GAME SCALE SHOULD BE CONSTANT!!!
+
+
 /**
  * Handles all moving objects and all OpenGL initialisation.
- * 
  * @author Jake Murphy
  */
 public class GameEngine implements GLEventListener {
@@ -42,8 +46,8 @@ public class GameEngine implements GLEventListener {
 		//just because ease of use, ive heard making a random object is slow [unconfirmed]
 	
 	public SpawnHandler spawner;
-	public static GameState curGame; //so every file can access these
-	public static GameSettings curSettings;
+	public static GameState gameState; //so every file can access these
+	public static GameSettings settings;
 	
 	private double curAspect; //for the GUI positioning
 
@@ -53,7 +57,6 @@ public class GameEngine implements GLEventListener {
 				//updated each 'update()' for speed of access, all methods should use this
 	
 	private long myTime;
-	
 	
 	private static final double KILL_SCREEN_TIME = 2;
 	//for measuring the respawn speed
@@ -66,19 +69,19 @@ public class GameEngine implements GLEventListener {
 	
 	/**Instantiates a new game engine, should have an animator called on this as well.
 	 */
-	public GameEngine(SpawnHandler spawnner, GameState state, GameSettings settings) {
-		Border border = new Border(settings.getBoardWidth(), settings.getBoardHeight());
+	public GameEngine(SpawnHandler inSpawnner, GameState inState, GameSettings inSettings) {
+		Border border = new Border(inSettings.getBoardWidth(), inSettings.getBoardHeight());
 		border.setSize(1); //just incase it stopped being 1 (removes warning)
 		
 		myCamera = new Camera();
-		myCamera.setSize(settings.getScale());
+		myCamera.setSize(inSettings.getScale());
 		
 		GameEngine.player = new Player(1, GameEngine.WHITE);
 		textures = new MyTexture[TEXTURE_SIZE];
 		
-		spawner = spawnner;
-		curGame = state;
-		curSettings = settings;
+		spawner = inSpawnner;
+		gameState = inState;
+		settings = inSettings;
 		
 		isPaused = false;
 	}
@@ -132,7 +135,7 @@ public class GameEngine implements GLEventListener {
 		gl.glEnable(GL2.GL_BLEND); //alpha blending (you know transparency)
 		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA); //special blending
 		
-		if (curSettings.ifAliasing()) {
+		if (settings.ifAliasing()) {
 			gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
@@ -146,7 +149,7 @@ public class GameEngine implements GLEventListener {
 		//this seems to be fine above, check the shader use in draw
 		
 		SoundEffect.init(); //TODO other volumes: HIGH, MEDIUM and LOW
-		if (curSettings.ifSound()) {
+		if (settings.ifSound()) {
 			SoundEffect.volume = SoundEffect.Volume.HIGH;
 		} else {
 			SoundEffect.volume = SoundEffect.Volume.MUTE; //too easy i get it..
@@ -155,8 +158,8 @@ public class GameEngine implements GLEventListener {
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		curSettings.setPixelHeight(drawable.getHeight()); //might decide that the window can't be resized later 
-		curSettings.setPixelWidth(drawable.getWidth());
+		settings.setPixelHeight(drawable.getHeight()); //might decide that the window can't be resized later 
+		settings.setPixelWidth(drawable.getWidth());
 		
 		update();
 
@@ -211,7 +214,7 @@ public class GameEngine implements GLEventListener {
 				if (killObj != null) { //only happens the once coming into the second half of killscreen
 					GameObject.ALL_OBJECTS.remove(killObj); //the obj that hit you is now removed as it doesn't need to be displayed anymore
 					killObj = null;
-					GameEngine.curGame.lostLife();
+					GameEngine.gameState.lostLife();
 					GameEngine.killAll(null, false);
 				}
 				
@@ -247,11 +250,11 @@ public class GameEngine implements GLEventListener {
 			spawner.update(dt); //needs to spawn objects before objects are updated (because they spawn in the middle)
 
 			double newDt = dt; //because difficulties have a direct impact on object speed
-			if (curGame.getDifficulty().equals(GameEngine.EASY_D)) {
+			if (gameState.getDifficulty().equals(GameEngine.EASY_D)) {
 				newDt = dt*EASY_SPEED;
-			} else if (curGame.getDifficulty().equals(GameEngine.MEDIUM_D)) {
+			} else if (gameState.getDifficulty().equals(GameEngine.MEDIUM_D)) {
 				newDt = dt*MEDIUM_SPEED;
-			} else if (curGame.getDifficulty().equals(GameEngine.HARD_D)) {
+			} else if (gameState.getDifficulty().equals(GameEngine.HARD_D)) {
 				newDt = dt*HARD_SPEED;
 			}
 			
@@ -265,7 +268,7 @@ public class GameEngine implements GLEventListener {
 				}
 			}
 
-			curGame.update(dt); //to count down the powerups timers
+			gameState.update(dt); //to count down the powerups timers
 		}
 	}
 
@@ -292,7 +295,7 @@ public class GameEngine implements GLEventListener {
 		gl.glColor3d(1,1,1);
 		
 		//score
-			String score = " "+curGame.getScore();
+			String score = " "+gameState.getScore();
 			gl.glPushMatrix();
 			gl.glTranslated(-1*curAspect,0.9,0);
 			gl.glScalef(0.0005f, 0.0005f, 1); //for some reason it starts very big (152 or something)
@@ -304,7 +307,7 @@ public class GameEngine implements GLEventListener {
 			gl.glPopMatrix();
 		
 		//record
-			String record = " "+curGame.getRecord();
+			String record = " "+gameState.getRecord();
 			gl.glPushMatrix();
 			gl.glTranslated(-1*curAspect,0.8,0);
 			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
@@ -317,8 +320,8 @@ public class GameEngine implements GLEventListener {
 			
 		//lives
 			String lives = "";
-			if (curGame.getLives() > 0) {
-				lives = " "+curGame.getLives();
+			if (gameState.getLives() > 0) {
+				lives = " "+gameState.getLives();
 			
 				gl.glPushMatrix();
 				gl.glTranslated(0.9*curAspect,0.9,0);
@@ -337,8 +340,8 @@ public class GameEngine implements GLEventListener {
 			
 		//bomb count
 			String bCount = "";
-			if (curGame.getBombCount() > 0) {
-				bCount = " "+curGame.getBombCount();
+			if (gameState.getBombCount() > 0) {
+				bCount = " "+gameState.getBombCount();
 				
 				gl.glPushMatrix();
 				gl.glTranslated(0.9*curAspect,0.8,0);
@@ -356,7 +359,7 @@ public class GameEngine implements GLEventListener {
 			}
 		
 		//multiplier
-			String multi = "x"+curGame.getMultiplier();
+			String multi = "x"+gameState.getMultiplier();
 			gl.glPushMatrix();
 			gl.glTranslated(0,0.9,0);
 			gl.glScalef(0.0005f, 0.0005f, 1); //for some reason it starts very big (152 or something)
@@ -368,7 +371,7 @@ public class GameEngine implements GLEventListener {
 			gl.glPopMatrix();
 		
 		//kills
-			String kills = "  "+curGame.getKills();
+			String kills = "  "+gameState.getKills();
 			
 			gl.glPushMatrix();
 			gl.glTranslated(0.8 *curAspect,0.7,0);
@@ -380,7 +383,7 @@ public class GameEngine implements GLEventListener {
 			}
 			gl.glPopMatrix();
 			
-			String tKills = "  "+curGame.getTotalKills();
+			String tKills = "  "+gameState.getTotalKills();
 			gl.glPushMatrix();
 			gl.glTranslated(0.8*curAspect,0.65,0);
 			gl.glScalef(0.0004f, 0.0004f, 1);
@@ -393,7 +396,7 @@ public class GameEngine implements GLEventListener {
 			
 			
 		//time
-			int a = (int)curGame.getTime();
+			int a = (int)gameState.getTime();
 			int b = a % 10;
 			a /= 10;
 			String time = "  "+a+"."+b; //math so its in the form ddddd.d
@@ -419,9 +422,9 @@ public class GameEngine implements GLEventListener {
 //		System.out.println(GameEngine.curGame.toString());
 		//TODO possible double up between lostLife and this when closing the game
 		
-		FileHelper.writeScore(curGame.getDifficulty(), curGame.getScore(), "auto_"+curSettings.getName(), (int)curGame.getTime());
+		FileHelper.writeScore(gameState.getDifficulty(), gameState.getScore(), "auto_"+settings.getName(), (int)gameState.getTime());
 		
-		FileHelper.addToStats(curGame);
+		FileHelper.addToStats(gameState);
 		
 		System.out.println(FileHelper.getStats() + "\t from dispose(), GameEngine");
 	}
@@ -455,15 +458,18 @@ public class GameEngine implements GLEventListener {
 		SimpleSpinner.ALL_THIS.clear();
 		SplitingSquare.ALL_THIS.clear();
 		
+		
 		if (particles) {
-			//particles of the death screen (was at 100 but caused lag, now 25) [TODO particle count setting]
-			for (int i = 0; i < 25; i++) {
+			double pCount = 40; //default (was 100, caused bad lag)
+			pCount = 40*((double)GameEngine.settings.getParticleCount()/100.0f); //% total particles
+			
+			for (int i = 0; i < pCount; i++) {
 				for (int j = 0; j < 20; j++) {
 					MovingObject p = new Particle(2, GameEngine.WHITE, 0.7, Particle.DEFAULT_DRAG);
 					p.x = playerPos[0];
 					p.y = playerPos[1];
-					p.dx = GameEngine.rand.nextDouble()*Math.cos(360*i/20)*50;
-					p.dy = GameEngine.rand.nextDouble()*Math.sin(360*i/20)*50;
+					p.dx = GameEngine.rand.nextDouble()*Math.cos(360*i)*50;
+					p.dy = GameEngine.rand.nextDouble()*Math.sin(360*i)*50;
 				}
 			}
 		}
@@ -497,8 +503,8 @@ public class GameEngine implements GLEventListener {
 		killCountdown = GameEngine.KILL_SCREEN_TIME;
 		killObj = obj;
 		
-		if (curGame.getLives() < 1) { //no lives left
-			TheGame.reloadMenu(curGame, curSettings.getName());
+		if (gameState.getLives() < 1) { //no lives left
+			TheGame.reloadMenu(gameState, settings.getName());
 		} //TODO must stop itself (somehow, maybe through a "pause" like thing)
 	}
 	

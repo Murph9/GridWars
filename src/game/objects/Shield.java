@@ -24,7 +24,7 @@ public class Shield extends MovingObject {
 			return getPosition();
 		} else {
 			return new double[]{Double.MAX_VALUE,Double.MAX_VALUE}; 
-				//ok it will break if you have a playing field that big, so don't.
+				//will break if you have a playing field that big, so don't :)
 		}
 	}
 	

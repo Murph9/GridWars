@@ -28,6 +28,11 @@ public class SimpleSpinner extends MovingObject {
 	}
 
 	public void update(double dt) {
+		if (this.spawnTimer > 0) {
+			this.spawnTimer -= dt;
+			return;
+		}
+		
 		x += dx*dt;
 		y += dy*dt;
 		

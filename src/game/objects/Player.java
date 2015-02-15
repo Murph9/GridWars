@@ -44,6 +44,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		this.timer.start();
 		
 		this.shooting = true;
+		this.spawnTimer = 0; //doesn't have spawn delay
 	}
 	
 	private void newBullet() { //creates PlayerBullets, large
@@ -54,8 +55,8 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			return;
 		}
 		
-		int num = GameEngine.curGame.getBulletCount();
-		double speed = MAX_SPEED*GameEngine.curGame.getBulletSpeed();
+		int num = GameEngine.gameState.getBulletCount();
+		double speed = MAX_SPEED*GameEngine.gameState.getBulletSpeed();
 		
 		switch(num) {
 		case 4:
@@ -107,7 +108,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		}
 		
 		
-		if (GameEngine.curGame.ifRearShot()) {
+		if (GameEngine.gameState.ifRearShot()) {
 			MovingObject b12 = new PlayerBullet(0.35, GameEngine.YELLOW);
 			b12.x = -Math.cos(Math.toRadians(angle))*size/2 + x;
 			b12.y = -Math.sin(Math.toRadians(angle))*size/2 + y;
@@ -116,7 +117,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			b12.dy = (dy/2-2*Math.sin(Math.toRadians(angle)))*speed;
 		}
 		
-		if (GameEngine.curGame.ifSideShot()) {
+		if (GameEngine.gameState.ifSideShot()) {
 			MovingObject b12 = new PlayerBullet(0.35, GameEngine.YELLOW);
 			b12.x = Math.cos(Math.toRadians(angle+90))*size/2 + x;
 			b12.y = Math.sin(Math.toRadians(angle+90))*size/2 + y;
@@ -146,7 +147,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
 		setRotation(angle);
 
-		//tail of particles
+		//tail of particles TODO maybe spawn better (also look at settings for particles)
 		double thresh = GameEngine.rand.nextDouble();
 		if (Math.sqrt(dx*dx + dy*dy) > thresh) { //only matters if going less than max speed
 			MovingObject q = new Particle(2, GameEngine.BLUE, 1, Particle.DEFAULT_DRAG); //also not really sure why blue but hey..
@@ -183,7 +184,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	 * rather than pushing on other similar objects like all the other selfCol()
 	 */
 	public void selfCol() {
-		if (GameEngine.curGame.ifTempShield()) {
+		if (GameEngine.gameState.ifTempShield()) {
 			return; //because we are done here
 		}
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
@@ -231,7 +232,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
 		Helper.square(gl);
 		
-		if (GameEngine.curGame.ifTempShield()) { //shield is active, UGLY PLEASE FIX TODO
+		if (GameEngine.gameState.ifTempShield()) { //shield is active, UGLY PLEASE FIX TODO
 			gl.glPushMatrix();
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BLACKHOLE].getTextureId());
 			
@@ -244,7 +245,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		double[] s = GameEngine.getMousePos();
 		double[] myPos = getPosition();
-		gl.glRotated(-getRotation(), 0, 0, 1);
+		gl.glRotated(-angle, 0, 0, 1);
 		
 		gl.glLineStipple(1, (short)0xAA); //google obviously
 		gl.glEnable(GL2.GL_LINE_STIPPLE);
@@ -314,8 +315,8 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			return;
 		}
 		if (arg0.getButton() == MouseEvent.BUTTON3) {
-			if (!GameEngine.curGame.ifTempShield())
-				GameEngine.curGame.useBomb();
+			if (!GameEngine.gameState.ifTempShield())
+				GameEngine.gameState.useBomb();
 		}
 		if (arg0.getButton() == MouseEvent.BUTTON1) {
 			shooting = true;

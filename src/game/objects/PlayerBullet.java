@@ -16,6 +16,7 @@ public class PlayerBullet extends MovingObject {
 	PlayerBullet(double size, double[] colour) {
 		super(size, colour);
 		PlayerBullet.ALL_THIS.add(this);
+		this.spawnTimer = 0; //no spawn delay
 	}
 	
 	public void update(double dt) {
@@ -27,27 +28,27 @@ public class PlayerBullet extends MovingObject {
 		boolean hasCollided = false; //wall collision
 		
 		//can't use the helper function here );
-		if (x > GameEngine.curSettings.getBoardWidth()-(size/2)) {
+		if (x > GameEngine.settings.getBoardWidth()-(size/2)) {
 			dx = -dx;
-			x = GameEngine.curSettings.getBoardWidth()-(size/2);
+			x = GameEngine.settings.getBoardWidth()-(size/2);
 			hasCollided = true;
-		} else if (x < -GameEngine.curSettings.getBoardWidth()+(size/2)) {
+		} else if (x < -GameEngine.settings.getBoardWidth()+(size/2)) {
 			dx = -dx;
-			x = -GameEngine.curSettings.getBoardWidth()+(size/2);
+			x = -GameEngine.settings.getBoardWidth()+(size/2);
 			hasCollided = true;
 		}
 		
-		if (y > GameEngine.curSettings.getBoardHeight()-(size/2)) {
+		if (y > GameEngine.settings.getBoardHeight()-(size/2)) {
 			dy = -dy;
-			y = GameEngine.curSettings.getBoardHeight()-(size/2);
+			y = GameEngine.settings.getBoardHeight()-(size/2);
 			hasCollided = true;
-		} else if (y < -GameEngine.curSettings.getBoardHeight()+(size/2)) {
+		} else if (y < -GameEngine.settings.getBoardHeight()+(size/2)) {
 			dy = -dy;
-			y = -GameEngine.curSettings.getBoardHeight()+(size/2);
+			y = -GameEngine.settings.getBoardHeight()+(size/2);
 			hasCollided = true;
 		}
 
-		if (hasCollided && !GameEngine.curGame.ifBouncyShot()) {
+		if (hasCollided && !GameEngine.gameState.ifBouncyShot()) {
 			this.amHit(false);
 			return;
 		}
@@ -87,8 +88,8 @@ public class PlayerBullet extends MovingObject {
 				}
 				double distX = pos[0] - x;
 				double distY = pos[1] - y;
-				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.getSize()/2)*(o.getSize()/2))) {
-					if (!GameEngine.curGame.ifSuperShot()) {
+				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
+					if (!GameEngine.gameState.ifSuperShot()) {
 						this.amHit(false);
 					}
 					if (o instanceof SnakeBody || o instanceof Shield) {
@@ -109,11 +110,11 @@ public class PlayerBullet extends MovingObject {
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BULLET].getTextureId());
 		
-    	if (GameEngine.curGame.ifBouncyShot()) {
+    	if (GameEngine.gameState.ifBouncyShot()) {
     		gl.glColor3d(GameEngine.GREEN[0], GameEngine.GREEN[1], GameEngine.GREEN[2]);
     	}
 
-    	if (GameEngine.curGame.ifSuperShot()) {
+    	if (GameEngine.gameState.ifSuperShot()) {
     		gl.glColor3d(GameEngine.RED[0], GameEngine.RED[1], GameEngine.RED[2]);
     	}
 

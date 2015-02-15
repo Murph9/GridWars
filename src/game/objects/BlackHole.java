@@ -65,6 +65,10 @@ public class BlackHole extends MovingObject {
 	
 	@Override
 	public void update(double dt) {
+		if (this.spawnTimer > 0) {
+			this.spawnTimer -= dt*2; //decays twice as fast as normal objects
+		}
+		
 		x += dx*dt*MAX_SPEED;
 		y += dy*dt*MAX_SPEED;
 		
@@ -162,19 +166,33 @@ public class BlackHole extends MovingObject {
 	
 	//handles actually dying
 	private void delete(boolean wasShot) {
-		score = 150 + (5/2)*numCount*(numCount+1); //sneaky... (i only wanted to calculate it once)
+		score = 150 + (5/2)*numCount*(numCount+1); //from the wiki, as you can see its a quadratic
 		super.amHit(wasShot);
 		ALL_THIS.remove(this);
 		
-		if (wasShot) { //then add score
+		if (wasShot) { 
+			//then add score
+			
 		} else { // or explode
 			for (int i = 0; i < 20; i++) {
 				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);
 				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
+				a.spawnTimer = 0; //because you shouldn't be close to it anyway
 			}
 			for (int i = 0; i < 20; i++) {
 				HomingSeeker s = new HomingSeeker(0.6, GameEngine.PURPLE);
 				s.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
+				s.spawnTimer = 0;
+			}
+			
+			double pCount = (double) GameEngine.settings.getParticleCount()/100d;
+			for (int i = 0; i < 50*pCount; i++) {
+				Particle a = new Particle(1, this.colour, 2, Particle.DEFAULT_DRAG*0.85); //little bit longer than usual
+				a.x = this.x;
+				a.y = this.y;
+				a.dx = GameEngine.rand.nextDouble()*2 - 1;
+				a.dy = GameEngine.rand.nextDouble()*2 - 1;
+
 			}
 		}
 	}

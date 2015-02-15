@@ -22,6 +22,7 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		}
 		x = Integer.MAX_VALUE;
 		y = Integer.MAX_VALUE;
+		spawnTimer = 0;
 	}
 	
 	public void amHit(boolean isPoints) {
@@ -39,6 +40,8 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 	///////////////////////////////////////////
 	@Override
 	public void update(double dt) {
+		spawnTimer = before.getSpawnTimer();
+		
 		double[] beforePos = before.getPosition();
 		double[] dir = new double[] {x-beforePos[0], y - beforePos[1]};
 		
@@ -75,5 +78,10 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SNAKEBODY].getTextureId());
 		super.drawSelf(gl);
+	}
+
+	@Override
+	public double getSpawnTimer() {
+		return spawnTimer;
 	}
 }

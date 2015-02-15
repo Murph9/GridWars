@@ -20,7 +20,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
 public class GameMenuGUI extends JFrame implements ActionListener {
@@ -30,8 +29,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 	final TheGame theGame;
 	JPanel menuPanel; //for the menu
 	
-	private double scale = 10; //you know, it kind of works, as easy as this number is 
-		//TODO keep gameSize the sameish
+	private double scale = 10; //you know, it kind of works on the stock game size
 	
 	private GridBagConstraints gbLayout;
 	private static JPanel leaderBoard;
@@ -198,6 +196,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		widthXHeight.add(boardHeight, wxh);
 
 		//checkboxes
+		set.gridwidth = 1;
 		set.gridx = 0;
 		set.gridy = 0;
 		particles = new JCheckBox("Particles");
@@ -214,7 +213,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		antialiasing = new JCheckBox("Antialiasing");
 		settingsPanel.add(antialiasing, set);
 		
-		set.gridy++;
+		set.gridx++;
 		sound = new JCheckBox("Sound");
 		settingsPanel.add(sound, set);
 		

@@ -29,7 +29,7 @@ public class TextPopup extends GameObject {
 	public TextPopup(double[] colour, int score, double time, double x, double y) {
 		this.colour = colour;
 		this.decayTime = time;
-		this.score = Integer.toString(score*GameEngine.curGame.getMultiplier());
+		this.score = Integer.toString(score*GameEngine.gameState.getMultiplier());
 		this.x = x;
 		this.y = y;
 		ALL_THIS.add(this);

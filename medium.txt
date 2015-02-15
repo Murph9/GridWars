@@ -1,10 +1,10 @@
 650480	 auto_Murph	 4464
+115900	 auto_Murph	 881
 100000	 AAA	 1
 90000	 BBB	 1
 80000	 CCC	 1
 70000	 DDD	 1
+67901	 auto_Murph	 1043
 60000	 EEE	 1
 50000	 FFF	 1
 40416	 _auto	 495
-40000	 ME	 1
-37650	 _auto	 370

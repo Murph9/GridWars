@@ -42,23 +42,29 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	
 	
 	public void update(double dt) {
+		if (this.spawnTimer > 0) {
+			this.spawnTimer -= dt;
+			after.update(dt);
+			return;
+		}
+		
 		x += dx*dt;
 		y += dy*dt;
 		
-		if (x > GameEngine.curSettings.getBoardWidth()-(size/2)) {
+		if (x > GameEngine.settings.getBoardWidth()-(size/2)) {
 			curChangeRate = 100;
-			x = GameEngine.curSettings.getBoardWidth()-(size/2);
-		} else if (x < -GameEngine.curSettings.getBoardWidth()+(size/2)) {
+			x = GameEngine.settings.getBoardWidth()-(size/2);
+		} else if (x < -GameEngine.settings.getBoardWidth()+(size/2)) {
 			curChangeRate = 100;
-			x = -GameEngine.curSettings.getBoardWidth()+(size/2);
+			x = -GameEngine.settings.getBoardWidth()+(size/2);
 		}
 		
-		if (y > GameEngine.curSettings.getBoardHeight()-(size/2)) {
+		if (y > GameEngine.settings.getBoardHeight()-(size/2)) {
 			curChangeRate = 100;
-			y = GameEngine.curSettings.getBoardHeight()-(size/2);
-		} else if (y < -GameEngine.curSettings.getBoardHeight()+(size/2)) {
+			y = GameEngine.settings.getBoardHeight()-(size/2);
+		} else if (y < -GameEngine.settings.getBoardHeight()+(size/2)) {
 			curChangeRate = 100;
-			y = -GameEngine.curSettings.getBoardHeight()+(size/2);
+			y = -GameEngine.settings.getBoardHeight()+(size/2);
 		}
 
 		if (curAngleChange) { //pick a direction 
@@ -104,6 +110,11 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	public SnakeObject getBefore() { return null; }
 	@Override
 	public SnakeObject getAfter() { return after; }
+
+	@Override
+	public double getSpawnTimer() {
+		return spawnTimer;
+	}
 }
 
 

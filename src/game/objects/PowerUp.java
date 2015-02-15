@@ -29,6 +29,11 @@ public class PowerUp extends MovingObject {
 	}
 	
 	public void update(double dt) {
+		if (spawnTimer > 0) {
+			spawnTimer -= dt;
+			return;
+		}
+		
 		x = dx*dt;
 		y = dy*dt;
 		
@@ -60,23 +65,23 @@ public class PowerUp extends MovingObject {
 		super.amHit(false);
 		switch (type) {
 		case SHOT_SPEED:
-			GameEngine.curGame.incBulletSpeed();	break;
+			GameEngine.gameState.incBulletSpeed();	break;
 		case SHOT_COUNT:
-			GameEngine.curGame.incBulletCount();	break;
+			GameEngine.gameState.incBulletCount();	break;
 		case EXTRA_BOMB:
-			GameEngine.curGame.incBombCount();		break;
+			GameEngine.gameState.incBombCount();		break;
 		case EXTRA_LIFE:
-			GameEngine.curGame.incLives();			break;
+			GameEngine.gameState.incLives();			break;
 		case SIDE_SHOT:
-			GameEngine.curGame.gotSideShot();		break;
+			GameEngine.gameState.gotSideShot();		break;
 		case REAR_SHOT:
-			GameEngine.curGame.gotRearShot();		break;
+			GameEngine.gameState.gotRearShot();		break;
 		case TEMP_SHIELD:
-			GameEngine.curGame.gotShield();			break;
+			GameEngine.gameState.gotShield();			break;
 		case SUPER_SHOT:
-			GameEngine.curGame.gotSuperShot();		break;
+			GameEngine.gameState.gotSuperShot();		break;
 		case BOUNCY_SHOT:
-			GameEngine.curGame.gotBouncyShot();		break;
+			GameEngine.gameState.gotBouncyShot();		break;
 		}
 	}
 	

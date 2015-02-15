@@ -20,13 +20,15 @@ public class Particle extends MovingObject {
 	
 	private boolean ifBlackHoleParticle;
 	
-	Particle() {
-		this(2, GameEngine.WHITE, 0.7, 1.065); //default settings
-	}
+//	Particle() {
+//		this(2, GameEngine.WHITE, 0.7, 1.065); //default settings
+//		this.spawnTimer = 0;
+//	}
 	
-	Particle(int a) {
-		this(2, GameEngine.WHITE, 0.7, 1.065);
-	}
+//	Particle(int a) {
+//		this(2, GameEngine.WHITE, 0.7, 1.065); //TODO find out what this 'a' means
+//		this.spawnTimer = 0; //never has spawn delay
+//	}
 	
 	public Particle(double thickness, double[] colour, double time, double drag) {
 		super(1, colour);
@@ -38,9 +40,11 @@ public class Particle extends MovingObject {
 		this.inOrbit = false;
 		this.drag = drag;
 		
+		this.spawnTimer = 0;
+		
 		ifBlackHoleParticle = false;
 		
-		if (!GameEngine.curSettings.ifParticles()) {
+		if (!GameEngine.settings.ifParticles()) {
 			amHit(false);
 		}
 	}
@@ -60,20 +64,20 @@ public class Particle extends MovingObject {
 		
 		//can't use the helper function here ;(
 			//because the size of the object is used as 'small'
-		if (x > GameEngine.curSettings.getBoardWidth()) {
+		if (x > GameEngine.settings.getBoardWidth()) {
 			dx = -dx;
-			x = GameEngine.curSettings.getBoardWidth();
-		} else if (x < -GameEngine.curSettings.getBoardWidth()) {
+			x = GameEngine.settings.getBoardWidth();
+		} else if (x < -GameEngine.settings.getBoardWidth()) {
 			dx = -dx;
-			x = -GameEngine.curSettings.getBoardWidth();
+			x = -GameEngine.settings.getBoardWidth();
 		}
 		
-		if (y > GameEngine.curSettings.getBoardHeight()) {
+		if (y > GameEngine.settings.getBoardHeight()) {
 			dy = -dy;
-			y = GameEngine.curSettings.getBoardHeight();
-		} else if (y < -GameEngine.curSettings.getBoardHeight()) {
+			y = GameEngine.settings.getBoardHeight();
+		} else if (y < -GameEngine.settings.getBoardHeight()) {
 			dy = -dy;
-			y = -GameEngine.curSettings.getBoardHeight();
+			y = -GameEngine.settings.getBoardHeight();
 		}
 		
 		if (!inOrbit) {

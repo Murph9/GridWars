@@ -152,7 +152,6 @@ public class FileHelper {
 		out.println(IF_ANTIALIASING +" "+ settings.ifAliasing());
 		
 		out.println(PARTICLE_COUNT +" "+ settings.getParticleCount());
-		System.out.println(settings.getParticleCount());
 		
 		out.close();
 	}

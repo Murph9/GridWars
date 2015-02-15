@@ -26,6 +26,11 @@ public class ShySquare extends MovingObject {
 
 	@Override
 	public void update(double dt) {
+		if (this.spawnTimer > 0) {
+			this.spawnTimer -= dt;
+			return;
+		}
+		
 		x += dx*dt*MAX_SPEED;
 		y += dy*dt*MAX_SPEED;
 		

@@ -32,6 +32,14 @@ public class ShieldedClone extends MovingObject {
 
 	@Override
 	public void update(double dt) {
+		if (this.spawnTimer > 0) {
+			this.spawnTimer -= dt;
+			shield.spawnTimer = 0;
+			shield.x = x+0.8;
+			shield.y = y; //position is hardcoded to the right of the clone
+			return;
+		}
+		
 		x += dx*dt*MAX_SPEED;
 		y += dy*dt*MAX_SPEED;
 		shield.x = x+Math.cos(Math.toRadians(lastAngle))*0.8;
@@ -86,8 +94,8 @@ public class ShieldedClone extends MovingObject {
 				lastAngle += MAX_ANGLE_CHANGE*dt;
 			}
 			
-			dx /= 1.02; //simulate drag if not trying to move forward
-			dy /= 1.02;
+			dx /= 1.05; //simulate drag if not trying to move forward
+			dy /= 1.05;
 
 		} else { //normal works so far
 			if (normDiff < MAX_ANGLE_CHANGE/2) {//move forward because you are close to look at player

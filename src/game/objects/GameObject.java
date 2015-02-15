@@ -20,34 +20,38 @@ public class GameObject {
 	public double size;
 	public double x;
 	public double y;
+
+	public double spawnTimer;
 	
 	protected double[] colour;
 	protected int score;
 	
 	public GameObject() { 
 		size = 1;
-	    	//note all others are 0
+		spawnTimer = 0;
 		
-	    this.colour = new double[]{1,1,1,0.5}; //just in case don't want no 'null' confusing things [yes poor english]
+	    this.colour = new double[]{1,1,1,0.5}; //just in case don't want 'null' confusing things
     	ALL_OBJECTS.add(this);
 	}
     
-	public double getX() { return x; }
-	public double getY() { return y; }
-	public double getRotation() { return angle; }
-    public double getSize() { return size; }
+	public double getRotation() { return angle; } //required.. because of snake interface
     public double[] getPosition() { return new double[]{x, y}; }
     public double[] getColour() {
-    	return new double[]{colour[0], colour[1], colour[2]};
+    	return new double[]{colour[0], colour[1], colour[2], colour[3]};
     }
     
-    /**Useful for functions that move differently to their position
-     * Change if the objects' location is different to x, y
+    /**Useful for functions that move differently to their position (eg. SplitingSquare)
+     * Change if the objects' location is different to x, y, for example if the object is spawning it hasn't got collision.
      * This is the method called by the selfCol()'s
      * @return double[2]{x, y}
      */
     public double[] getCollisionPosition() {
-    	return getPosition();
+    	if (spawnTimer > 0) {
+    		return new double[]{Double.MAX_VALUE, Double.MAX_VALUE}; 
+    			//an object spawning has no collision, annoying when random spawn in used
+    	} else {
+    		return getPosition();
+    	}
     }
     
 	public void setRotation(double rot) {
@@ -73,11 +77,11 @@ public class GameObject {
     public void amHit(boolean ifPoints) {
         ALL_OBJECTS.remove(this);
         if (ifPoints) {
-        	GameEngine.curGame.addKill();
-        	GameEngine.curGame.addScore(score);
+        	GameEngine.gameState.addKill();
+        	GameEngine.gameState.addScore(score);
         	
         	TextPopup s = new TextPopup(this.colour, score, 1, x-(size/2), y-0.1);
-        	s.angle = 0; //because annoying warning is gone now that ive used it
+        	s.angle = 0; //because annoying warning is gone now that ive used it :P
         	
         	SoundEffect.OBJECT_KILL.play(10, 0);
         }
@@ -85,15 +89,17 @@ public class GameObject {
     
     ///////////////////////////////////////////////
     //things to use in sub classes:
+    //below is usually what the class will call after binding the texture...
     public void drawSelf(GL2 gl) {
-        // should be called after binding the texture
+    	//...here
     	gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
     	Helper.square(gl);
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+		
     }
     
     public void update(double dt) {
-    	// do nothing
+    	// root doesn't move or rotate
     }
     
     
@@ -106,7 +112,11 @@ public class GameObject {
         //transform to position, draw, then call on children
         gl.glTranslated(x, y, 0);
         gl.glRotated(angle, 0, 0, 1); //because 2D, everything rotates about the z axis
-        gl.glScaled(size, size, 1);
+        if (spawnTimer > 0) {
+        	gl.glScaled(size, size, 1);
+        } else {
+        	gl.glScaled(size, size, 1);
+        }
         
         drawSelf(gl);
         

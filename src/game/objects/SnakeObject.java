@@ -10,4 +10,5 @@ public interface SnakeObject {
 	void update(double dt);
 	double[] getPosition();
 	double getRotation();
+	double getSpawnTimer();
 }

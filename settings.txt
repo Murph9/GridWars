@@ -1,10 +1,10 @@
 pixel_width 1024
 pixel_height 728
 board_width 16
-board_height 4
+board_height 12
 scale 10.0
 name Murph
 sound true
 particles true
 antialiasing true
-particle_count 60
+particle_count 100

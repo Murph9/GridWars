@@ -10,7 +10,7 @@ public class ConnectedTriangle extends MovingObject {
 
 	public final static ArrayList<ConnectedTriangle> ALL_THIS = new ArrayList<ConnectedTriangle>();
 	
-	private final int MAX_SPEED = 3;
+	private final int MAX_SPEED = 4;
 	private final int LINK_STRENGTH = 20;
 	
 	private ConnectedTriangle partner;

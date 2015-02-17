@@ -13,7 +13,8 @@ import game.objects.*;
 public class GameState {
 	
 	private final double SPEED_INC = 0.15;
-	private final double POWERUP_LENGTH = 15; //15 seconds is the standard (according to the game)
+	private static final double POWERUP_LENGTH_LONG = 15; //15 seconds is the standard (according to the game)
+	private static final double POWERUP_LENGTH_SHORT = 15; //10 is for super shots
 	
 	private final int[] killSteps = new int[]{25,50,100,200,400,800,1600,3200,6400,12800}; //multipler steps
 	
@@ -152,11 +153,11 @@ public class GameState {
 
 	
 	//Getters:
-	public void gotShield()     { hasShield      = POWERUP_LENGTH; }
-	public void gotSideShot()   { hasSideBullets = POWERUP_LENGTH; }
-	public void gotRearShot()   { hasRearBullets = POWERUP_LENGTH; }
-	public void gotBouncyShot() { hasBouncyShot  = POWERUP_LENGTH; }
-	public void gotSuperShot()  { hasSuperShot   = POWERUP_LENGTH; }
+	public void gotShield()     { hasShield      = POWERUP_LENGTH_LONG; }
+	public void gotSideShot()   { hasSideBullets = POWERUP_LENGTH_LONG; }
+	public void gotRearShot()   { hasRearBullets = POWERUP_LENGTH_LONG; }
+	public void gotBouncyShot() { hasBouncyShot  = POWERUP_LENGTH_LONG; }
+	public void gotSuperShot()  { hasSuperShot   = POWERUP_LENGTH_SHORT; }
 
 	public int getRecord()     { return lastRecord; }
 	public int getScore()      { return score;      }

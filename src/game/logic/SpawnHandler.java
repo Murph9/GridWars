@@ -2,12 +2,16 @@ package game.logic;
 
 import game.objects.*;
 
+import java.util.ArrayList;
 import java.util.Random;
 
+@SuppressWarnings("unused")
 
-/**Handles the spawning of objects, initalsed with the difficulty of the game.
+/**Handles the spawning of objects (position and time).
  * @author Jake Murphy
  */
+
+//This file has the worst code/time ratio of all.
 
 ////////////////////////////
 /* Rules: (that need to be met)
@@ -17,28 +21,16 @@ import java.util.Random;
 * 
 * Spawners - maybe like 16th the chance of spawning something
 * 
-* Powerups - need to be used
+* Powerups - need to be used. Rules about them? (they seem to spawn, after a death, at the next 5000 mark)
 */
 
 
 /*Objects have a "difficulty range" they spawn in (this varies with difficulty):
- * Difficulty table key:
- * {swarm difficulty | spawn corner| spawn around player| spawn random - name}
- * 
- * 1.0 | 1.0 | 1.2 | 1.1 - SimpleSpinner
- * 1.6 | 1.2 | 1.3 | - HomingDiamond
- * 2.4 | 1.3 | 1.3 | - SnakeHead
- * 2.1 | 1.8 | 1.8 | - ShySquare
- * 2.4 | 2.0 | 2.1 |- SplitingSquare
- * 
- * 2.5 | 1.1 | 1.2 | - ConnectedTriangle
- * 
- * 2.8 | 2.3 | 3.0 | - HomingButterfly
- * 2.9 | 2.4 | 3.2 | - HomingSeeker
- * 
- * 3.0 | 1.6 | 3.0 |  - BlackHole (note swarm difficulty is for other swarms here)
- * 3.5 | 2.6 | 4.0 | - ShieldedClone
+ * - see excel document
  */
+
+//The above table is for at what point in the large gameplay progression they can spawn.
+//What about how they spawn?
 
 
 ////////////////////////////
@@ -47,8 +39,9 @@ import java.util.Random;
 //thinking about having "waves" of things spawn: (in order) (with swarms in the transition, either around the player or on the edge)	
 	//maybe a "swarm countdown" meaning it will eventually happen
 	
-	//correct gameplay should be (on as many levels as possible) easy/hard/easy/hard/...
-		//this is a known good gameplay mechanic (also works for movies)
+	//correct gameplay should be easy/hard/easy/hard/...
+		//this is a known good gameplay mechanic (known for movies before games)
+		//could be completed using swarms of enemies (even if there is a constant background spawn rate)
 
 //what happens when the player dies, what kind of objects spawn then?
 	//was thinking like slowly (for like 5 seconds) moves back to where it was? 
@@ -61,8 +54,11 @@ public class SpawnHandler {
 	private Random random;
 	private String diff;
 
-	private double totalTime;
-	private double countDown;
+	private double totalKills; //total time to calculate the current difficulty (number starting at 1.0)
+	
+	private double singleCountDown; //count down for single object spawn
+	
+	private double swarmCountDown; //swarm count down
 
 	
 	//inital rate = 2 a second (where rate = current difficulty)
@@ -72,6 +68,19 @@ public class SpawnHandler {
 	public SpawnHandler(String difficulty) {
 		this.diff = difficulty;
 		this.random = new Random();
+		
+	}
+	
+
+	public void update(double dt) {
+		totalKills += GameEngine.gameState.getTotalKills();
+		
+		singleCountDown -= dt;
+		
+		if (singleCountDown < 0) {
+			newEnemy();
+			singleCountDown = OLD_SPAWN_TIME;
+		}
 	}
 	
 	
@@ -100,28 +109,31 @@ public class SpawnHandler {
     	case 12:
     		s = new ConnectedTriangle();	break;
     	}
-    	pos2Corner(s);
+    	spawnCorner(s);
     }
 
 
-    private void pos2Corner(GameObject obj) {
+    private void spawnCorner(GameObject obj) {
     	obj.x = (random.nextInt(2)*2-1)*(GameEngine.settings.getBoardWidth()-0.5);
     	obj.y = (random.nextInt(2)*2-1)*(GameEngine.settings.getBoardHeight()-0.5);
     }
     
+    private void spawnRandom(GameObject obj) {
+    	obj.x = random.nextInt(GameEngine.settings.getBoardWidth())*2 -GameEngine.settings.getBoardWidth();
+    	obj.y = random.nextInt(GameEngine.settings.getBoardHeight())*2 -GameEngine.settings.getBoardHeight();
+    }
     
+    private void spawnPlayer(GameObject obj) {
+    	double[] playerPos = GameEngine.player.getPosition();
+    	double angle = random.nextDouble()*Math.PI*2;
+    	obj.x = playerPos[0]+(Math.cos(angle)*5);
+    	obj.y = playerPos[1]+(Math.sin(angle)*5);
+    	
+    	//TODO check for spawning outside play field in here
+    }
     
-	public void update(double dt) {
-		totalTime += dt;
-		
-		countDown -= dt;
-		
-		if (countDown < 0) {
-			newEnemy();
-			countDown = OLD_SPAWN_TIME;
-		}
-	}
 }
+
 
 
 

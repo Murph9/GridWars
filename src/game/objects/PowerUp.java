@@ -69,19 +69,19 @@ public class PowerUp extends MovingObject {
 		case SHOT_COUNT:
 			GameEngine.gameState.incBulletCount();	break;
 		case EXTRA_BOMB:
-			GameEngine.gameState.incBombCount();		break;
+			GameEngine.gameState.incBombCount();	break;
 		case EXTRA_LIFE:
-			GameEngine.gameState.incLives();			break;
+			GameEngine.gameState.incLives();		break;
 		case SIDE_SHOT:
 			GameEngine.gameState.gotSideShot();		break;
 		case REAR_SHOT:
 			GameEngine.gameState.gotRearShot();		break;
 		case TEMP_SHIELD:
-			GameEngine.gameState.gotShield();			break;
+			GameEngine.gameState.gotShield();		break;
 		case SUPER_SHOT:
-			GameEngine.gameState.gotSuperShot();		break;
+			GameEngine.gameState.gotSuperShot();	break;
 		case BOUNCY_SHOT:
-			GameEngine.gameState.gotBouncyShot();		break;
+			GameEngine.gameState.gotBouncyShot();	break;
 		}
 	}
 	

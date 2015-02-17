@@ -27,7 +27,7 @@ public class BlackHole extends MovingObject {
 	private int particleCount; //count of orbiting particles, visual indication of how many hits remaining = cool
 	
 	public BlackHole() {
-		this(1, GameEngine.RED);
+		this(1, Engine.RED);
 	}
 	
 	BlackHole(double size, double[] colour) {
@@ -39,6 +39,7 @@ public class BlackHole extends MovingObject {
 		ALL_THIS.add(this);
 		
 		score = 150; //default score value
+		SoundEffect.SHOOT.play(10, 0);
 	}
 	
 	public void giveObject(double x, double y) {
@@ -75,10 +76,10 @@ public class BlackHole extends MovingObject {
 		particleCount = 0;
 		
 		//particle effects yay - maybe fix spawning positions later
-		double rand = GameEngine.rand.nextDouble();
+		double rand = Engine.rand.nextDouble();
 		if (!isInert && rand < ((float)numCount/(float)maxNum)){
-			Particle a = new Particle(3, new double[]{GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),GameEngine.rand.nextDouble(),0.5}, 1, 1.04);
-			double angle = GameEngine.rand.nextDouble()*Math.PI*2;
+			Particle a = new Particle(3, new double[]{Engine.rand.nextDouble(),Engine.rand.nextDouble(),Engine.rand.nextDouble(),0.5}, 1, 1.04);
+			double angle = Engine.rand.nextDouble()*Math.PI*2;
 			
 			double sin = Math.sin(angle); //because speed
 			double cos = Math.cos(angle);
@@ -175,34 +176,34 @@ public class BlackHole extends MovingObject {
 			
 		} else { // or explode
 			for (int i = 0; i < 20; i++) {
-				HomingButterfly a = new HomingButterfly(0.6, GameEngine.BLUE);
+				HomingButterfly a = new HomingButterfly(0.6, Engine.BLUE);
 				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
 				a.spawnTimer = 0; //because you shouldn't be close to it anyway
 			}
 			for (int i = 0; i < 20; i++) {
-				HomingSeeker s = new HomingSeeker(0.6, GameEngine.PURPLE);
+				HomingSeeker s = new HomingSeeker(0.6, Engine.PURPLE);
 				s.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
 				s.spawnTimer = 0;
 			}
 			
-			double pCount = (double) GameEngine.settings.getParticleCount()/100d;
+			double pCount = (double) Engine.settings.getParticleCount()/100d;
 			for (int i = 0; i < 50*pCount; i++) {
 				Particle a = new Particle(1, this.colour, 2, Particle.DEFAULT_DRAG*0.85); //little bit longer than usual
 				a.x = this.x;
 				a.y = this.y;
-				a.dx = GameEngine.rand.nextDouble()*2 - 1;
-				a.dy = GameEngine.rand.nextDouble()*2 - 1;
+				a.dx = Engine.rand.nextDouble()*2 - 1;
+				a.dy = Engine.rand.nextDouble()*2 - 1;
 
 			}
 		}
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BLACKHOLE].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BLACKHOLE].getTextureId());
 		if (isInert) { //Its ALLWAYS purple when inert..
-			colour = GameEngine.PURPLE;
+			colour = Engine.PURPLE;
 		} else {
-			colour = GameEngine.RED;
+			colour = Engine.RED;
 		}
 		super.drawSelf(gl);
 	}

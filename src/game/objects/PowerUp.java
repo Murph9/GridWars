@@ -23,9 +23,10 @@ public class PowerUp extends MovingObject {
 	private int type;
 	
 	PowerUp (int type) {
-		super(1, GameEngine.WHITE);
+		super(1, Engine.WHITE);
 		this.type = type;
 		ALL_THIS.add(this);
+		SoundEffect.SHOOT.play(10, 0);
 	}
 	
 	public void update(double dt) {
@@ -65,46 +66,46 @@ public class PowerUp extends MovingObject {
 		super.amHit(false);
 		switch (type) {
 		case SHOT_SPEED:
-			GameEngine.gameState.incBulletSpeed();	break;
+			Engine.gameState.incBulletSpeed();	break;
 		case SHOT_COUNT:
-			GameEngine.gameState.incBulletCount();	break;
+			Engine.gameState.incBulletCount();	break;
 		case EXTRA_BOMB:
-			GameEngine.gameState.incBombCount();	break;
+			Engine.gameState.incBombCount();	break;
 		case EXTRA_LIFE:
-			GameEngine.gameState.incLives();		break;
+			Engine.gameState.incLives();		break;
 		case SIDE_SHOT:
-			GameEngine.gameState.gotSideShot();		break;
+			Engine.gameState.gotSideShot();		break;
 		case REAR_SHOT:
-			GameEngine.gameState.gotRearShot();		break;
+			Engine.gameState.gotRearShot();		break;
 		case TEMP_SHIELD:
-			GameEngine.gameState.gotShield();		break;
+			Engine.gameState.gotShield();		break;
 		case SUPER_SHOT:
-			GameEngine.gameState.gotSuperShot();	break;
+			Engine.gameState.gotSuperShot();	break;
 		case BOUNCY_SHOT:
-			GameEngine.gameState.gotBouncyShot();	break;
+			Engine.gameState.gotBouncyShot();	break;
 		}
 	}
 	
 	public void drawSelf(GL2 gl) {
 		switch (type) {
 		case SHOT_SPEED:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_SPEED].getTextureId()); 	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_SPEED].getTextureId()); 	break;
 		case SHOT_COUNT:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BULLET].getTextureId()); 	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_BULLET].getTextureId()); 	break;
 		case EXTRA_BOMB:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_BOMB].getTextureId()); 	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_BOMB].getTextureId()); 	break;
 		case EXTRA_LIFE:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.EXTRA_LIFE].getTextureId()); 	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_LIFE].getTextureId()); 	break;
 		case SIDE_SHOT:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SIDE_SHOT].getTextureId()); 		break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SIDE_SHOT].getTextureId()); 		break;
 		case REAR_SHOT:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.REAR_SHOT].getTextureId()); 		break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.REAR_SHOT].getTextureId()); 		break;
 		case TEMP_SHIELD:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.TEMP_SHIELD].getTextureId()); 	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.TEMP_SHIELD].getTextureId()); 	break;
 		case SUPER_SHOT:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SUPER_SHOT].getTextureId()); 	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SUPER_SHOT].getTextureId()); 	break;
 		case BOUNCY_SHOT:
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BOUNCY_SHOT].getTextureId()); 	break;
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BOUNCY_SHOT].getTextureId()); 	break;
 		}
 		
     	super.drawSelf(gl);

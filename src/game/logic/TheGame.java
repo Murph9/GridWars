@@ -23,7 +23,7 @@ public class TheGame {
 	
 	private GLJPanel gamePanel; //used by the GameEngine
 	private FPSAnimator animator;
-	private GameEngine engine;
+	private Engine engine;
 	
 	private static final int DEFAULT_BOARD_WIDTH = 16; //at least 4x4
 	private static final int DEFAULT_BOARD_HEIGHT= 12; //here is default
@@ -106,7 +106,7 @@ public class TheGame {
         //then write settings to file
         FileHelper.writeSettings(set);
         
-        this.engine = new GameEngine(new SpawnHandler(difficulty), new GameState(difficulty), set);
+        this.engine = new Engine(new SpawnHandler(difficulty), new GameState(difficulty), set);
         
         //////////////////////////////
         //JOGL Stuff:
@@ -122,8 +122,8 @@ public class TheGame {
 		gameFrame.setFocusable(true);
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        gamePanel.addKeyListener(GameEngine.player);
-        gamePanel.addMouseListener(GameEngine.player);
+        gamePanel.addKeyListener(Engine.player);
+        gamePanel.addMouseListener(Engine.player);
         
         gamePanel.addMouseMotionListener(Mouse.theMouse);
         gamePanel.addMouseListener(Mouse.theMouse);
@@ -138,7 +138,7 @@ public class TheGame {
 	
 	public static void reloadMenu(GameState state, String name) {
 		System.out.println("(lost all lives)\n   - reloadMenu");
-		FileHelper.writeScore(GameEngine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
+		FileHelper.writeScore(Engine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
 		FileHelper.addToStats(state);
 		
 		

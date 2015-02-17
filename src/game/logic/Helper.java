@@ -17,12 +17,12 @@ public class Helper {
 	public static int sgn(int a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return (GameEngine.rand.nextInt(2)*2 -1); //i was trying to make them move when they didn't want to
+		else return (Engine.rand.nextInt(2)*2 -1); //i was trying to make them move when they didn't want to
 	}
 	public static double sgn(double a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return (GameEngine.rand.nextInt()*2 -1); //yes i know i used nextInt(), it must be full or nothing
+		else return (Engine.rand.nextInt()*2 -1); //yes i know i used nextInt(), it must be full or nothing
 	}
 	
 	/**Draw a gl square centered about the position of the object
@@ -46,24 +46,24 @@ public class Helper {
 	 * @param type if bouncy (use the static fields: NOTHING, BOUNCE, SPLAT )
 	 */
 	public static void keepInside(MovingObject a, int type) {
-		if (a.x > GameEngine.settings.getBoardWidth()-(a.size/2)) {
+		if (a.x > Engine.settings.getBoardWidth()-(a.size/2)) {
 			if (type == BOUNCE) a.dx = -a.dx;
 			else if (type == SPLAT)	a.dx = 0;
-			a.x = GameEngine.settings.getBoardWidth()-(a.size/2);
-		} else if (a.x < -GameEngine.settings.getBoardWidth()+(a.size/2)) {
+			a.x = Engine.settings.getBoardWidth()-(a.size/2);
+		} else if (a.x < -Engine.settings.getBoardWidth()+(a.size/2)) {
 			if (type == BOUNCE) a.dx = -a.dx;
 			else if (type == SPLAT)	a.dx = 0;
-			a.x = -GameEngine.settings.getBoardWidth()+(a.size/2);
+			a.x = -Engine.settings.getBoardWidth()+(a.size/2);
 		}
 		
-		if (a.y > GameEngine.settings.getBoardHeight()-(a.size/2)) {
+		if (a.y > Engine.settings.getBoardHeight()-(a.size/2)) {
 			if (type == BOUNCE) a.dy = -a.dy;
 			else if (type == SPLAT)	a.dy = 0;
-			a.y = GameEngine.settings.getBoardHeight()-(a.size/2);
-		} else if (a.y < -GameEngine.settings.getBoardHeight()+(a.size/2)) {
+			a.y = Engine.settings.getBoardHeight()-(a.size/2);
+		} else if (a.y < -Engine.settings.getBoardHeight()+(a.size/2)) {
 			if (type == BOUNCE) a.dy = -a.dy;
 			else if (type == SPLAT)	a.dy = 0;
-			a.y = -GameEngine.settings.getBoardHeight()+(a.size/2);
+			a.y = -Engine.settings.getBoardHeight()+(a.size/2);
 		}
 	}
 
@@ -71,8 +71,8 @@ public class Helper {
 		//we could use some fancy o1, o2, and scale to work this out
 	//but remember we don't have any gl objects here....
 	public static double[] getScreenPos(double x, double y, double scale) {
-		double a = GameEngine.getMousePos()[0];
-		double b = GameEngine.getMousePos()[1]; //translation of screen
+		double a = Engine.getMousePos()[0];
+		double b = Engine.getMousePos()[1]; //translation of screen
 
 		double[][] matrix = {
 			{scale,0,0,a},
@@ -81,7 +81,7 @@ public class Helper {
 			{0,0,0,1    }};
 
 			//the aspect can be computed from here:
-		int[] t = new int[] {GameEngine.settings.getPixelWidth(), GameEngine.settings.getPixelHeight()}; 
+		int[] t = new int[] {Engine.settings.getPixelWidth(), Engine.settings.getPixelHeight()}; 
 		double ar = (double)t[0] / (double)t[1];
         double[][] viewProj = null;
 		if (ar >= 1) {

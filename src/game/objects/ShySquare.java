@@ -15,13 +15,14 @@ public class ShySquare extends MovingObject {
 	private float dodgeSpeed = 3f;
 	
 	public ShySquare() {
-		this(0.8, GameEngine.GREEN);
+		this(0.8, Engine.GREEN);
 	}
 	
 	ShySquare(double size, double[] colour) {
 		super(size, colour);
 		ALL_THIS.add(this);
 		score = 100;
+		SoundEffect.SHOOT.play(10, 0);
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class ShySquare extends MovingObject {
 		
 		Helper.keepInside(this, Helper.SPLAT);
 		
-		double[] spos = GameEngine.getPlayerPos();
+		double[] spos = Engine.getPlayerPos();
 		dx += (spos[0]-x)/2;
 		dy += (spos[1]-y)/2;
 
@@ -86,7 +87,7 @@ public class ShySquare extends MovingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SHY].getTextureId()); //get id of the dot file
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SHY].getTextureId()); //get id of the dot file
 		
     	super.drawSelf(gl);
 	}

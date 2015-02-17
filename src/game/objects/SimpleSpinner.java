@@ -14,17 +14,18 @@ public class SimpleSpinner extends MovingObject {
 	private static final int MAX_SPEED = 3;
 	
 	public SimpleSpinner() {
-		this(1, GameEngine.PURPLE);
+		this(1, Engine.PURPLE);
 	}
 	
 	SimpleSpinner(double size, double[] colour) {
 		super(size, colour);
-		this.rotSpeed = (GameEngine.rand.nextInt(180)+90)*(GameEngine.rand.nextInt(2)*2-1);
-		dx = GameEngine.rand.nextDouble()*2-1; //rand between -1 and 1
-		dy = GameEngine.rand.nextDouble()*2-1;
+		this.rotSpeed = (Engine.rand.nextInt(180)+90)*(Engine.rand.nextInt(2)*2-1);
+		dx = Engine.rand.nextDouble()*2-1; //rand between -1 and 1
+		dy = Engine.rand.nextDouble()*2-1;
 		ALL_THIS.add(this);
 		
 		score = 25;
+		SoundEffect.SHOOT.play(10, 0);
 	}
 
 	public void update(double dt) {
@@ -70,7 +71,7 @@ public class SimpleSpinner extends MovingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SPINNER].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SPINNER].getTextureId());
 		
     	super.drawSelf(gl);
 	}

@@ -9,6 +9,7 @@ public abstract class HomingObject extends MovingObject {
 	HomingObject(double size, double[] colour, float speed) {
 		super(size, colour);
 		this.MAX_SPEED = speed;
+		SoundEffect.SHOOT.play(10, 0);
 	}
 
 	protected void setSpeed(int speed) { //because objects have different speeds
@@ -29,7 +30,7 @@ public abstract class HomingObject extends MovingObject {
 		blackHole();
 		selfCol();
 		
-		double[] playerPos = GameEngine.getPlayerPos();
+		double[] playerPos = Engine.getPlayerPos();
 		dx += (playerPos[0]-x)/2;
 		dy += (playerPos[1]-y)/2;
 		

@@ -3,3 +3,4 @@ bin/
 .project
 *.log
 images/Thumbs.db
+~$*

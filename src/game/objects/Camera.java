@@ -1,6 +1,6 @@
 package game.objects;
 
-import game.logic.GameEngine;
+import game.logic.Engine;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
@@ -31,13 +31,13 @@ public class Camera extends GameObject {
     }
     
     public void update (double dt) { //thought causing
-    	double[] pos = GameEngine.getPlayerPos();
+    	double[] pos = Engine.getPlayerPos();
     	this.x = pos[0];//3; //this makes it feel more like a game
     	this.y = pos[1];//3; //TODO scale with numbers below
     	
-    	double pixelAspect = (double)(GameEngine.settings.getPixelWidth())/(double)(GameEngine.settings.getPixelHeight());
-    	int height = GameEngine.settings.getBoardHeight() + 1;
-    	int width = GameEngine.settings.getBoardWidth() + 1; //+1 is for buffer size
+    	double pixelAspect = (double)(Engine.settings.getPixelWidth())/(double)(Engine.settings.getPixelHeight());
+    	int height = Engine.settings.getBoardHeight() + 1;
+    	int width = Engine.settings.getBoardWidth() + 1; //+1 is for buffer size
     	
     	if (this.y > (height - this.size)) {
     		this.y = (height - this.size); //want to keep the camera from this.size from the edge

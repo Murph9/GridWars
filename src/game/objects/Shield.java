@@ -36,7 +36,7 @@ public class Shield extends MovingObject {
 	public void drawSelf(GL2 gl) {
 		if (!isProtecting) return; //doesn't work if not protecting
 		
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SHIELD].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SHIELD].getTextureId());
 		
 		super.drawSelf(gl);
 	}

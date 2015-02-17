@@ -36,7 +36,7 @@ public class Particle extends MovingObject {
 		
 		this.thickness = thickness;
 		this.speed = 1;
-		this.decayTimer = GameEngine.rand.nextDouble()*time + 0.3;
+		this.decayTimer = Engine.rand.nextDouble()*time + 0.3;
 		this.inOrbit = false;
 		this.drag = drag;
 		
@@ -44,7 +44,7 @@ public class Particle extends MovingObject {
 		
 		ifBlackHoleParticle = false;
 		
-		if (!GameEngine.settings.ifParticles()) {
+		if (!Engine.settings.ifParticles()) {
 			amHit(false);
 		}
 	}
@@ -64,20 +64,20 @@ public class Particle extends MovingObject {
 		
 		//can't use the helper function here ;(
 			//because the size of the object is used as 'small'
-		if (x > GameEngine.settings.getBoardWidth()) {
+		if (x > Engine.settings.getBoardWidth()) {
 			dx = -dx;
-			x = GameEngine.settings.getBoardWidth();
-		} else if (x < -GameEngine.settings.getBoardWidth()) {
+			x = Engine.settings.getBoardWidth();
+		} else if (x < -Engine.settings.getBoardWidth()) {
 			dx = -dx;
-			x = -GameEngine.settings.getBoardWidth();
+			x = -Engine.settings.getBoardWidth();
 		}
 		
-		if (y > GameEngine.settings.getBoardHeight()) {
+		if (y > Engine.settings.getBoardHeight()) {
 			dy = -dy;
-			y = GameEngine.settings.getBoardHeight();
-		} else if (y < -GameEngine.settings.getBoardHeight()) {
+			y = Engine.settings.getBoardHeight();
+		} else if (y < -Engine.settings.getBoardHeight()) {
 			dy = -dy;
-			y = -GameEngine.settings.getBoardHeight();
+			y = -Engine.settings.getBoardHeight();
 		}
 		
 		if (!inOrbit) {

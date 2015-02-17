@@ -10,7 +10,7 @@ public class HomingSeeker extends HomingObject {
 
 	public final static ArrayList<HomingSeeker> ALL_THIS = new ArrayList<HomingSeeker>();
 	
-	public static final int MAX_SPEED = 6;
+	public static final int MAX_SPEED = 5;
 	
 	HomingSeeker(double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
@@ -53,7 +53,7 @@ public class HomingSeeker extends HomingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SEEKER].getTextureId()); //get id of the dot file
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SEEKER].getTextureId()); //get id of the dot file
 		
     	super.drawSelf(gl);
 	}

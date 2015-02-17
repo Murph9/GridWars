@@ -1,7 +1,7 @@
 pixel_width 1024
 pixel_height 728
-board_width 16
-board_height 12
+board_width 10
+board_height 8
 scale 10.0
 name Murph
 sound true

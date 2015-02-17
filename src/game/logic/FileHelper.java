@@ -282,7 +282,7 @@ public class FileHelper {
 	
 	//writes scores to file (under the current difficulty)
 	public static void writeScore(String diff, int score, String name, int time) {
-		diff += GameEngine.EXT_D;
+		diff += Engine.EXT_D;
 
 		File file = new File(diff);
 		
@@ -334,7 +334,7 @@ public class FileHelper {
 	
 	//returns the best score for the UI best score function
 	public static int getBestScore(String diff) {
-		diff += GameEngine.EXT_D;
+		diff += Engine.EXT_D;
 		
 		File file = new File(diff);
 		
@@ -380,7 +380,7 @@ public class FileHelper {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		
-		diff += GameEngine.EXT_D;
+		diff += Engine.EXT_D;
 		File file = new File(diff);
 		if (!file.exists()) {
 			throw new IllegalArgumentException("Input file must exist for this method");
@@ -388,11 +388,11 @@ public class FileHelper {
 		
 		String label = "null";
 		
-		if (diff.equals(GameEngine.EASY_D + GameEngine.EXT_D)) {
+		if (diff.equals(Engine.EASY_D + Engine.EXT_D)) {
 			label = "Easy Records";
-		} else if (diff.equals(GameEngine.MEDIUM_D + GameEngine.EXT_D)) {
+		} else if (diff.equals(Engine.MEDIUM_D + Engine.EXT_D)) {
 			label = "Medium Records";
-		} else if (diff.equals(GameEngine.HARD_D + GameEngine.EXT_D)){
+		} else if (diff.equals(Engine.HARD_D + Engine.EXT_D)){
 			label = "Hard Records";
 		} else {
 			throw new IllegalArgumentException("Please use one of the default difficulties");

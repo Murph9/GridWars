@@ -1,5 +1,5 @@
 package game.objects;
-import game.logic.GameEngine;
+import game.logic.Engine;
 import game.logic.Helper;
 
 import javax.media.opengl.GL2;
@@ -38,36 +38,36 @@ public class Spawner extends GameObject {
 			//then spawn object
 			GameObject o = null;
 			switch(type) {
-			case GameEngine.SPINNER:
+			case Engine.SPINNER:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.DIAMOND:
+			case Engine.DIAMOND:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.SQUARE:
+			case Engine.SQUARE:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.CLONE:
+			case Engine.CLONE:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.SNAKEHEAD:
+			case Engine.SNAKEHEAD:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.BUTTERFLY:
+			case Engine.BUTTERFLY:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.SEEKER:
+			case Engine.SEEKER:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.SHY:
+			case Engine.SHY:
 				o = new SimpleSpinner(); 	break;
-			case GameEngine.TRIANGLE:
+			case Engine.TRIANGLE:
 				o = new SimpleSpinner(); 	break;
 				
-			case GameEngine.PLAYER: 
-			case GameEngine.BULLET:
-			case GameEngine.SNAKEBODY:
-			case GameEngine.EXTRA_BULLET:
-			case GameEngine.EXTRA_SPEED:
-			case GameEngine.TEMP_SHIELD:
-			case GameEngine.EXTRA_BOMB:
-			case GameEngine.EXTRA_LIFE:
-			case GameEngine.BOUNCY_SHOT:
-			case GameEngine.SUPER_SHOT:
-			case GameEngine.REAR_SHOT:
+			case Engine.PLAYER: 
+			case Engine.BULLET:
+			case Engine.SNAKEBODY:
+			case Engine.EXTRA_BULLET:
+			case Engine.EXTRA_SPEED:
+			case Engine.TEMP_SHIELD:
+			case Engine.EXTRA_BOMB:
+			case Engine.EXTRA_LIFE:
+			case Engine.BOUNCY_SHOT:
+			case Engine.SUPER_SHOT:
+			case Engine.REAR_SHOT:
 				try {
 					throw new Exception(); //we don't want this
 				} catch (Exception e) {
@@ -76,8 +76,8 @@ public class Spawner extends GameObject {
 				break;
 			}
 		
-			o.setPosition(new double[]{(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.settings.getPixelWidth()-0.5), 
-					(GameEngine.rand.nextInt(2)*2-1)*(GameEngine.settings.getPixelHeight()-0.5)});
+			o.setPosition(new double[]{(Engine.rand.nextInt(2)*2-1)*(Engine.settings.getPixelWidth()-0.5), 
+					(Engine.rand.nextInt(2)*2-1)*(Engine.settings.getPixelHeight()-0.5)});
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class Spawner extends GameObject {
 	 */
 	public void drawSelf(GL2 gl) {
 		
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[type].getTextureId()); //fix please
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[type].getTextureId()); //fix please
 		
 		Helper.square(gl);
 		

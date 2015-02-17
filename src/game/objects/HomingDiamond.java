@@ -12,7 +12,7 @@ public class HomingDiamond extends HomingObject {
 	public static final int MAX_SPEED = 5;
 	
 	public HomingDiamond() {
-		this(1, GameEngine.LIGHT_BLUE);
+		this(1, Engine.LIGHT_BLUE);
 	}
 	
 	HomingDiamond(double size, double[] colour) {
@@ -37,7 +37,7 @@ public class HomingDiamond extends HomingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.DIAMOND].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.DIAMOND].getTextureId());
     	super.drawSelf(gl);
 	}
 	

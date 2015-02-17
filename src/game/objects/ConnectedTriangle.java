@@ -18,7 +18,7 @@ public class ConnectedTriangle extends MovingObject {
 	private int rotSpeed = 1;
 	
 	public ConnectedTriangle() {
-		this(1, GameEngine.ORANGE, null);
+		this(1, Engine.ORANGE, null);
 	}
 	
 	/**@param in Partner if spawned with one (for whatever reason), but they can find them later
@@ -29,6 +29,7 @@ public class ConnectedTriangle extends MovingObject {
 		strength = 0; //TODO, balance :D
 		partner = in;
 		score = 150;
+		SoundEffect.SHOOT.play(10, 0);
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class ConnectedTriangle extends MovingObject {
 		selfCol();
 		
 		if (partner == null) {
-			double[] a = new double[]{GameEngine.getPlayerPos()[0]-x,GameEngine.getPlayerPos()[1]-y};
+			double[] a = new double[]{Engine.getPlayerPos()[0]-x,Engine.getPlayerPos()[1]-y};
 			double dist = a[0]*a[0] + a[1]*a[1];
 			if (dist != 0) {
 				dx += a[0]/dist;
@@ -112,7 +113,7 @@ public class ConnectedTriangle extends MovingObject {
 	
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.TRIANGLE].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.TRIANGLE].getTextureId());
 		gl.glColor4d(colour[0], colour[1],colour[2],colour[3]);
 		if (partner != null) {
 			gl.glPushMatrix();

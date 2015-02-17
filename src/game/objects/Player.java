@@ -31,7 +31,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		super(size, colour);
 		
 		double[] myPos = getPosition();
-		double[] s = GameEngine.getMousePos();
+		double[] s = Engine.getMousePos();
 		double angle = Math.toDegrees(Math.atan2((s[1]-myPos[1]), (s[0]-myPos[0])));
 		setRotation(angle);
 		
@@ -48,25 +48,25 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	}
 	
 	private void newBullet() { //creates PlayerBullets, large
-		if (!GameEngine.canSpawn()) {
+		if (!Engine.canSpawn()) {
     		return;
     	}
 		if (!shooting) {
 			return;
 		}
 		
-		int num = GameEngine.gameState.getBulletCount();
-		double speed = MAX_SPEED*GameEngine.gameState.getBulletSpeed();
+		int num = Engine.gameState.getBulletCount();
+		double speed = MAX_SPEED*Engine.gameState.getBulletSpeed();
 		
 		switch(num) {
 		case 4:
-			MovingObject b0a = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
+			MovingObject b0a = new PlayerBullet(0.35, Engine.LIGHT_YELLOW);
 				b0a.x = x; b0a.y = y;
 				
 				b0a.dx = (dx/2+2*Math.cos(Math.toRadians(angle+5)))*speed;
 				b0a.dy = (dy/2+2*Math.sin(Math.toRadians(angle+5)))*speed;
 
-			MovingObject b0b = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
+			MovingObject b0b = new PlayerBullet(0.35, Engine.LIGHT_YELLOW);
 				b0b.x = x; b0b.y = y;
 				
 				b0b.dx = (dx/2+2*Math.cos(Math.toRadians(angle-5)))*speed;
@@ -74,22 +74,22 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 				
 			//note the lack of break; here, important (if it was more than 4 i would have a formula)
 		case 2:
-			MovingObject b1 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
+			MovingObject b1 = new PlayerBullet(0.35, Engine.LIGHT_YELLOW);
 				b1.x = x; b1.y = y;
 				
 				b1.dx = (dx/2+2*Math.cos(Math.toRadians(angle+2)))*speed;
 				b1.dy = (dy/2+2*Math.sin(Math.toRadians(angle+2)))*speed;
 			
-			MovingObject b2 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
+			MovingObject b2 = new PlayerBullet(0.35, Engine.LIGHT_YELLOW);
 				b2.x = x; b2.y = y; 
 				
 				b2.dx = (dx/2+2*Math.cos(Math.toRadians(angle-2)))*speed;
 				b2.dy = (dy/2+2*Math.sin(Math.toRadians(angle-2)))*speed;
 			break;
 		case 3:
-			MovingObject b3 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
-			MovingObject b4 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
-			MovingObject b5 = new PlayerBullet(0.35, GameEngine.LIGHT_YELLOW);
+			MovingObject b3 = new PlayerBullet(0.35, Engine.LIGHT_YELLOW);
+			MovingObject b4 = new PlayerBullet(0.35, Engine.LIGHT_YELLOW);
+			MovingObject b5 = new PlayerBullet(0.35, Engine.LIGHT_YELLOW);
 			
 			b3.x = x; b3.y = y;
 			b4.x = x; b4.y = y;
@@ -108,8 +108,8 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		}
 		
 		
-		if (GameEngine.gameState.ifRearShot()) {
-			MovingObject b12 = new PlayerBullet(0.35, GameEngine.YELLOW);
+		if (Engine.gameState.ifRearShot()) {
+			MovingObject b12 = new PlayerBullet(0.35, Engine.YELLOW);
 			b12.x = -Math.cos(Math.toRadians(angle))*size/2 + x;
 			b12.y = -Math.sin(Math.toRadians(angle))*size/2 + y;
 			
@@ -117,15 +117,15 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			b12.dy = (dy/2-2*Math.sin(Math.toRadians(angle)))*speed;
 		}
 		
-		if (GameEngine.gameState.ifSideShot()) {
-			MovingObject b12 = new PlayerBullet(0.35, GameEngine.YELLOW);
+		if (Engine.gameState.ifSideShot()) {
+			MovingObject b12 = new PlayerBullet(0.35, Engine.YELLOW);
 			b12.x = Math.cos(Math.toRadians(angle+90))*size/2 + x;
 			b12.y = Math.sin(Math.toRadians(angle+90))*size/2 + y;
 			
 			b12.dx = (dx/2+2*Math.cos(Math.toRadians(angle+90)))*speed;
 			b12.dy = (dy/2+2*Math.sin(Math.toRadians(angle+90)))*speed;
 			
-			MovingObject b13 = new PlayerBullet(0.35, GameEngine.YELLOW);
+			MovingObject b13 = new PlayerBullet(0.35, Engine.YELLOW);
 			b13.x = Math.cos(Math.toRadians(angle-90))*size/2 + x;
 			b13.y = Math.sin(Math.toRadians(angle-90))*size/2 + y;
 			
@@ -142,17 +142,17 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
     	Helper.keepInside(this, Helper.SPLAT);
 		
 		//do rotation stuff
-		double[] s = GameEngine.getMousePos();
+		double[] s = Engine.getMousePos();
 		double angle = Math.toDegrees(Math.atan2((s[1]-y), (s[0]-x)));
 		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
 		setRotation(angle);
 
 		//tail of particles TODO maybe spawn better (also look at settings for particles)
-		double thresh = GameEngine.rand.nextDouble();
+		double thresh = Engine.rand.nextDouble();
 		if (Math.sqrt(dx*dx + dy*dy) > thresh) { //only matters if going less than max speed
-			MovingObject q = new Particle(2, GameEngine.BLUE, 1, Particle.DEFAULT_DRAG); //also not really sure why blue but hey..
-			q.x = x; q.dx = (-dx*4 - (s[0] -x)/2)*(GameEngine.rand.nextDouble()*2);
-			q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(GameEngine.rand.nextDouble()*2);
+			MovingObject q = new Particle(2, Engine.BLUE, 1, Particle.DEFAULT_DRAG); //also not really sure why blue but hey..
+			q.x = x; q.dx = (-dx*4 - (s[0] -x)/2)*(Engine.rand.nextDouble()*2);
+			q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(Engine.rand.nextDouble()*2);
 		}
 		
 		//acceleration calculations 
@@ -184,7 +184,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	 * rather than pushing on other similar objects like all the other selfCol()
 	 */
 	public void selfCol() {
-		if (GameEngine.gameState.ifTempShield()) {
+		if (Engine.gameState.ifTempShield()) {
 			return; //because we are done here
 		}
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
@@ -200,7 +200,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 					if (o instanceof PowerUp) {
 						o.amHit(false);
 					} else {
-						GameEngine.lostLife(o);
+						Engine.lostLife(o);
 					}
 				}
 			}
@@ -227,14 +227,14 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.PLAYER].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.PLAYER].getTextureId());
 		
 		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
 		Helper.square(gl);
 		
-		if (GameEngine.gameState.ifTempShield()) { //shield is active, UGLY PLEASE FIX TODO
+		if (Engine.gameState.ifTempShield()) { //shield is active, UGLY PLEASE FIX TODO
 			gl.glPushMatrix();
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BLACKHOLE].getTextureId());
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BLACKHOLE].getTextureId());
 			
 			gl.glScaled(2, 2, 1);
 			Helper.square(gl);
@@ -243,7 +243,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		}
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		
-		double[] s = GameEngine.getMousePos();
+		double[] s = Engine.getMousePos();
 		double[] myPos = getPosition();
 		gl.glRotated(-angle, 0, 0, 1);
 		
@@ -289,7 +289,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { //escape is a good pause button I think
-			GameEngine.togglePause();
+			Engine.togglePause();
 		}
 	}
 
@@ -311,12 +311,12 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		if(!GameEngine.canSpawn()) {
+		if(!Engine.canSpawn()) {
 			return;
 		}
 		if (arg0.getButton() == MouseEvent.BUTTON3) {
-			if (!GameEngine.gameState.ifTempShield())
-				GameEngine.gameState.useBomb();
+			if (!Engine.gameState.ifTempShield())
+				Engine.gameState.useBomb();
 		}
 		if (arg0.getButton() == MouseEvent.BUTTON1) {
 			shooting = true;

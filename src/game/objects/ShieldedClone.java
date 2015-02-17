@@ -17,17 +17,18 @@ public class ShieldedClone extends MovingObject {
 	private Shield shield;
 	
 	public ShieldedClone() {
-		this(1.1, GameEngine.RED);
+		this(1.1, Engine.RED);
 	}
 	
 	ShieldedClone(double size, double[] colour) {
 		super(size, colour);
-		lastAngle = (GameEngine.rand.nextDouble()*2-1)*180; //random angle between -180 and 180
+		lastAngle = (Engine.rand.nextDouble()*2-1)*180; //random angle between -180 and 180
 		
 		shield = new Shield(size*1.2, colour); //bigger, get it?
 		ALL_THIS.add(this);
 		
 		score = 100;
+		SoundEffect.SHOOT.play(10, 0);
 	}
 
 	@Override
@@ -77,7 +78,7 @@ public class ShieldedClone extends MovingObject {
 
 	private void moveToPlayer(double dt) {
 		//do rotation stuff
-		double[] playerPos = GameEngine.getPlayerPos();
+		double[] playerPos = Engine.getPlayerPos();
 		double angleToPlayer = Math.toDegrees(Math.atan2((playerPos[1]-y), (playerPos[0]-x)));
 
 		
@@ -124,7 +125,7 @@ public class ShieldedClone extends MovingObject {
 	
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.PLAYER].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.PLAYER].getTextureId());
 		
 		super.drawSelf(gl);
 	}

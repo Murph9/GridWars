@@ -10,7 +10,7 @@ public class HomingButterfly extends HomingObject {
 
 	public final static ArrayList<HomingButterfly> ALL_THIS = new ArrayList<HomingButterfly>();
 	
-	public static final int MAX_SPEED = 5;
+	public static final int MAX_SPEED = 6;
 	
 	HomingButterfly(double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
@@ -54,7 +54,7 @@ public class HomingButterfly extends HomingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.BUTTERFLY].getTextureId()); //get id of the dot file
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BUTTERFLY].getTextureId()); //get id of the dot file
     	super.drawSelf(gl);
 	}
 

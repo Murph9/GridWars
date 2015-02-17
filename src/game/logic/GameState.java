@@ -71,7 +71,7 @@ public class GameState {
 		totalKills++;
 		if (kills >= killSteps[multiplier-1]) {
 			multiplier = Math.min(multiplier+1, 9); //please don't ever get this much (might break)
-			TextPopup s = new TextPopup(GameEngine.WHITE, "Multiplier:"+multiplier, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, "Multiplier:"+multiplier, 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 			heighestMulti = Math.max(multiplier, heighestMulti);
 		}
 	}
@@ -89,7 +89,7 @@ public class GameState {
 	public void useBomb() {
 		if (bombCount > 0) {
 			bombCount--;
-			GameEngine.killAll(null, true);
+			Engine.killAll(null, true);
 			kills = 0;
 			multiplier = 1;
 			hasShield = 2;
@@ -117,37 +117,37 @@ public class GameState {
 	//technically setters:
 	public void incBulletSpeed() {
 		bulletSpeed += SPEED_INC;
-		TextPopup s = new TextPopup(GameEngine.WHITE, "Bullet Speed++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+		TextPopup s = new TextPopup(Engine.WHITE, "Bullet Speed++", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		powerupCount++;
 	}
 	public void incBulletCount() {
 		if (bulletCount > 3) {
 			score += 2000; //in the gridwars wiki
-			TextPopup s = new TextPopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, 2000, 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		} else {
 			bulletCount++;
 			powerupCount++;
-			TextPopup s = new TextPopup(GameEngine.WHITE, "Bullet Count++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, "Bullet Count++", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		}
 	}
 	public void incBombCount() {
 		if (bombCount > 8) {
 			score += 2000;
-			TextPopup s = new TextPopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, 2000, 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		} else {
 			bombCount++;
 			powerupCount++;
-			TextPopup s = new TextPopup(GameEngine.WHITE, "Bomb++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, "Bomb++", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		}
 	}
 	public void incLives() {
 		if (lives > 8) {
 			score += 2000;
-			TextPopup s = new TextPopup(GameEngine.WHITE, 2000, 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, 2000, 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		} else {
 			lives++;
 			powerupCount++;
-			TextPopup s = new TextPopup(GameEngine.WHITE, "Life++", 2, GameEngine.getPlayerPos()[0]-0.5, GameEngine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, "Life++", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		}
 	}
 

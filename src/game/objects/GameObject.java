@@ -77,8 +77,8 @@ public class GameObject {
     public void amHit(boolean ifPoints) {
         ALL_OBJECTS.remove(this);
         if (ifPoints) {
-        	GameEngine.gameState.addKill();
-        	GameEngine.gameState.addScore(score);
+        	Engine.gameState.addKill();
+        	Engine.gameState.addScore(score);
         	
         	TextPopup s = new TextPopup(this.colour, score, 1, x-(size/2), y-0.1);
         	s.angle = 0; //because annoying warning is gone now that ive used it :P

@@ -22,7 +22,21 @@ public class SplitingSquare extends HomingObject {
 		//rotation direction
 	
 	public SplitingSquare() {
-		this(1, GameEngine.RED, 0, 1, true);
+		this(1, Engine.RED, 0, 1, true);
+	}
+	
+	private SplitingSquare(double x, double y, double angle, boolean rotDirection, double offset) {
+		super(0.7, Engine.RED, SplitingSquare.MAX_SPEED);
+		
+		orbitAngle = angle;
+		orbitRadius = 0.8;
+		isPosOrbit = rotDirection;
+		ALL_THIS.add(this);
+		
+		hasSplit = true;
+		score = 100;
+		this.x = x+Math.cos(angle+offset)*0.8;
+		this.y = y+Math.sin(angle+offset)*0.8;
 	}
 	
 	/**if the size is 1 is a 'parent square', else its a 'child square'
@@ -38,6 +52,7 @@ public class SplitingSquare extends HomingObject {
 		ALL_THIS.add(this);
 		
 		score = 50; //starts big then changes score to small when hit once
+		SoundEffect.SHOOT.play(10, 0);
 	}
 	
 	public double getOrbitAngle() {
@@ -65,17 +80,20 @@ public class SplitingSquare extends HomingObject {
 		if (!hasSplit) {
 			double angle = this.getOrbitAngle();
 			
-			SplitingSquare sA = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, false);
-			sA.setPosition(new double[] {x+Math.cos(angle+60)*0.6, y+Math.sin(angle+60)*0.7});
-			sA.setSplitStatus();
-			
-			SplitingSquare sB = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
-			sB.setPosition(new double[] {x+Math.cos(angle-30)*0.6, y+Math.sin(angle-30)*0.7});
-			sB.setSplitStatus();
-			
-			SplitingSquare sC = new SplitingSquare(0.75, GameEngine.RED, angle, 0.7, true);
-			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.6, y+Math.sin(angle-120)*0.7});
-			sC.setSplitStatus();
+			new SplitingSquare(x, y, angle, false, 60);
+			new SplitingSquare(x, y, angle, true, -30);
+			new SplitingSquare(x, y, angle, true, -120);
+//			SplitingSquare sA = new SplitingSquare(0.7, GameEngine.RED, angle, 0.8, false);
+//			sA.setPosition(new double[] {x+Math.cos(angle+60)*0.6, y+Math.sin(angle+60)*0.7});
+//			sA.setSplitStatus();
+//			
+//			SplitingSquare sB = new SplitingSquare(0.7, GameEngine.RED, angle, 0.8, true);
+//			sB.setPosition(new double[] {x+Math.cos(angle-30)*0.6, y+Math.sin(angle-30)*0.7});
+//			sB.setSplitStatus();
+//			
+//			SplitingSquare sC = new SplitingSquare(0.7, GameEngine.RED, angle, 0.8, true);
+//			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.6, y+Math.sin(angle-120)*0.7});
+//			sC.setSplitStatus();
 		}
 		ALL_THIS.remove(this);
 	}
@@ -114,7 +132,7 @@ public class SplitingSquare extends HomingObject {
 	}
 
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SQUARE].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SQUARE].getTextureId());
 		
 		if (hasSplit) {
 			gl.glTranslated(Math.cos(orbitAngle)*orbitRadius, Math.sin(orbitAngle)*orbitRadius, 0);

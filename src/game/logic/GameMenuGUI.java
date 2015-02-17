@@ -65,13 +65,13 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		////////////////////////////////////////////////
 		////Game Mode
 		JRadioButton buttonEasy = new JRadioButton("Easy");
-		buttonEasy.setActionCommand(GameEngine.EASY_D);
+		buttonEasy.setActionCommand(Engine.EASY_D);
 		
 		JRadioButton buttonMed = new JRadioButton("Med");
-		buttonMed.setActionCommand(GameEngine.MEDIUM_D);
+		buttonMed.setActionCommand(Engine.MEDIUM_D);
 		
 		JRadioButton buttonHard = new JRadioButton("Hard");
-		buttonHard.setActionCommand(GameEngine.HARD_D);
+		buttonHard.setActionCommand(Engine.HARD_D);
 		
 		group = new ButtonGroup();
 		group.add(buttonEasy);
@@ -255,7 +255,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 		menuPanel.add(settingsPanel, gbLayout);
 
 		////Scoreboard
-		leaderBoard = FileHelper.getLeaderBoard(GameEngine.MEDIUM_D);
+		leaderBoard = FileHelper.getLeaderBoard(Engine.MEDIUM_D);
 		
 		gbLayout.gridx = 1;
 		gbLayout.gridy = 1;

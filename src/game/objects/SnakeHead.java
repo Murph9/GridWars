@@ -1,5 +1,6 @@
 package game.objects;
 import game.logic.*;
+
 import java.util.Random;
 
 import javax.media.opengl.GL2;
@@ -20,7 +21,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	private static int ANGLE_VEL = 90;
 	
 	public SnakeHead() {
-		this(0.8, GameEngine.YELLOW, 24);
+		this(0.8, Engine.YELLOW, 24);
 	}
 	
 	SnakeHead(double size, double[] colour, int length) {
@@ -32,6 +33,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 			length = 10; //set minimum length to be 10, just because they look funny otherwise
 		}
 		
+		SoundEffect.SHOOT.play(10, 0);
 		after = new SnakeBody(size*0.85, colour, this, length);
 	}
 	
@@ -51,20 +53,20 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		x += dx*dt;
 		y += dy*dt;
 		
-		if (x > GameEngine.settings.getBoardWidth()-(size/2)) {
+		if (x > Engine.settings.getBoardWidth()-(size/2)) {
 			curChangeRate = 100;
-			x = GameEngine.settings.getBoardWidth()-(size/2);
-		} else if (x < -GameEngine.settings.getBoardWidth()+(size/2)) {
+			x = Engine.settings.getBoardWidth()-(size/2);
+		} else if (x < -Engine.settings.getBoardWidth()+(size/2)) {
 			curChangeRate = 100;
-			x = -GameEngine.settings.getBoardWidth()+(size/2);
+			x = -Engine.settings.getBoardWidth()+(size/2);
 		}
 		
-		if (y > GameEngine.settings.getBoardHeight()-(size/2)) {
+		if (y > Engine.settings.getBoardHeight()-(size/2)) {
 			curChangeRate = 100;
-			y = GameEngine.settings.getBoardHeight()-(size/2);
-		} else if (y < -GameEngine.settings.getBoardHeight()+(size/2)) {
+			y = Engine.settings.getBoardHeight()-(size/2);
+		} else if (y < -Engine.settings.getBoardHeight()+(size/2)) {
 			curChangeRate = 100;
-			y = -GameEngine.settings.getBoardHeight()+(size/2);
+			y = -Engine.settings.getBoardHeight()+(size/2);
 		}
 
 		if (curAngleChange) { //pick a direction 
@@ -101,7 +103,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, GameEngine.textures[GameEngine.SNAKEHEAD].getTextureId());
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SNAKEHEAD].getTextureId());
 		super.drawSelf(gl);
 	}
 

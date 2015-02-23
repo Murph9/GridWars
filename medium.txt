@@ -1,10 +1,10 @@
 650480	 auto_Murph	 4464
+163366	 auto_Murph	 1746
 154250	 auto_Murph	 1082
 139553	 auto_Murph	 1704
 115900	 auto_Murph	 881
+104110	 auto_Murph	 1084
 100000	 AAA	 1
+99460	 auto_Murph	 1603
 90000	 BBB	 1
 88978	 auto_Murph	 996
-88000	 auto_Murph	 1396
-83960	 auto_Murph	 1300
-80000	 CCC	 1

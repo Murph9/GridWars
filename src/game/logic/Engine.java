@@ -17,7 +17,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 	//resetGame() is note able in giving all the inital conditions for the different difficulties
 
 //TODO Idea for gameplay slow down when blackhole is exploded from numing (mixed with a overpowering sound to help)
-//TODO GAME SCALE SHOULD BE CONSTANT!!!
+//TODO GAME SCALE SHOULD BE CONSTANT!!! when changing screen size
 
 
 /**
@@ -173,8 +173,8 @@ public class Engine implements GLEventListener {
 		// set the view matrix based on the camera position
 		myCamera.setView(gl);
 		
-		Mouse.theMouse.update(gl);
-		playerPos = player.getPosition();
+		Mouse.theMouse.update(gl); //only update method allowed outside of update(), requires gl object
+		playerPos = player.getPosition(); //by extension these 2 other update line need to be here
 		mousePos = Mouse.theMouse.getPosition();
 		
 		if (killCountdown > 0) { //if in killscreen
@@ -463,16 +463,16 @@ public class Engine implements GLEventListener {
 		
 		
 		if (particles) {
-			double pCount = 40; //default (was 100, caused bad lag)
-			pCount = 40*((double)Engine.settings.getParticleCount()/100.0f); //% total particles
+			double pCount = 40*((double)Engine.settings.getParticleCount()/100.0f); //% total particles
 			
 			for (int i = 0; i < pCount; i++) {
 				for (int j = 0; j < 20; j++) {
 					MovingObject p = new Particle(2, Engine.WHITE, 0.7, Particle.DEFAULT_DRAG);
 					p.x = playerPos[0];
 					p.y = playerPos[1];
-					p.dx = Engine.rand.nextDouble()*Math.cos(360*i)*50;
-					p.dy = Engine.rand.nextDouble()*Math.sin(360*i)*50;
+					double temp = 180*Engine.rand.nextInt(360)/Math.PI;
+					p.dx = Engine.rand.nextDouble()*Math.cos(temp)*50;
+					p.dy = Engine.rand.nextDouble()*Math.sin(temp)*50;
 				}
 			}
 		}

@@ -47,30 +47,43 @@ public class SpawnHandler {
 	
 	private double temp;
 	
+	
+	//is there a better way?
 	private int swarmCount1;
 	private int swarmType1;
 	private int swarmLocation1;
 	
+	private int swarmCount2;
+	private int swarmType2;
+	private int swarmLocation2;
+	
+	private int swarmCount3;
+	private int swarmType3;
+	private int swarmLocation3;
+	
+	private int swarmCount4;
+	private int swarmType4;
+	private int swarmLocation4;
+	
 	public SpawnHandler(String difficulty) {
 		this.diff = difficulty;
 		this.random = new Random();
-	}
+ 	}
 	
 
 	public void update(double dt) {
 		/* Logic for this method:
 		 * Get time.
 		 * mod time using % operator by various things (see comments at end of file)
-		 * spawn things
-		 *
+		 * spawn!
 		 */
 		totalTime = (long)(Engine.gameState.getTime()*100); //this line retrieves the time and makes it back to miliseconds
 		frameCount++;
 		
 		if ((frameCount/350) % 2 == 0) {
 			if (frameCount % 33 == 0) {
-				GameObject o = createEnemy(pickEnemy(frameCount), 0.2);
-				spawnCorner(o); //choose corner with "random.nextInt(13)"
+				createEnemy(pickEnemy(frameCount), 0.2, random.nextInt(13));
+				//choose corner with "random.nextInt(13)"
 			}
 		}
 
@@ -84,39 +97,77 @@ public class SpawnHandler {
 			if (type == 5) type = 3+ random.nextInt(3); //3,4,5
 			if (type == 8) type = 9;
 			
-			Spawner s = createSpawner(type, count, rate);
-			spawnCorner(s);
+			createSpawner(type, count, rate, random.nextInt(13));
 		}
 		
-//		'whole bunch //- create swarm: corner (either one corner, 2 corners or all), kind cnt/3, count min(rand(15, 24+(cnt/750))*2, 100)
-//		If cnt Mod 777 = 0
-//			sp_c = Rand(0,12)
-//			sp_x = EnemyType(cnt/3)
-//			sp_t = Rand(15,24+(cnt/750))*2
-//			If sp_t > 100 Then sp_t = 100
-//		EndIf
-		
+		////swarm 1 spawn:
 		if (frameCount % 777 == 0) {
 			swarmLocation1 = random.nextInt(13);
 			swarmType1 = pickEnemy(frameCount/3);
 			swarmCount1 = (15 + random.nextInt(25+((int)(frameCount/750))))*2;
+			if (swarmCount1 > 100) swarmCount1 = 100;
 		}
-		
+		////swarm 1 generate
 		if (swarmCount1 > 0) {
 			swarmCount1--;
 			if (swarmCount1 % 2 == 0) {
-				GameObject o = createEnemy(pickEnemy(swarmType1), 0.24); //nice number
-				spawnCorner(o);
+				createEnemy(swarmType1, 0.24, swarmLocation1); //0.24 is a nice number
+			}
+		}
+		
+		////swarm 2 spawn:
+		if (frameCount % 1850 == 0) {
+			swarmLocation2 = random.nextInt(13);
+			swarmType2 = pickEnemy(frameCount/2);
+			swarmCount2 = (15 + random.nextInt(25+((int)(frameCount/750))))*2;
+			if (swarmCount2 > 175) swarmCount2 = 175;
+		}
+		////swarm 2 generate:
+		if (swarmCount2 > 0) {
+			swarmCount2--;
+			if (swarmCount2 % 2 == 0) {
+				createEnemy(swarmType2, 0.24, swarmLocation2);
 			}
 		}
 	
+		////swarm 3 spawn:
+		if (frameCount % 2900 == 0) {
+			swarmLocation3 = 5; //all corners
+			swarmType3 = pickEnemy(frameCount/2);
+			swarmCount3 = (20 + random.nextInt(40+((int)(frameCount/750))))*3;
+			if (swarmCount3 > 300) swarmCount3 = 300;
+		}
+		////swarm 3 generate:
+		if (swarmCount3 > 0) {
+			swarmCount3--;
+			if (swarmCount3 % 3 == 0) {
+				createEnemy(swarmType3, 0.2, swarmLocation3); //slightly faster spawn time
+			}
+		}
+		
+		
+		////swarm 4 spawn: (rare)
+		if ((frameCount % 3333 == 0) && (frameCount/4000  % 2 == 1)) {
+			swarmLocation4 = random.nextInt(12); //no spawning around player
+			swarmType4 = pickEnemy(frameCount/2);
+			swarmCount4 = (20 + random.nextInt(40+((int)(frameCount/750))))*3;
+			if (swarmCount4 > 300) swarmCount4 = 300;
+		}
+		////swarm 4 generate:
+		if (swarmCount4 > 0) {
+			swarmCount4--;
+			if (swarmCount4 % 3 == 0) {
+				createEnemy(swarmType4, 0.2, swarmLocation4);
+			}
+		}
 	}
-	
+
 	/**Uses the frameCount value to pick from a list of objects. 
 	 * @return Number from 0 to 8 (representing the objects)
 	 */
 	private int pickEnemy(long frameCount) {
 		int s = 0;
+		
 		int level = (int) (frameCount/1100);
 		if (level > 8) level = 8;
 		
@@ -134,7 +185,7 @@ public class SpawnHandler {
 		return s;
 	}
 	
-	private GameObject createEnemy(int enemyType, double spawnDelay) {
+	private void createEnemy(int enemyType, double spawnDelay, int location) {
 		GameObject o = null;
 		switch (enemyType) {
 		case 0: 	o = new SimpleSpinner(spawnDelay); break;
@@ -148,34 +199,91 @@ public class SpawnHandler {
 		case 8:		o = new ShieldedClone(spawnDelay); break;
 		case 9:		o = new HomingButterfly(spawnDelay); break;
 		}
-		return o;
+		chooseSpawn(o, location);
 	}
 	
 	
-	private Spawner createSpawner(int spawnType, int count, double rate) {
-		return new Spawner(0.2, spawnType, count, rate);
+	private void createSpawner(int spawnType, int count, double rate, int location) {
+		GameObject o = new Spawner(0.2, spawnType, count, rate);
+		chooseSpawn(o, location);
 	}
 	
 	
-    private void spawnCorner(GameObject obj) {
-    	//spawn in a range near the side
-    	obj.x = (random.nextInt(2)*2-1)*(Engine.settings.getBoardWidth()-obj.size);
-    	obj.y = (random.nextInt(2)*2-1)*(Engine.settings.getBoardHeight()-obj.size);
-    }
-    
-    private void spawnRandom(GameObject obj) {
-    	obj.x = random.nextInt(Engine.settings.getBoardWidth())*2 -Engine.settings.getBoardWidth();
-    	obj.y = random.nextInt(Engine.settings.getBoardHeight())*2 -Engine.settings.getBoardHeight();
-    }
-    
-    private void spawnPlayer(GameObject obj) {
-    	double[] playerPos = Engine.player.getPosition();
-    	double angle = random.nextDouble()*Math.PI*2;
-    	obj.x = playerPos[0]+(Math.cos(angle)*5);
-    	obj.y = playerPos[1]+(Math.sin(angle)*5);
-    	
-    	//TODO check for spawning outside play field in here
-    }
+	/**Spawns/moves the object depending on the input location (int 0-12) 
+	 * @param o
+	 */
+	private void chooseSpawn(GameObject o, int location) {
+		boolean bool = random.nextBoolean();
+		//these options are for picking many corners with the same number
+			//e.g. 6 will alternate between corners 1 and 2 (good for swarms)
+		
+		//TODO handle spawning directly on player (as in try again)
+		switch (location) {
+		case 5: //random corner
+			location = random.nextInt(4) + 1; //1,2,3,4
+			break;
+		case 6: //corners 1,2
+			if (bool) location = 1;
+			else location = 2;
+			break;
+		case 7: //c 2,3
+			if (bool) location = 2;
+			else location = 3;
+			break;
+		case 8: //c 3,4
+			if (bool) location = 3;
+			else location = 4;
+			break;
+		case 9: //c 1,3
+			if (bool) location = 1;
+			else location = 3;
+			break;
+		case 10://c 1,4
+			if (bool) location = 1;
+			else location = 4;
+			break;
+		case 11://c 2,4
+			if (bool) location = 2;
+			else location = 4;
+			break;
+		}
+
+		//actually place it in the corner (or random or player)
+		switch (location) {
+		case 0: //random spawn
+			o.x = 2*(random.nextInt(Engine.settings.getBoardWidth())-Engine.settings.getBoardWidth()/2);
+			o.y = 2*(random.nextInt(Engine.settings.getBoardHeight())-Engine.settings.getBoardHeight()/2);
+			break;
+		case 1: //corners 1,2,3,4
+			o.x = Engine.settings.getBoardWidth()-o.size;
+			o.y = Engine.settings.getBoardHeight()-o.size;
+			break;
+		case 2:
+			o.x = -Engine.settings.getBoardWidth()+o.size;
+			o.y = -Engine.settings.getBoardHeight()+o.size;
+			break;
+		case 3:
+			o.x = -Engine.settings.getBoardWidth()+o.size;
+			o.y = Engine.settings.getBoardHeight()-o.size;
+			break;
+		case 4:
+			o.x = Engine.settings.getBoardWidth()-o.size;
+			o.y = -Engine.settings.getBoardHeight()+o.size;
+			break;
+		case 12:
+			double[] playerPos = Engine.player.getPosition();
+			while (true) {
+				double angle = random.nextDouble()*Math.PI*2;
+		    	o.x = playerPos[0]+(Math.cos(angle)*5);
+		    	o.y = playerPos[1]+(Math.sin(angle)*5);
+		    	if (o.x < Engine.settings.getBoardWidth() && o.x > -Engine.settings.getBoardWidth() && 
+		    			o.y < Engine.settings.getBoardHeight() && o.y > -Engine.settings.getBoardHeight()) {
+		    		break;
+		    	}
+			}
+	    	break;
+		}
+	}
 }
 
 
@@ -183,10 +291,7 @@ public class SpawnHandler {
 
 //http://gamedev.stackexchange.com/questions/69376/how-can-i-scale-the-number-and-challenge-of-enemies-in-an-attack-wave-as-the-gam
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
- * Note below is from:
- * http://maxgames.googlecode.com/svn/trunk/vectorzone/vectorzone.bmx
- */
+/**http://maxgames.googlecode.com/svn/trunk/vectorzone/vectorzone.bmx*/
 
 /*
 Function Spawn(cnt:Int) //cnt = total frames of game, note they used 50 fps not 60...

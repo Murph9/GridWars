@@ -46,11 +46,11 @@ public class GameState {
 		this.lastRecord = FileHelper.getBestScore(difficulty);
 		this.difficulty = difficulty;
 		
-		lives = 3;
+		lives = 2;
 		multiplier = 1;
 		
 		bombCount = 3;
-		bulletCount = 4;
+		bulletCount = 2;
 		bulletSpeed = 1; //how to change the intial bullet speed
 	}
 	

@@ -47,6 +47,10 @@ public class SpawnHandler {
 	
 	private double temp;
 	
+	private int swarmCount1;
+	private int swarmType1;
+	private int swarmLocation1;
+	
 	public SpawnHandler(String difficulty) {
 		this.diff = difficulty;
 		this.random = new Random();
@@ -65,82 +69,98 @@ public class SpawnHandler {
 		
 		if ((frameCount/350) % 2 == 0) {
 			if (frameCount % 33 == 0) {
-				GameObject o = createEnemy(pickEnemy(), 0.2);
+				GameObject o = createEnemy(pickEnemy(frameCount), 0.2);
 				spawnCorner(o); //choose corner with "random.nextInt(13)"
 			}
 		}
+
+		if (frameCount % 444 == 0) {
+			int count =  16 + random.nextInt(Math.min((int)(frameCount/2000) + 1, 16));
+			double rate = 0.8 + random.nextInt(60)/100  - (double)(frameCount)/100000;
+			if (rate < 80) 
+				rate = 80;
+
+			int type = pickEnemy(frameCount/4) + 1;
+			if (type == 5) type = 3+ random.nextInt(3); //3,4,5
+			if (type == 8) type = 9;
+			
+			Spawner s = createSpawner(type, count, rate);
+			spawnCorner(s);
+		}
 		
+//		'whole bunch //- create swarm: corner (either one corner, 2 corners or all), kind cnt/3, count min(rand(15, 24+(cnt/750))*2, 100)
+//		If cnt Mod 777 = 0
+//			sp_c = Rand(0,12)
+//			sp_x = EnemyType(cnt/3)
+//			sp_t = Rand(15,24+(cnt/750))*2
+//			If sp_t > 100 Then sp_t = 100
+//		EndIf
 		
+		if (frameCount % 777 == 0) {
+			swarmLocation1 = random.nextInt(13);
+			swarmType1 = pickEnemy(frameCount/3);
+			swarmCount1 = (15 + random.nextInt(25+((int)(frameCount/750))))*2;
+		}
+		
+		if (swarmCount1 > 0) {
+			swarmCount1--;
+			if (swarmCount1 % 2 == 0) {
+				GameObject o = createEnemy(pickEnemy(swarmType1), 0.24); //nice number
+				spawnCorner(o);
+			}
+		}
+	
 	}
 	
 	/**Uses the frameCount value to pick from a list of objects. 
-	 * @return Number from 0 to 9 (representing the objects)
+	 * @return Number from 0 to 8 (representing the objects)
 	 */
-	private int pickEnemy() {
+	private int pickEnemy(long frameCount) {
 		int s = 0;
-
 		int level = (int) (frameCount/1100);
-//		int level = (int) (frameCount/100);
 		if (level > 8) level = 8;
 		
 		switch(level) {
-		case 0:
-			s = 0;   break;
-		case 1:
-			s = random.nextInt(2);   break;
-		case 2:
-    		s = random.nextInt(3);   break;
-    	case 3:
-    		s = random.nextInt(4);   break;
-    	case 4:
-    		s = random.nextInt(5);   break;
-    	case 5: 
-    		s = random.nextInt(6);   break;
-    	case 6:
-    		s = random.nextInt(7);   break;
-    	case 7:
-    		s = random.nextInt(8);   break;
-    	case 8:
-    		s = random.nextInt(10);   break; //the orginal code skips here as well...
+		case 0:		s = 0;   break;
+		case 1:		s = random.nextInt(2);   break;
+		case 2:		s = random.nextInt(3);   break;
+		case 3:		s = random.nextInt(4);   break;
+		case 4:		s = random.nextInt(5);   break;
+		case 5:		s = random.nextInt(6);   break;
+		case 6:		s = random.nextInt(7);   break;
+		case 7:		s = random.nextInt(8);   break;
+		case 8:		s = random.nextInt(10);  break; //the orginal code skips to here as well...
 		}
-		
 		return s;
 	}
-	
 	
 	private GameObject createEnemy(int enemyType, double spawnDelay) {
 		GameObject o = null;
 		switch (enemyType) {
-		case 0:
-			o = new SimpleSpinner(spawnDelay); break;
-		case 1:
-			o = new HomingDiamond(spawnDelay); break;
-		case 2:
-			o = new ShySquare(spawnDelay); break;
-		case 3:
-			o = new SplitingSquare(spawnDelay); break;
-		case 4:
-			o = new HomingCircle(spawnDelay); break;
-		case 5:
-			o = new BlackHole(spawnDelay); break;
-		case 6:
-			o = new ConnectedTriangle(spawnDelay); break;
-		case 7:
-			o = new SnakeHead(spawnDelay); break;
-		case 8:
-			o = new ShieldedClone(spawnDelay); break;
-		case 9:
-			o = new HomingButterfly(spawnDelay); break;
+		case 0: 	o = new SimpleSpinner(spawnDelay); break;
+		case 1:		o = new HomingDiamond(spawnDelay); break;
+		case 2:		o = new ShySquare(spawnDelay); break;
+		case 3:		o = new SplitingSquare(spawnDelay); break;
+		case 4:		o = new HomingCircle(spawnDelay); break;
+		case 5:		o = new BlackHole(spawnDelay); break;
+		case 6:		o = new ConnectedTriangle(spawnDelay); break;
+		case 7:		o = new SnakeHead(spawnDelay); break;
+		case 8:		o = new ShieldedClone(spawnDelay); break;
+		case 9:		o = new HomingButterfly(spawnDelay); break;
 		}
-		
 		return o;
 	}
-
+	
+	
+	private Spawner createSpawner(int spawnType, int count, double rate) {
+		return new Spawner(0.2, spawnType, count, rate);
+	}
+	
 	
     private void spawnCorner(GameObject obj) {
     	//spawn in a range near the side
-    	obj.x = (random.nextInt(2)*2-1)*(Engine.settings.getBoardWidth()-0.5);
-    	obj.y = (random.nextInt(2)*2-1)*(Engine.settings.getBoardHeight()-0.5);
+    	obj.x = (random.nextInt(2)*2-1)*(Engine.settings.getBoardWidth()-obj.size);
+    	obj.y = (random.nextInt(2)*2-1)*(Engine.settings.getBoardHeight()-obj.size);
     }
     
     private void spawnRandom(GameObject obj) {

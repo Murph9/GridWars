@@ -18,13 +18,14 @@ public class Spawner extends GameObject {
 	 * @param health Number of shots to kill it
 	 * @param rate How often in seconds it shoots
 	 */
-	public Spawner(int type, int health, int rate) {
+	public Spawner(double spawnTimer, int type, int health, double rate) {
 		size = 1;
 		this.health = health;
 		countDown = rate;
 		this.rate = rate;
 		this.type = type;
 		
+		this.spawnTimer = spawnTimer;
 		score = 200; //just big ok, its meant to be 3 times the original object
 	}
 	
@@ -33,6 +34,11 @@ public class Spawner extends GameObject {
 	}
 	
 	public void update(double dt) {
+		if (spawnTimer > 0) {
+			spawnTimer -= dt;
+			return;
+		}
+		
 		countDown -= dt;
 		if (countDown < 0) {
 			countDown = rate;

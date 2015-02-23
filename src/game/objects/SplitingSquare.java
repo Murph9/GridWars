@@ -21,8 +21,8 @@ public class SplitingSquare extends HomingObject {
 	private boolean isPosOrbit;
 		//rotation direction
 	
-	public SplitingSquare() {
-		this(1, Engine.RED, 0, 1, true);
+	public SplitingSquare(double spawnTimer) {
+		this(spawnTimer, 1, Engine.RED, 0, 1, true);
 	}
 	
 	private SplitingSquare(double x, double y, double angle, boolean rotDirection, double offset) {
@@ -43,7 +43,7 @@ public class SplitingSquare extends HomingObject {
 	 * The angle is the intial angle the square starts the rotation about the point
 	 * And the radius is how big of a circle it rotates about the centre
 	 */
-	SplitingSquare(double size, double[] colour, double angle, double radius, boolean rotDirection) {
+	SplitingSquare(double spawnTimer, double size, double[] colour, double angle, double radius, boolean rotDirection) {
 		super(size, colour, SplitingSquare.MAX_SPEED);
 		hasSplit = false;
 		orbitAngle = angle;
@@ -51,6 +51,7 @@ public class SplitingSquare extends HomingObject {
 		isPosOrbit = rotDirection;
 		ALL_THIS.add(this);
 		
+		this.spawnTimer = spawnTimer;
 		score = 50; //starts big then changes score to small when hit once
 		SoundEffect.SHOOT.play(10, 0);
 	}
@@ -83,17 +84,6 @@ public class SplitingSquare extends HomingObject {
 			new SplitingSquare(x, y, angle, false, 60);
 			new SplitingSquare(x, y, angle, true, -30);
 			new SplitingSquare(x, y, angle, true, -120);
-//			SplitingSquare sA = new SplitingSquare(0.7, GameEngine.RED, angle, 0.8, false);
-//			sA.setPosition(new double[] {x+Math.cos(angle+60)*0.6, y+Math.sin(angle+60)*0.7});
-//			sA.setSplitStatus();
-//			
-//			SplitingSquare sB = new SplitingSquare(0.7, GameEngine.RED, angle, 0.8, true);
-//			sB.setPosition(new double[] {x+Math.cos(angle-30)*0.6, y+Math.sin(angle-30)*0.7});
-//			sB.setSplitStatus();
-//			
-//			SplitingSquare sC = new SplitingSquare(0.7, GameEngine.RED, angle, 0.8, true);
-//			sC.setPosition(new double[] {x+Math.cos(angle-120)*0.6, y+Math.sin(angle-120)*0.7});
-//			sC.setSplitStatus();
 		}
 		ALL_THIS.remove(this);
 	}

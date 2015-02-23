@@ -20,11 +20,11 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 	private int curChangeRate = 0;
 	private static int ANGLE_VEL = 90;
 	
-	public SnakeHead() {
-		this(0.8, Engine.YELLOW, 24);
+	public SnakeHead(double spawnTimer) {
+		this(spawnTimer, 0.8, Engine.YELLOW, 24);
 	}
 	
-	SnakeHead(double size, double[] colour, int length) {
+	SnakeHead(double spawnTimer, double size, double[] colour, int length) {
 		super(size, colour);
 		score = 100;
 		
@@ -32,6 +32,7 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		if (length < 10) {
 			length = 10; //set minimum length to be 10, just because they look funny otherwise
 		}
+		this.spawnTimer = spawnTimer;
 		
 		SoundEffect.SHOOT.play(10, 0);
 		after = new SnakeBody(size*0.85, colour, this, length);

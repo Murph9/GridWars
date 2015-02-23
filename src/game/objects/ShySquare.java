@@ -14,14 +14,16 @@ public class ShySquare extends MovingObject {
 	private float dodgeRange = 6;
 	private float dodgeSpeed = 3f;
 	
-	public ShySquare() {
-		this(0.8, Engine.GREEN);
+	public ShySquare(double spawnTimer) {
+		this(spawnTimer, 0.8, Engine.GREEN);
 	}
 	
-	ShySquare(double size, double[] colour) {
+	ShySquare(double spawnTimer, double size, double[] colour) {
 		super(size, colour);
 		ALL_THIS.add(this);
 		score = 100;
+		
+		this.spawnTimer = spawnTimer;
 		SoundEffect.SHOOT.play(10, 0);
 	}
 

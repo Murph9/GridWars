@@ -6,7 +6,7 @@ import game.objects.*;
 
 /**Handles the current game state, including all information on scoring and powerups.
  * 
- * Used by the GameEngine
+ * Used by the Engine
  * Has a lot of read only variables and should only contain info for this game
  * @author Jake Murphy
  */

@@ -17,18 +17,21 @@ public class ConnectedTriangle extends MovingObject {
 	private int strength;
 	private int rotSpeed = 1;
 	
-	public ConnectedTriangle() {
-		this(1, Engine.ORANGE, null);
+	public ConnectedTriangle(double spawnTimer) {
+		this(spawnTimer, 1, Engine.ORANGE, null);
+		
 	}
 	
 	/**@param in Partner if spawned with one (for whatever reason), but they can find them later
 	 */
-	ConnectedTriangle(double size, double[] colour, ConnectedTriangle in) {
+	ConnectedTriangle(double spawnTimer, double size, double[] colour, ConnectedTriangle in) {
 		super(size, colour);
 		ALL_THIS.add(this);
 		strength = 0; //TODO, balance :D
 		partner = in;
 		score = 150;
+		this.spawnTimer = spawnTimer;
+
 		SoundEffect.SHOOT.play(10, 0);
 	}
 

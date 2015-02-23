@@ -26,11 +26,11 @@ public class BlackHole extends MovingObject {
 	
 	private int particleCount; //count of orbiting particles, visual indication of how many hits remaining = cool
 	
-	public BlackHole() {
-		this(1, Engine.RED);
+	public BlackHole(double spawnTimer) {
+		this(spawnTimer, 1, Engine.RED);
 	}
 	
-	BlackHole(double size, double[] colour) {
+	BlackHole(double spawnTimer, double size, double[] colour) {
 		super(size, colour); //this colour is ignored in the draw method
 		isInert = true;
 		numCount = 0;
@@ -38,7 +38,9 @@ public class BlackHole extends MovingObject {
 		hitPoints = 10; //starts with hit points of 10 shots to kill
 		ALL_THIS.add(this);
 		
+		this.spawnTimer = spawnTimer;
 		score = 150; //default score value
+		
 		SoundEffect.SHOOT.play(10, 0);
 	}
 	
@@ -67,7 +69,7 @@ public class BlackHole extends MovingObject {
 	@Override
 	public void update(double dt) {
 		if (this.spawnTimer > 0) {
-			this.spawnTimer -= dt*2; //decays twice as fast as normal objects
+			this.spawnTimer -= dt*2;
 		}
 		
 		x += dx*dt*MAX_SPEED;
@@ -176,13 +178,15 @@ public class BlackHole extends MovingObject {
 			
 		} else { // or explode
 			for (int i = 0; i < 20; i++) {
-				HomingButterfly a = new HomingButterfly(0.6, Engine.BLUE);
-				a.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
+				HomingButterfly a = new HomingButterfly(0);
+				a.x = x+Math.cos(i);
+				a.y = y+Math.sin(i);
 				a.spawnTimer = 0; //because you shouldn't be close to it anyway
 			}
 			for (int i = 0; i < 20; i++) {
-				HomingSeeker s = new HomingSeeker(0.6, Engine.PURPLE);
-				s.setPosition(new double[] {x+Math.cos(i),y+Math.sin(i)});
+				HomingCircle s = new HomingCircle(0);
+				s.x = x+Math.cos(i);
+				s.y = y+Math.sin(i);
 				s.spawnTimer = 0;
 			}
 			

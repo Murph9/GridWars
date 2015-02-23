@@ -6,20 +6,26 @@ import java.util.ArrayList;
 import javax.media.opengl.GL2;
 
 
-public class HomingSeeker extends HomingObject {
+public class HomingCircle extends HomingObject {
 
-	public final static ArrayList<HomingSeeker> ALL_THIS = new ArrayList<HomingSeeker>();
+	public final static ArrayList<HomingCircle> ALL_THIS = new ArrayList<HomingCircle>();
 	
 	public static final int MAX_SPEED = 5;
 	
-	HomingSeeker(double size, double[] colour) {
+	public HomingCircle(double spawnTimer) {
+		this(spawnTimer, 0.6, Engine.PURPLE);
+	}
+	
+	HomingCircle(double spawnTimer, double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);
 		score = 10;
+		
+		this.spawnTimer = spawnTimer;
 	}
 	
 	public void selfCol() {
-		for (HomingSeeker d: HomingSeeker.ALL_THIS) {
+		for (HomingCircle d: HomingCircle.ALL_THIS) {
 			if (!d.equals(this)) { //because that would be silly
 				double distX = d.x - x;
 				double distY = d.y - y;
@@ -53,8 +59,7 @@ public class HomingSeeker extends HomingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SEEKER].getTextureId()); //get id of the dot file
-		
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.CIRCLE].getTextureId()); //get id of the dot file
     	super.drawSelf(gl);
 	}
 

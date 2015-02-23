@@ -16,11 +16,11 @@ public class ShieldedClone extends MovingObject {
 	
 	private Shield shield;
 	
-	public ShieldedClone() {
-		this(1.1, Engine.RED);
+	public ShieldedClone(double spawnTimer) {
+		this(spawnTimer, 1.1, Engine.RED);
 	}
 	
-	ShieldedClone(double size, double[] colour) {
+	ShieldedClone(double spawnTimer, double size, double[] colour) {
 		super(size, colour);
 		lastAngle = (Engine.rand.nextDouble()*2-1)*180; //random angle between -180 and 180
 		
@@ -28,6 +28,7 @@ public class ShieldedClone extends MovingObject {
 		ALL_THIS.add(this);
 		
 		score = 100;
+		this.spawnTimer = spawnTimer;
 		SoundEffect.SHOOT.play(10, 0);
 	}
 

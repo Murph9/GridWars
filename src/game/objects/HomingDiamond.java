@@ -11,14 +11,16 @@ public class HomingDiamond extends HomingObject {
 	public final static ArrayList<HomingDiamond> ALL_THIS = new ArrayList<HomingDiamond>();
 	public static final int MAX_SPEED = 5;
 	
-	public HomingDiamond() {
-		this(1, Engine.LIGHT_BLUE);
+	public HomingDiamond(double spawnTimer) {
+		this(spawnTimer, 1, Engine.LIGHT_BLUE);
 	}
 	
-	HomingDiamond(double size, double[] colour) {
+	HomingDiamond(double spawnTimer, double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);
 		score = 50;
+		
+		this.spawnTimer = spawnTimer;
 	}
 	
 	//this works perfectly:, copy this if you need good collision of objects (not bouncing) 

@@ -4,7 +4,7 @@
 100000	 AAA	 1
 90000	 BBB	 1
 88978	 auto_Murph	 996
+88000	 auto_Murph	 1396
 80000	 CCC	 1
 70000	 DDD	 1
 67901	 auto_Murph	 1043
-60000	 EEE	 1

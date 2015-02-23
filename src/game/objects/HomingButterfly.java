@@ -12,10 +12,16 @@ public class HomingButterfly extends HomingObject {
 	
 	public static final int MAX_SPEED = 6;
 	
-	HomingButterfly(double size, double[] colour) {
+	public HomingButterfly(double spawnTimer) {
+		this(spawnTimer, 0.6, Engine.BLUE);
+	}
+	
+	HomingButterfly(double spawnTimer, double size, double[] colour) {
 		super(size, colour, MAX_SPEED);
 		ALL_THIS.add(this);
 		score = 10;
+		
+		this.spawnTimer = spawnTimer;
 	}
 	
 	public void selfCol() {
@@ -31,7 +37,6 @@ public class HomingButterfly extends HomingObject {
 			}
 		}
 	}
-	
 	
 	public void blackHole() {
 		//don't think it actually does anything in this

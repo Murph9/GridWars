@@ -8,12 +8,13 @@ import javax.media.opengl.GL2;
 public class Spawner extends GameObject {
 	
 	private int health; //hits remaining and size of the larger shape
+	
 	private double countDown; //count down until next spawn
 	private double rate; //the time interval of the spawns
-	private int type; //GameEngine.<type>
+	private int type; //Engine.<type>
 	
-	/**Makes a spawner that spawns objects of the given type (from GameEngine)
-	 * @param type Value of given object from GameEngine's public values
+	/**Makes a spawner that spawns objects of the given type (from Engine)
+	 * @param type Value of given object from Engine's public values
 	 * @param health Number of shots to kill it
 	 * @param rate How often in seconds it shoots
 	 */
@@ -24,11 +25,11 @@ public class Spawner extends GameObject {
 		this.rate = rate;
 		this.type = type;
 		
-		score = 200; //just big ok, yes its this cost
+		score = 200; //just big ok, its meant to be 3 times the original object
 	}
 	
 	public double getSize() {
-		return size + (double)health/75;
+		return size + (double)health/50;
 	}
 	
 	public void update(double dt) {
@@ -39,23 +40,23 @@ public class Spawner extends GameObject {
 			GameObject o = null;
 			switch(type) {
 			case Engine.SPINNER:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
 			case Engine.DIAMOND:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
 			case Engine.SQUARE:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
 			case Engine.CLONE:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
 			case Engine.SNAKEHEAD:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
 			case Engine.BUTTERFLY:
-				o = new SimpleSpinner(); 	break;
-			case Engine.SEEKER:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
+			case Engine.CIRCLE:
+				o = new SimpleSpinner(0); 	break;
 			case Engine.SHY:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
 			case Engine.TRIANGLE:
-				o = new SimpleSpinner(); 	break;
+				o = new SimpleSpinner(0); 	break;
 				
 			case Engine.PLAYER: 
 			case Engine.BULLET:
@@ -76,8 +77,10 @@ public class Spawner extends GameObject {
 				break;
 			}
 		
-			o.setPosition(new double[]{(Engine.rand.nextInt(2)*2-1)*(Engine.settings.getPixelWidth()-0.5), 
-					(Engine.rand.nextInt(2)*2-1)*(Engine.settings.getPixelHeight()-0.5)});
+			o.x = x;
+			o.y = y; //why the other stuff?
+//			o.x = (Engine.rand.nextInt(2)*2-1)*(Engine.settings.getPixelWidth()-0.5);
+//			o.y = (Engine.rand.nextInt(2)*2-1)*(Engine.settings.getPixelHeight()-0.5);
 		}
 	}
 	
@@ -98,7 +101,7 @@ public class Spawner extends GameObject {
 		Helper.square(gl);
 		
 		gl.glPushMatrix();
-		gl.glScaled(size + (double)health/75, size + (double)health/75, 1);
+		gl.glScaled(size + (double)health/50, size + (double)health/50, 1);
 		Helper.square(gl);
 		gl.glPopMatrix();
 		

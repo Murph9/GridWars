@@ -5,14 +5,16 @@ import java.util.ArrayList;
 
 
 public abstract class MovingObject extends GameObject {
-
+	public static final double DEFFAULT_SPAWN_TIMER = 0.6; //stock spawn time
+	
 	public double dx = 0; //default
 	public double dy = 0;
+	
 	
 	MovingObject(double size, double[] colour) {
 		this.colour = colour;
 		this.size = size;
-		this.spawnTimer = 0.6; //stock spawn time
+		this.spawnTimer = 0;
 	}
 
 	public void setSpeed(double x, double y) {

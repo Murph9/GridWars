@@ -21,7 +21,7 @@ public class TheGame {
 	/**The frame for the game*/
 	private JFrame gameFrame;
 	
-	private GLJPanel gamePanel; //used by the GameEngine
+	private GLJPanel gamePanel; //used by the Engine
 	private FPSAnimator animator;
 	private Engine engine;
 	
@@ -75,7 +75,7 @@ public class TheGame {
 		}
 		//if either of these don't work .get#####Height() won't work, then need to work
 		
-
+		GLProfile.initSingleton();
         GLProfile glprofile = GLProfile.getDefault();
 		GLCapabilities glcapabilities = new GLCapabilities(glprofile);
 		

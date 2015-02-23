@@ -13,11 +13,11 @@ public class SimpleSpinner extends MovingObject {
 	public int rotSpeed = 180; //if not set
 	private static final int MAX_SPEED = 3;
 	
-	public SimpleSpinner() {
-		this(1, Engine.PURPLE);
+	public SimpleSpinner(double spawnTimer) {
+		this(spawnTimer, 1, Engine.PURPLE);
 	}
 	
-	SimpleSpinner(double size, double[] colour) {
+	SimpleSpinner(double spawnTimer, double size, double[] colour) {
 		super(size, colour);
 		this.rotSpeed = (Engine.rand.nextInt(180)+90)*(Engine.rand.nextInt(2)*2-1);
 		dx = Engine.rand.nextDouble()*2-1; //rand between -1 and 1
@@ -25,6 +25,7 @@ public class SimpleSpinner extends MovingObject {
 		ALL_THIS.add(this);
 		
 		score = 25;
+		this.spawnTimer = spawnTimer;
 		SoundEffect.SHOOT.play(10, 0);
 	}
 

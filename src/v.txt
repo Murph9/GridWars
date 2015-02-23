@@ -1,0 +1,11 @@
+void main(void)
+{
+   vec4 a = gl_Vertex;
+
+	gl_TexCoord[0] = gl_MultiTexCoord0;
+
+   gl_Position = ftransform(); 
+   	//Transform the vertex position, apparently bad?
+   	//this needs to be edited to use a more appropriate method
+   gl_FrontColor = gl_Color;
+}

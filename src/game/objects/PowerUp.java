@@ -11,21 +11,21 @@ import javax.media.opengl.GL2;
  */
 public class PowerUp extends MovingObject {
 
-	public static final int SHOT_SPEED = 0, SHOT_COUNT = 1;
-	public static final int EXTRA_BOMB = 2, EXTRA_LIFE = 3;
-	public static final int SIDE_SHOT = 4, REAR_SHOT = 5;
-	public static final int TEMP_SHIELD = 6;
-	public static final int SUPER_SHOT = 7, BOUNCY_SHOT = 8;
-	
 	public final static ArrayList<PowerUp> ALL_THIS = new ArrayList<PowerUp>();
+	public final static int OBJECT_TIMEOUT = 10; //seconds 
 	
-	
+	private double decayTimer;
 	private int type;
 	
-	PowerUp (int type) {
+	public PowerUp (int type) {
 		super(1, Engine.WHITE);
+		
 		this.type = type;
+		this.score = 0;
+		this.decayTimer = OBJECT_TIMEOUT;
+		
 		ALL_THIS.add(this);
+		
 		SoundEffect.SHOOT.play(10, 0);
 	}
 	
@@ -34,19 +34,26 @@ public class PowerUp extends MovingObject {
 			spawnTimer -= dt;
 			return;
 		}
+		decayTimer -= dt;
+		if (decayTimer < 0) {
+			amHit(false); //just disappear
+		}
 		
-		x = dx*dt;
-		y = dy*dt;
+		x += dx*dt;
+		y += dy*dt;
+		
+		Helper.keepInside(this, Helper.BOUNCE);
 		
 		selfCol();
 		blackHole();
+		
+		double speed = dx*dx + dy*dy;
+		if (speed != 0 && speed > 1) {
+			dx /= speed;
+			dy /= speed;
+		}
 	}
-	
-	public void amHit(boolean ifPoints) {
-		super.amHit(ifPoints);
-		ALL_THIS.remove(this);
-	}
-	
+
 	public void selfCol() {
 		for (PowerUp p : PowerUp.ALL_THIS) {
 			if (!p.equals(this)) { //because that would be silly
@@ -59,52 +66,61 @@ public class PowerUp extends MovingObject {
 				}
 			}
 		}
-		
 	}
 	
-	public void kill() { //really should never gives points directly
+	//ifpoints = if player hit it
+	public void amHit(boolean ifPoints) {
+		super.amHit(false); //never gives points
+		ALL_THIS.remove(this);
+		if (ifPoints) {
+			used();
+		}
+	}
+	
+	public void used() {
 		super.amHit(false);
+		
 		switch (type) {
-		case SHOT_SPEED:
+		case Engine.EXTRA_SPEED:
 			Engine.gameState.incBulletSpeed();	break;
-		case SHOT_COUNT:
+		case Engine.EXTRA_BULLET:
 			Engine.gameState.incBulletCount();	break;
-		case EXTRA_BOMB:
+		case Engine.EXTRA_BOMB:
 			Engine.gameState.incBombCount();	break;
-		case EXTRA_LIFE:
+		case Engine.EXTRA_LIFE:
 			Engine.gameState.incLives();		break;
-		case SIDE_SHOT:
+		case Engine.SIDE_SHOT:
 			Engine.gameState.gotSideShot();		break;
-		case REAR_SHOT:
+		case Engine.REAR_SHOT:
 			Engine.gameState.gotRearShot();		break;
-		case TEMP_SHIELD:
+		case Engine.TEMP_SHIELD:
 			Engine.gameState.gotShield();		break;
-		case SUPER_SHOT:
+		case Engine.SUPER_SHOT:
 			Engine.gameState.gotSuperShot();	break;
-		case BOUNCY_SHOT:
+		case Engine.BOUNCY_SHOT:
 			Engine.gameState.gotBouncyShot();	break;
 		}
 	}
 	
 	public void drawSelf(GL2 gl) {
 		switch (type) {
-		case SHOT_SPEED:
+		case Engine.EXTRA_SPEED:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_SPEED].getTextureId()); 	break;
-		case SHOT_COUNT:
+		case Engine.EXTRA_BULLET:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_BULLET].getTextureId()); 	break;
-		case EXTRA_BOMB:
+		case Engine.EXTRA_BOMB:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_BOMB].getTextureId()); 	break;
-		case EXTRA_LIFE:
+		case Engine.EXTRA_LIFE:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_LIFE].getTextureId()); 	break;
-		case SIDE_SHOT:
+		case Engine.SIDE_SHOT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SIDE_SHOT].getTextureId()); 		break;
-		case REAR_SHOT:
+		case Engine.REAR_SHOT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.REAR_SHOT].getTextureId()); 		break;
-		case TEMP_SHIELD:
+		case Engine.TEMP_SHIELD:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.TEMP_SHIELD].getTextureId()); 	break;
-		case SUPER_SHOT:
+		case Engine.SUPER_SHOT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SUPER_SHOT].getTextureId()); 	break;
-		case BOUNCY_SHOT:
+		case Engine.BOUNCY_SHOT:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BOUNCY_SHOT].getTextureId()); 	break;
 		}
 		

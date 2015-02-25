@@ -89,7 +89,7 @@ public class GameState {
 	public void useBomb() {
 		if (bombCount > 0) {
 			bombCount--;
-			Engine.killAll(null, true);
+			Engine.killAll(null, true, false);
 			kills = 0;
 			multiplier = 1;
 			hasShield = 2;
@@ -123,7 +123,7 @@ public class GameState {
 	public void incBulletCount() {
 		if (bulletCount > 3) {
 			score += 2000; //in the gridwars wiki
-			TextPopup s = new TextPopup(Engine.WHITE, 2000, 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, "2000 added", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		} else {
 			bulletCount++;
 			powerupCount++;
@@ -133,7 +133,7 @@ public class GameState {
 	public void incBombCount() {
 		if (bombCount > 8) {
 			score += 2000;
-			TextPopup s = new TextPopup(Engine.WHITE, 2000, 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, "2000 added", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		} else {
 			bombCount++;
 			powerupCount++;
@@ -143,7 +143,7 @@ public class GameState {
 	public void incLives() {
 		if (lives > 8) {
 			score += 2000;
-			TextPopup s = new TextPopup(Engine.WHITE, 2000, 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+			TextPopup s = new TextPopup(Engine.WHITE, "2000 added", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		} else {
 			lives++;
 			powerupCount++;
@@ -151,14 +151,29 @@ public class GameState {
 		}
 	}
 
-	
-	//Getters:
-	public void gotShield()     { hasShield      = POWERUP_LENGTH_LONG; }
-	public void gotSideShot()   { hasSideBullets = POWERUP_LENGTH_LONG; }
-	public void gotRearShot()   { hasRearBullets = POWERUP_LENGTH_LONG; }
-	public void gotBouncyShot() { hasBouncyShot  = POWERUP_LENGTH_LONG; }
-	public void gotSuperShot()  { hasSuperShot   = POWERUP_LENGTH_SHORT; }
+	public void gotShield()     { 
+		hasShield = POWERUP_LENGTH_LONG;
+		TextPopup s = new TextPopup(Engine.WHITE, "Shield", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+	}
+	public void gotSideShot()   { 
+		hasSideBullets = POWERUP_LENGTH_LONG; 
+		TextPopup s = new TextPopup(Engine.WHITE, "Side Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+	}
+	public void gotRearShot()   { 
+		hasRearBullets = POWERUP_LENGTH_LONG; 
+		TextPopup s = new TextPopup(Engine.WHITE, "Rear Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+	}
+	public void gotBouncyShot() { 
+		hasBouncyShot = POWERUP_LENGTH_LONG; 
+		TextPopup s = new TextPopup(Engine.WHITE, "Bouncy Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+	}
+	public void gotSuperShot()  { 
+		hasSuperShot = POWERUP_LENGTH_SHORT; 
+		TextPopup s = new TextPopup(Engine.WHITE, "Super Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+	}
 
+	
+	//Getters:	
 	public int getRecord()     { return lastRecord; }
 	public int getScore()      { return score;      }
 	public int getLives()      { return lives;      }

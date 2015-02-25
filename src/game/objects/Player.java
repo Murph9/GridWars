@@ -151,8 +151,16 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		double thresh = Engine.rand.nextDouble();
 		if (Math.sqrt(dx*dx + dy*dy) > thresh) { //only matters if going less than max speed
 			MovingObject q = new Particle(2, Engine.BLUE, 1, Particle.DEFAULT_DRAG); //also not really sure why blue but hey..
-			q.x = x; q.dx = (-dx*4 - (s[0] -x)/2)*(Engine.rand.nextDouble()*2);
-			q.y = y; q.dy = (-dy*4 - (s[1] -y)/2)*(Engine.rand.nextDouble()*2);
+			q.x = x; 
+			q.dx = (-dx*4 - (s[0] -x)/2)*(Engine.rand.nextDouble()*2);
+			
+			q.y = y; 
+			q.dy = (-dy*4 - (s[1] -y)/2)*(Engine.rand.nextDouble()*2);
+			
+			MovingObject r = new Particle(2, Engine.BLUE, 1, Particle.DEFAULT_DRAG);
+			r.x = x; 
+			r.y = y; //TODO make this not look like a line
+			
 		}
 		
 		//acceleration calculations 
@@ -185,7 +193,16 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	 */
 	public void selfCol() {
 		if (Engine.gameState.ifTempShield()) {
-			return; //because we are done here
+			ArrayList<PowerUp> list = new ArrayList<PowerUp>(PowerUp.ALL_THIS);
+			for (PowerUp p: list) {
+				double[] pos = p.getCollisionPosition();
+				double distX = pos[0] - x;
+				double distY = pos[1] - y;
+				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (p.size/2)*(p.size/2))) {
+					p.amHit(true);
+				}
+			}
+			return; //because we are done checking for powerups
 		}
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
@@ -198,7 +215,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
 					if (o instanceof PowerUp) {
-						o.amHit(false);
+						o.amHit(true);
 					} else {
 						Engine.lostLife(o);
 					}

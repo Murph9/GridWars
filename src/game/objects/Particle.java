@@ -20,16 +20,6 @@ public class Particle extends MovingObject {
 	
 	private boolean ifBlackHoleParticle;
 	
-//	Particle() {
-//		this(2, Engine.WHITE, 0.7, 1.065); //default settings
-//		this.spawnTimer = 0;
-//	}
-	
-//	Particle(int a) {
-//		this(2, Engine.WHITE, 0.7, 1.065); //TODO find out what this 'a' means
-//		this.spawnTimer = 0; //never has spawn delay
-//	}
-	
 	public Particle(double thickness, double[] colour, double time, double drag) {
 		super(1, colour);
 		ALL_THIS.add(this);

@@ -1,10 +1,10 @@
+883209	 auto_Murph	 2790
+737508	 auto_Murph	 2677
+669380	 auto_Murph	 2629
 650480	 auto_Murph	 4464
+514173	 auto_Murph	 2904
+267250	 auto_Murph	 1717
+256136	 auto_Murph	 1321
+249510	 auto_Murph	 1924
 163366	 auto_Murph	 1746
 154250	 auto_Murph	 1082
-139553	 auto_Murph	 1704
-115900	 auto_Murph	 881
-104110	 auto_Murph	 1084
-100000	 AAA	 1
-99460	 auto_Murph	 1603
-90000	 BBB	 1
-88978	 auto_Murph	 996

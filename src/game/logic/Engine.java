@@ -115,7 +115,8 @@ public class Engine implements GLEventListener {
 		textures[CIRCLE] = new MyTexture(gl, img + "seeker.png");
 		textures[SHY] = new MyTexture(gl, img + "shy.png");
 		textures[BLACKHOLE] = new MyTexture(gl, img + "circle.png");
-
+		textures[TRIANGLE] = new MyTexture(gl, img + "triangle.png");
+		
 		textures[EXTRA_BULLET] = new MyTexture(gl, img + "extraBullet.png");
 		textures[EXTRA_SPEED] = new MyTexture(gl, img + "extraSpeed.png");
 		textures[TEMP_SHIELD] = new MyTexture(gl, img + "tempShield.png");
@@ -125,7 +126,6 @@ public class Engine implements GLEventListener {
 		textures[SUPER_SHOT] = new MyTexture(gl, img + "superShot.png");
 		textures[REAR_SHOT] = new MyTexture(gl, img + "rearShot.png");
 		textures[SIDE_SHOT] = new MyTexture(gl, img + "sideShot.png");
-		textures[TRIANGLE] = new MyTexture(gl, img + "triangle.png");
 		
 		playerPos = player.getPosition(); //this is here because it requires a screen to function
         mousePos = Mouse.theMouse.getPosition();
@@ -218,7 +218,7 @@ public class Engine implements GLEventListener {
 					GameObject.ALL_OBJECTS.remove(killObj); //the obj that hit you is now removed as it doesn't need to be displayed anymore
 					killObj = null;
 					Engine.gameState.lostLife();
-					Engine.killAll(null, false);
+					Engine.killAll(null, false, false);
 				}
 				
 				Engine.player.x = 0;
@@ -438,10 +438,14 @@ public class Engine implements GLEventListener {
 	/**Kill all objects on the screen (excluding Player,Border,Camera,Powerups,ROOT)
 	 * @param object Optional game object that will not be deleted after method
 	 */
-	public static void killAll(GameObject object, boolean particles) {
+	public static void killAll(GameObject object, boolean particles, boolean killPowerups) {
 		LinkedList<GameObject> allList = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
 		for (GameObject obj: allList) {
-			if (obj instanceof Player || obj instanceof Border || obj instanceof Camera || obj instanceof PowerUp || obj.equals(GameObject.ROOT)) {
+			if (obj instanceof Player || obj instanceof Border || obj instanceof Camera || obj.equals(GameObject.ROOT)) {
+			} else if (obj instanceof PowerUp) {
+				if (killPowerups) { //if we want it gone
+					GameObject.ALL_OBJECTS.remove(obj);
+				}
 			} else {
 				GameObject.ALL_OBJECTS.remove(obj);
 					//was going to account for the given object here, 
@@ -460,6 +464,11 @@ public class Engine implements GLEventListener {
 		ShySquare.ALL_THIS.clear();
 		SimpleSpinner.ALL_THIS.clear();
 		SplitingSquare.ALL_THIS.clear();
+		Spawner.ALL_THIS.clear();
+		
+		if (killPowerups) {
+			PowerUp.ALL_THIS.clear(); //remove all powerups on a lost life
+		}
 		
 		
 		if (particles) {
@@ -501,7 +510,7 @@ public class Engine implements GLEventListener {
 	 * @param obj
 	 */
 	public static void lostLife(GameObject obj) { 
-		Engine.killAll(obj, true); //delete everything, then add the object later
+		Engine.killAll(obj, true, true); //delete everything, then add the object later
 		
 		killCountdown = Engine.KILL_SCREEN_TIME;
 		killObj = obj;

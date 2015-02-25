@@ -37,7 +37,11 @@ import java.util.Random;
 	//was thinking like slowly (for like 5 seconds) moves back to where it was? 
 	//or reduces the "momentary difficulty" by a fixed/proportional amount
 
+//TODO blackhole swarms suck balls
+
 public class SpawnHandler {
+
+	private int score;
 	
 	private Random random;
 	private String diff; //maybe: med = normal, easy = 0.8*rate, hard = 0.3+1.1*rate 
@@ -72,6 +76,40 @@ public class SpawnHandler {
 	
 
 	public void update(double dt) {
+		int curScore = Engine.gameState.getScore()/5000; //power every 5000 
+		
+		if (score != curScore) {
+			int rand = random.nextInt(9);
+			int type = -1; //so it breaks
+			
+			switch (rand) {
+			case 0:
+				type = Engine.EXTRA_SPEED; break;
+			case 1:
+				type = Engine.EXTRA_BULLET; break;
+			case 2:
+				type = Engine.EXTRA_BOMB; break;
+			case 3:
+				type = Engine.EXTRA_LIFE; break;
+			case 4:
+				type = Engine.SIDE_SHOT; break;
+			case 5:
+				type = Engine.REAR_SHOT; break;
+			case 6:
+				type = Engine.TEMP_SHIELD; break;
+			case 7:
+				type = Engine.SUPER_SHOT; break;
+			case 8:
+				type = Engine.BOUNCY_SHOT; break;
+			}
+			
+			PowerUp up = new PowerUp(type);
+			chooseSpawn(up, 0);
+			up.dx = random.nextDouble()*2 -1;
+			up.dy = random.nextDouble()*2 -1;
+		}
+		score = curScore;
+		
 		/* Logic for this method:
 		 * Get time.
 		 * mod time using % operator by various things (see comments at end of file)
@@ -89,9 +127,9 @@ public class SpawnHandler {
 
 		if (frameCount % 444 == 0) {
 			int count =  16 + random.nextInt(Math.min((int)(frameCount/2000) + 1, 16));
-			double rate = 0.8 + random.nextInt(60)/100  - (double)(frameCount)/100000;
-			if (rate < 80) 
-				rate = 80;
+			double rate = 0.8 + random.nextInt(60)/100  - (double)(frameCount)/100000; //TODO fix timing of spawners
+			if (rate > 0.8) 
+				rate = 0.8;
 
 			int type = pickEnemy(frameCount/4) + 1;
 			if (type == 5) type = 3+ random.nextInt(3); //3,4,5
@@ -248,6 +286,8 @@ public class SpawnHandler {
 			break;
 		}
 
+		double[] playerPos = Engine.player.getPosition();
+		
 		//actually place it in the corner (or random or player)
 		switch (location) {
 		case 0: //random spawn
@@ -271,7 +311,6 @@ public class SpawnHandler {
 			o.y = -Engine.settings.getBoardHeight()+o.size;
 			break;
 		case 12:
-			double[] playerPos = Engine.player.getPosition();
 			while (true) {
 				double angle = random.nextDouble()*Math.PI*2;
 		    	o.x = playerPos[0]+(Math.cos(angle)*5);
@@ -282,7 +321,18 @@ public class SpawnHandler {
 		    	}
 			}
 	    	break;
+		default:
+			try { 
+				throw new Exception();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+		
+		//TODO fix the stack overflow errors here
+//		if ((o.x - playerPos[0] < 3) && (o.y - playerPos[1] < 3)) {
+//			chooseSpawn(o, 5); //random corner
+//		}
 	}
 }
 

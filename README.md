@@ -21,7 +21,6 @@ Structure of the project:
 0.29 LeaderBoard Start, Menu Arranging... (others)
 - there was a break here and i forgot most of the stuff i did, sorry..
 
-
 --------
 
 0.28 Menu 2:
@@ -64,7 +63,6 @@ Structure of the project:
 - Some files were renamed
 - Self collision is now handled using the method called selfCol()
   + of which the homing objects' versions have been fixed
-- Todo: Fix bullet rotation and other selfCol()
 
 
 0.23: BlackHoles

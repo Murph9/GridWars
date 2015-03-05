@@ -13,12 +13,8 @@ import javax.media.opengl.GLEventListener;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 
-//TODO GameObjects have a speed increase every second. (this could be achieved using a very small increment on the MEDIUM_SPEED values)
-	//resetGame() is note able in giving all the inital conditions for the different difficulties
-
-//TODO Idea for gameplay slow down when blackhole is exploded from numing (mixed with a overpowering sound to help)
+//TODO Idea for gameplay slow down when blackhole is exploded from numing too much (mixed with a overpowering sound to help)
 //TODO GAME SCALE SHOULD BE CONSTANT!!! when changing screen size
-
 
 /**
  * Handles all moving objects and all OpenGL initialisation.
@@ -417,7 +413,7 @@ public class Engine implements GLEventListener {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
-
+	
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
 		//called by system when the window is closed

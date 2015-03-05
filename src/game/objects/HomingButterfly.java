@@ -9,8 +9,7 @@ import javax.media.opengl.GL2;
 public class HomingButterfly extends HomingObject {
 
 	public final static ArrayList<HomingButterfly> ALL_THIS = new ArrayList<HomingButterfly>();
-	
-	public static final int MAX_SPEED = 6;
+	public static double MAX_SPEED = 6;
 	
 	public HomingButterfly(double spawnTimer) {
 		this(spawnTimer, 0.6, Engine.BLUE);

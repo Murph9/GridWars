@@ -15,9 +15,10 @@ import javax.swing.Timer;
 
 public class Player extends MovingObject implements KeyListener, MouseListener {
 
-	public static double MAX_SPEED = 7;
+	public static double MAX_SPEED = 6.5;
+	public static double MAX_ACCEL = 1;
 	
-	public static double DRAG = 1.04; //please don't change these numbers again (user defined probably)
+	public static double PLAYER_INERTIA = 1.04; //please don't change these numbers again (user defined probably)
 	
 	private boolean xPosAccel = false,
 					xNegAccel = false,
@@ -135,7 +136,6 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	}
 
 	public void update(double dt) {
-		//movement stuff
 		x += dx*dt*MAX_SPEED; //add it
     	y += dy*dt*MAX_SPEED;
     	
@@ -160,29 +160,22 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			MovingObject r = new Particle(2, Engine.BLUE, 1, Particle.DEFAULT_DRAG);
 			r.x = x; 
 			r.y = y; //TODO make this not look like a line
-			
 		}
 		
 		//acceleration calculations 
-		if		(xPosAccel) { dx = 1; }
-		else if	(xNegAccel) { dx = -1; }
-		else 				{ dx /= DRAG; }
+		if		(xPosAccel) { dx += MAX_ACCEL; }
+		else if	(xNegAccel) { dx -= MAX_ACCEL; }
+		else 				{ dx /= PLAYER_INERTIA; }
 		
-		if		(yPosAccel) { dy = 1; }
-		else if	(yNegAccel) { dy = -1; }
-		else 				{ dy /= DRAG; }
-		
-		double speed = Math.sqrt(dx*dx + dy*dy);
-    	if (speed != 0 && speed > 1) { //divide by zero errors are bad
-    		dx /= speed;
-    		dy /= speed; //now they are normalised
-    	}
+		if		(yPosAccel) { dy += MAX_ACCEL; }
+		else if	(yNegAccel) { dy -= MAX_ACCEL; }
+		else 				{ dy /= PLAYER_INERTIA; }
 		
     	blackHole();
     	selfCol();
     	
-    	speed = Math.sqrt(dx*dx + dy*dy);
-    	if (speed != 0 && speed > 1) { //divide by zero errors are bad
+    	double speed = Math.sqrt(dx*dx + dy*dy);
+    	if (speed != 0 && speed > 1) {
     		dx /= speed;
     		dy /= speed; //now they are normalised
     	}

@@ -4,9 +4,9 @@ import game.logic.*;
 
 public abstract class HomingObject extends MovingObject {
 
-	protected float MAX_SPEED = 2; //if not given a speed
+	protected double MAX_SPEED;
 	
-	HomingObject(double size, double[] colour, float speed) {
+	HomingObject(double size, double[] colour, double speed) {
 		super(size, colour);
 		this.MAX_SPEED = speed;
 		SoundEffect.SHOOT.play(10, 0);

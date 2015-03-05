@@ -9,8 +9,8 @@ import javax.media.opengl.GL2;
 public class ShySquare extends MovingObject {
 
 	public final static ArrayList<ShySquare> ALL_THIS = new ArrayList<ShySquare>();
+	public static double MAX_SPEED = 4;
 	
-	private static final int MAX_SPEED = 4;
 	private float dodgeRange = 6;
 	private float dodgeSpeed = 3f;
 	

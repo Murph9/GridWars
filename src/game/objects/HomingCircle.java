@@ -10,7 +10,7 @@ public class HomingCircle extends HomingObject {
 
 	public final static ArrayList<HomingCircle> ALL_THIS = new ArrayList<HomingCircle>();
 	
-	public static final int MAX_SPEED = 5;
+	public static double MAX_SPEED = 5;
 	
 	public HomingCircle(double spawnTimer) {
 		this(spawnTimer, 0.6, Engine.PURPLE);

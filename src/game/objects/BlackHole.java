@@ -12,8 +12,7 @@ public class BlackHole extends MovingObject {
 
 	public static final ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
 	public static final int SUCK_RADIUS = 6;
-	
-	public static final int MAX_SPEED = 1; //yeah kinda slow
+	public static double MAX_SPEED = 1; //yeah kinda slow
 	
 	public static final int MAX_PARTICLES = 20; //low TODO balance
 	

@@ -9,8 +9,8 @@ import javax.media.opengl.GL2;
 public class ConnectedTriangle extends MovingObject {
 
 	public final static ArrayList<ConnectedTriangle> ALL_THIS = new ArrayList<ConnectedTriangle>();
+	public static double MAX_SPEED = 4;
 	
-	private final int MAX_SPEED = 4;
 	private final int LINK_STRENGTH = 20;
 	
 	private ConnectedTriangle partner;

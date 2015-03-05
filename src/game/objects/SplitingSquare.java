@@ -9,8 +9,8 @@ import javax.media.opengl.GL2;
 public class SplitingSquare extends HomingObject {
 	
 	public final static ArrayList<SplitingSquare> ALL_THIS = new ArrayList<SplitingSquare>();
+	public static double MAX_SPEED = 3;
 	
-	public static final int MAX_SPEED = 3;
 	private int ORBIT_SPEED = 6;
 	
 	private boolean hasSplit;

@@ -9,9 +9,9 @@ import javax.media.opengl.GL2;
 public class SimpleSpinner extends MovingObject {
 	
 	public final static ArrayList<SimpleSpinner> ALL_THIS = new ArrayList<SimpleSpinner>();
+	public static double MAX_SPEED = 3;
 	
 	public int rotSpeed = 180; //if not set
-	private static final int MAX_SPEED = 3;
 	
 	public SimpleSpinner(double spawnTimer) {
 		this(spawnTimer, 1, Engine.PURPLE);

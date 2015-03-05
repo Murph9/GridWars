@@ -51,7 +51,57 @@ public class GameState {
 		
 		bombCount = 3;
 		bulletCount = 2;
-		bulletSpeed = 1; //how to change the intial bullet speed
+		bulletSpeed = 2; //TODO balance //how to change the intial bullet speed
+		
+		resetSpeeds(difficulty);
+	}
+	
+	//because as the game goes these speed get faster
+	private void resetSpeeds(String diff) {
+		Player.MAX_SPEED = 6.5;
+		
+		ShySquare.MAX_SPEED = 3.5;
+		SimpleSpinner.MAX_SPEED = 2.25;
+		HomingDiamond.MAX_SPEED = 3.25;
+		SplitingSquare.MAX_SPEED = 3.0;
+		HomingCircle.MAX_SPEED = 4.5;
+		BlackHole.MAX_SPEED = 2.5;
+		SnakeHead.MAX_SPEED = 3.5;
+		ShieldedClone.MAX_SPEED = 4.25;
+		HomingButterfly.MAX_SPEED = 5.0;
+		ConnectedTriangle.MAX_SPEED = 2.0;
+		
+		switch(diff) {
+		case Engine.EASY_D:
+			ShySquare.MAX_SPEED *= 0.65;
+			SimpleSpinner.MAX_SPEED *= 0.75;
+			HomingDiamond.MAX_SPEED *= 0.75;
+			SplitingSquare.MAX_SPEED *= 0.7;
+			HomingCircle.MAX_SPEED *= 0.75;
+			BlackHole.MAX_SPEED *= 0.7;
+			SnakeHead.MAX_SPEED *= 0.7;
+			ShieldedClone.MAX_SPEED *= 0.7;
+			HomingButterfly.MAX_SPEED *= 0.75;
+			ConnectedTriangle.MAX_SPEED *= 0.7;
+			break;
+		case Engine.MEDIUM_D:
+			break;
+		case Engine.HARD_D:
+			ShySquare.MAX_SPEED *= 1.25;
+			SimpleSpinner.MAX_SPEED *= 1.25;
+			HomingDiamond.MAX_SPEED *= 1.25;
+			SplitingSquare.MAX_SPEED *= 1.25;
+			HomingCircle.MAX_SPEED *= 1.15;
+			BlackHole.MAX_SPEED *= 1.15;
+			SnakeHead.MAX_SPEED *= 1.15;
+			ShieldedClone.MAX_SPEED *= 1.15;
+			HomingButterfly.MAX_SPEED *= 1.15;
+			ConnectedTriangle.MAX_SPEED *= 1.15;
+			
+			
+			break;
+			
+		}
 	}
 	
 	//time dependant things updated here
@@ -154,22 +204,27 @@ public class GameState {
 	public void gotShield()     { 
 		hasShield = POWERUP_LENGTH_LONG;
 		TextPopup s = new TextPopup(Engine.WHITE, "Shield", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+		powerupCount++;
 	}
 	public void gotSideShot()   { 
-		hasSideBullets = POWERUP_LENGTH_LONG; 
+		hasSideBullets = POWERUP_LENGTH_LONG;
 		TextPopup s = new TextPopup(Engine.WHITE, "Side Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+		powerupCount++;
 	}
 	public void gotRearShot()   { 
 		hasRearBullets = POWERUP_LENGTH_LONG; 
 		TextPopup s = new TextPopup(Engine.WHITE, "Rear Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+		powerupCount++;
 	}
 	public void gotBouncyShot() { 
 		hasBouncyShot = POWERUP_LENGTH_LONG; 
 		TextPopup s = new TextPopup(Engine.WHITE, "Bouncy Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+		powerupCount++;
 	}
 	public void gotSuperShot()  { 
 		hasSuperShot = POWERUP_LENGTH_SHORT; 
 		TextPopup s = new TextPopup(Engine.WHITE, "Super Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
+		powerupCount++;
 	}
 
 	

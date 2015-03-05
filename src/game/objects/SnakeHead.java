@@ -11,7 +11,7 @@ import javax.media.opengl.GL2;
  */
 public class SnakeHead extends MovingObject implements SnakeObject {
 
-	public static final int MAX_SPEED = 4;
+	public static double MAX_SPEED = 4;
 	
 	private SnakeObject after; //the next object
 	

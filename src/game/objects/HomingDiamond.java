@@ -9,7 +9,7 @@ import javax.media.opengl.GL2;
 public class HomingDiamond extends HomingObject {
 	
 	public final static ArrayList<HomingDiamond> ALL_THIS = new ArrayList<HomingDiamond>();
-	public static final int MAX_SPEED = 5;
+	public static double MAX_SPEED = 5;
 	
 	public HomingDiamond(double spawnTimer) {
 		this(spawnTimer, 1, Engine.LIGHT_BLUE);

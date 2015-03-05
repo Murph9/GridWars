@@ -9,10 +9,10 @@ import javax.media.opengl.GL2;
 public class ShieldedClone extends MovingObject {
 
 	public final static LinkedList<ShieldedClone> ALL_THIS = new LinkedList<ShieldedClone>();
+	public static double MAX_SPEED = 6;
 	
 	private static final int MAX_ANGLE_CHANGE = 180;
 	private double lastAngle;
-	private static int MAX_SPEED = 6;
 	
 	private Shield shield;
 	

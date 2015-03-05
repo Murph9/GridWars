@@ -11,7 +11,7 @@ import java.util.Random;
  * @author Jake Murphy
  */
 
-//This file has the worst code/time ratio of all.
+//This file has the worst code/time ratio of all. (and then mostly copied from the source code)
 
 ////////////////////////////
 /* Rules: (that need to be met)
@@ -19,23 +19,9 @@ import java.util.Random;
 * 				(checking is easy, BlackHole.ALL_THIS.size())
 * 
 * Powerups - need to be used. Rules about them? (they seem to spawn, after a death, at the next 5000 mark)
-* 	probably just every 5000 score it seems.
+* 	probably just every 5000 score it seems. NO!! TODO
 */
 
-
-////////////////////////////
-//THOUGHTS:
-
-//thinking about having "waves" of things spawn: (in order) (with swarms in the transition, either around the player or on the edge)	
-	//maybe a "swarm countdown" meaning it will eventually happen
-	
-	//correct gameplay should be easy/hard/easy/hard/...
-		//this is a known good gameplay mechanic (known for movies before games)
-		//could be completed using swarms of enemies (even if there is a constant background spawn rate)
-
-//what happens when the player dies, what kind of objects spawn then?
-	//was thinking like slowly (for like 5 seconds) moves back to where it was? 
-	//or reduces the "momentary difficulty" by a fixed/proportional amount
 
 //TODO blackhole swarms suck balls
 
@@ -72,6 +58,8 @@ public class SpawnHandler {
 	public SpawnHandler(String difficulty) {
 		this.diff = difficulty;
 		this.random = new Random();
+		
+//		frameCount = 7000;
  	}
 	
 
@@ -80,7 +68,7 @@ public class SpawnHandler {
 		
 		if (score != curScore) {
 			int rand = random.nextInt(9);
-			int type = -1; //so it breaks
+			int type = -1; //so it breaks if not changed
 			
 			switch (rand) {
 			case 0:
@@ -111,8 +99,8 @@ public class SpawnHandler {
 		score = curScore;
 		
 		/* Logic for this method:
-		 * Get time.
-		 * mod time using % operator by various things (see comments at end of file)
+		 * Get frameCount
+		 * mod count using % operator by various things (see end of file)
 		 * spawn!
 		 */
 		totalTime = (long)(Engine.gameState.getTime()*100); //this line retrieves the time and makes it back to miliseconds
@@ -198,6 +186,33 @@ public class SpawnHandler {
 				createEnemy(swarmType4, 0.2, swarmLocation4);
 			}
 		}
+		
+		
+		if (frameCount % 3600 == 1) {
+			double inc = 0.15;
+			switch(diff) {
+			case Engine.EASY_D:
+				inc += 0*0.1;
+				break;
+			case Engine.MEDIUM_D:
+				inc += 1*0.1;
+				break;
+			case Engine.HARD_D:
+				inc += 2*0.1;
+				break;
+			}
+			
+			ShySquare.MAX_SPEED += inc; //speed scaling
+			SimpleSpinner.MAX_SPEED += inc;
+			HomingDiamond.MAX_SPEED += inc;
+			SplitingSquare.MAX_SPEED += inc;
+			HomingCircle.MAX_SPEED += inc;
+			BlackHole.MAX_SPEED += inc;
+			SnakeHead.MAX_SPEED += inc;
+			ShieldedClone.MAX_SPEED += inc;
+			HomingButterfly.MAX_SPEED += inc;
+			ConnectedTriangle.MAX_SPEED += inc;
+		}
 	}
 
 	/**Uses the frameCount value to pick from a list of objects. 
@@ -220,6 +235,7 @@ public class SpawnHandler {
 		case 7:		s = random.nextInt(8);   break;
 		case 8:		s = random.nextInt(10);  break; //the orginal code skips to here as well...
 		}
+		
 		return s;
 	}
 	

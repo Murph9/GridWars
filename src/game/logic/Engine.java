@@ -39,7 +39,7 @@ public class Engine implements GLEventListener {
 
 	public static final String 	EASY_D = "easy", MEDIUM_D = "medium", 
 								HARD_D = "hard", EXT_D = ".txt";
-	private static double EASY_SPEED = 0.9, MEDIUM_SPEED = 1, HARD_SPEED = 1.25; //TODO balance
+//	private static double EASY_SPEED = 0.9, MEDIUM_SPEED = 1, HARD_SPEED = 1.25; //TODO balance
 	
 	public static final Random rand = new Random();
 		//just because ease of use, ive heard making a random object is slow [unconfirmed]
@@ -248,23 +248,10 @@ public class Engine implements GLEventListener {
 		} else {
 			spawner.update(dt); //needs to spawn objects before objects are updated (because they spawn in the middle)
 			
-			double newDt = dt; //because difficulties have a direct impact on object speed
-			if (gameState.getDifficulty().equals(Engine.EASY_D)) {
-				newDt = dt*EASY_SPEED;
-			} else if (gameState.getDifficulty().equals(Engine.MEDIUM_D)) {
-				newDt = dt*MEDIUM_SPEED;
-			} else if (gameState.getDifficulty().equals(Engine.HARD_D)) {
-				newDt = dt*HARD_SPEED;
-			}
-			
 			// update all objects
 			List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 			for (GameObject g: objects) {
-				if (g instanceof Player) {
-					g.update(dt);
-				} else {
-					g.update(newDt);
-				}
+				g.update(dt);
 			}
 
 			gameState.update(dt); //to count down the powerups timers

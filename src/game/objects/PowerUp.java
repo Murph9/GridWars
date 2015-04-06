@@ -6,6 +6,8 @@ import game.logic.*;
 import javax.media.opengl.GL2;
 
 
+//TODO source code says it has a 4/100 chance of moving towards the player
+
 /**The name should be a good hint
  * @author Jake Murphy
  */

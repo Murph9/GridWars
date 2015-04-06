@@ -86,4 +86,45 @@ public enum SoundEffect {
 	}
 }
 
+
 //http://www3.ntu.edu.sg/home/ehchua/programming/java/J8c_PlayingSound.html
+
+
+
+
+//below is for playing 2 songs at once from: TODO
+	//http://stackoverflow.com/questions/9656462/how-do-i-play-two-sounds-at-once
+
+/*import java.net.URL;
+import javax.swing.*;
+import javax.sound.sampled.*;
+
+public class LoopSounds {
+
+    public static void main(String[] args) throws Exception {
+        URL url = new URL(
+            "http://pscode.org/media/leftright.wav");
+        Clip clip = AudioSystem.getClip();
+        AudioInputStream ais = AudioSystem.
+            getAudioInputStream( url );
+        clip.open(ais);
+
+        URL url2 = new URL(
+            "http://pscode.org/media/100_2817-linear.wav");
+        Clip clip2 = AudioSystem.getClip();
+        AudioInputStream ais2 = AudioSystem.
+            getAudioInputStream( url2 );
+        clip2.open(ais2);
+
+        // loop continuously
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+        clip2.loop(Clip.LOOP_CONTINUOUSLY);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                // A GUI element to prevent the Clip's daemon Thread
+                // from terminating at the end of the main()
+                JOptionPane.showMessageDialog(null, "Close to exit!");
+            }
+        });
+    }
+}*/

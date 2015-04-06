@@ -51,7 +51,7 @@ public class GameState {
 		
 		bombCount = 3;
 		bulletCount = 2;
-		bulletSpeed = 2; //TODO balance //how to change the intial bullet speed
+		bulletSpeed = 2; //TODO balance
 		
 		resetSpeeds(difficulty);
 	}

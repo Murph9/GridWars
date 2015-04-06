@@ -53,7 +53,7 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		if (beforeAngle > angle +180) {
 			angle += 360;
 		}
-		setRotation((angle+beforeAngle)/2);
+		angle = (angle+beforeAngle)/2;
 		
 		double dist = (dir[0])*(dir[0]) + (dir[1])*(dir[1]);
 		

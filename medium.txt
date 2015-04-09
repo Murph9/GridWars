@@ -1,10 +1,10 @@
+1170543	 auto_Murph	 3009
 883209	 auto_Murph	 2790
 737508	 auto_Murph	 2677
 669380	 auto_Murph	 2629
 650480	 auto_Murph	 4464
 565140	 auto_Murph	 2055
 514173	 auto_Murph	 2904
+301835	 auto_Murph	 1452
 267250	 auto_Murph	 1717
 256136	 auto_Murph	 1321
-249510	 auto_Murph	 1924
-163366	 auto_Murph	 1746

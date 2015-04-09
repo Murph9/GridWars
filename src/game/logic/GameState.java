@@ -51,7 +51,7 @@ public class GameState {
 		
 		bombCount = 3;
 		bulletCount = 2;
-		bulletSpeed = 2; //TODO balance
+		bulletSpeed = 1.6;
 		
 		resetSpeeds(difficulty);
 	}
@@ -155,7 +155,6 @@ public class GameState {
 		
 		bulletSpeed = Math.max(1, bulletSpeed-SPEED_INC); //set minimum bullet speed to be 1
 		bulletCount = Math.max(2, bulletCount-1); //set min bullet count to be 2
-		hasShield = 3; //set temp shield (for 1 sec) so you don't die really quick
 		
 		hasSideBullets = 0;
 		hasRearBullets = 0;

@@ -77,7 +77,9 @@ public class PlayerBullet extends MovingObject {
 					dy -= disty/(dist*4);
 				}
 				if (dist < h.size/2) {
-					amHit(false);
+					if (!Engine.gameState.ifSuperShot()) {
+						this.amHit(false);
+					}
 					h.amHit();
 				}
 				
@@ -111,11 +113,11 @@ public class PlayerBullet extends MovingObject {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BULLET].getTextureId());
 		
     	if (Engine.gameState.ifBouncyShot()) {
-    		gl.glColor3d(Engine.GREEN[0], Engine.GREEN[1], Engine.GREEN[2]);
+    		this.colour = Engine.GREEN;
     	}
 
     	if (Engine.gameState.ifSuperShot()) {
-    		gl.glColor3d(Engine.RED[0], Engine.RED[1], Engine.RED[2]);
+    		this.colour = Engine.RED;
     	}
 
     	super.drawSelf(gl);

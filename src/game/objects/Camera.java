@@ -12,7 +12,8 @@ import javax.media.opengl.glu.GLU;
  */
 public class Camera extends GameObject {
 
-    private float[] myBackground;
+    private static final int GAME_SCALE_CONSTANT = 86; // for 1024/12 which is a good game scale
+	private float[] myBackground;
 
     public Camera() {
         this.myBackground = new float[4];
@@ -32,10 +33,16 @@ public class Camera extends GameObject {
     
     public void update (double dt) { //thought causing
     	double[] pos = Engine.getPlayerPos();
-    	this.x = pos[0];//3; //this makes it feel more like a game
-    	this.y = pos[1];//3; //TODO scale with numbers below
     	
-    	double pixelAspect = (double)(Engine.settings.getPixelWidth())/(double)(Engine.settings.getPixelHeight());
+    	double xdiff = this.x - pos[0];
+    	double ydiff = this.y - pos[1];
+    	this.x -= xdiff;//20; //thoughts about a slow moving camera should be squashed as it feels weird
+    	this.y -= ydiff;//20;
+    	
+    	double pixelWidth = Engine.settings.getPixelHeight();
+    	this.size = pixelWidth/GAME_SCALE_CONSTANT;
+    	
+    	double pixelAspect = pixelWidth/(double)(Engine.settings.getPixelHeight());
     	int height = Engine.settings.getBoardHeight() + 1;
     	int width = Engine.settings.getBoardWidth() + 1; //+1 is for buffer size
     	
@@ -80,18 +87,12 @@ public class Camera extends GameObject {
     }
 
     public void reshape(GL2 gl, int x, int y, int width, int height) {
-        // aspect = width / height
-    	//from lecture slides:
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		GLU glu = new GLU();
-        double ar = (double)width / (double)height;
+        double ar = (double)width / (double)height; // aspect = width / height
 
-//        if (ar >= 1) {
-        	glu.gluOrtho2D( -1.0*ar, 1.0*ar, -1.0, 1.0); //because we want constant scale
-//        } else {
-//        	glu.gluOrtho2D(-1.0, 1.0, -1.0/ar, 1.0/ar);
-//        }
+       	glu.gluOrtho2D( -1.0*ar, 1.0*ar, -1.0, 1.0); //because we want constant aspect ratio
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();

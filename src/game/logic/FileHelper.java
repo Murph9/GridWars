@@ -437,10 +437,10 @@ public class FileHelper {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		
-		String positionS = "";
-		String scoreS = "";
-		String nameS = "";
-		String timeS = "";
+		String positionS = "#";
+		String scoreS = "Score:";
+		String nameS = "Name:";
+		String timeS = "Time:";
 		
 		int count = 0;
 		for (Record i: records) {
@@ -453,13 +453,10 @@ public class FileHelper {
 			count++;
 		}
 		
-		positionS = positionS.replaceFirst("^\n", "");
-		scoreS = scoreS.replaceFirst("^\n", "");
-		nameS = nameS.replaceFirst("^\n", "");
-		timeS = timeS.replaceFirst("^\n", "");
+//		positionS = positionS.replaceFirst("^\n", ""); //here just for reference (removes leading \n)
 		
 		JTextArea position = new JTextArea(positionS);
-		position.setOpaque(false); //because of the ghastly white colour behind the text
+		position.setOpaque(false); //because of the 'ghastly' white colour behind the text
 		JTextArea score = new JTextArea(scoreS);
 		score.setOpaque(false);
 		JTextArea name = new JTextArea(nameS);

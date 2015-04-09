@@ -13,8 +13,7 @@ import javax.media.opengl.GLEventListener;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 
-//TODO Idea for gameplay slow down when blackhole is exploded from numing too much (mixed with a overpowering sound to help)
-//TODO GAME SCALE SHOULD BE CONSTANT!!! when changing screen size
+//TODO Idea for gameplay slow down when blackhole is exploded from numing too much (mixed with a overpowering sound to help effect)
 
 /**
  * Handles all moving objects and all OpenGL initialisation.
@@ -30,7 +29,9 @@ public class Engine implements GLEventListener {
 			SNAKEBODY = 8, BUTTERFLY = 9, CIRCLE = 10, BLACKHOLE = 11,
 							/**/
 			PLAYER = 20, BULLET = 21, EXTRA_BULLET = 22, EXTRA_SPEED = 23, TEMP_SHIELD = 24, EXTRA_BOMB = 25, 
-			EXTRA_LIFE = 26, BOUNCY_SHOT = 27, SUPER_SHOT = 28, REAR_SHOT = 29, SIDE_SHOT = 30;
+			EXTRA_LIFE = 26, BOUNCY_SHOT = 27, SUPER_SHOT = 28, REAR_SHOT = 29, SIDE_SHOT = 30,
+							/**/
+			PLAYER_SHEILD = 31;
 	
 	////Colours - note the alpha values
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
@@ -39,12 +40,11 @@ public class Engine implements GLEventListener {
 
 	public static final String 	EASY_D = "easy", MEDIUM_D = "medium", 
 								HARD_D = "hard", EXT_D = ".txt";
-//	private static double EASY_SPEED = 0.9, MEDIUM_SPEED = 1, HARD_SPEED = 1.25; //TODO balance
 	
 	public static final Random rand = new Random();
 		//just because ease of use, ive heard making a random object is slow [unconfirmed]
 	
-	public SpawnHandler spawner;
+	public static SpawnHandler spawner;
 	public static GameState gameState; //so every file can access these
 	public static GameSettings settings;
 	
@@ -61,8 +61,12 @@ public class Engine implements GLEventListener {
 	//for measuring the respawn speed
 	
 	private static boolean isPaused;
-	private static double killCountdown; //if killscreen
+	
 	private static GameObject killObj;
+	
+	private static double hitObjCounter; //if just died
+	private static double respawnCounter; //if respawning
+	private static boolean gameOver = false;
 	
 	private ShaderControl shader; //might have an option to change this later
 	
@@ -123,8 +127,12 @@ public class Engine implements GLEventListener {
 		textures[REAR_SHOT] = new MyTexture(gl, img + "rearShot.png");
 		textures[SIDE_SHOT] = new MyTexture(gl, img + "sideShot.png");
 		
+		textures[PLAYER_SHEILD] = new MyTexture(gl, img+"playerShield.png");
+		
 		playerPos = player.getPosition(); //this is here because it requires a screen to function
         mousePos = Mouse.theMouse.getPosition();
+        
+        gameOver = false;
         
         //enable textures
 		gl.glEnable(GL2.GL_TEXTURE_2D);
@@ -147,7 +155,7 @@ public class Engine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		SoundEffect.init(); //TODO other volumes: HIGH, MEDIUM and LOW
+		SoundEffect.init(); //sounds are per file now
 		if (settings.ifSound()) {
 			SoundEffect.volume = SoundEffect.Volume.HIGH;
 		} else {
@@ -159,6 +167,11 @@ public class Engine implements GLEventListener {
 	public void display(GLAutoDrawable drawable) {
 		settings.setPixelHeight(drawable.getSurfaceHeight()); //might decide that the window can't be resized later 
 		settings.setPixelWidth(drawable.getSurfaceWidth());
+		
+		if (gameOver) { //killed in the last update
+//			TheGame.reloadMenu(gameState, settings.getName());
+			return; //game will die now :) //TODO here it is
+		}
 		
 		update();
 
@@ -173,21 +186,19 @@ public class Engine implements GLEventListener {
 		playerPos = player.getPosition(); //by extension these 2 other update line need to be here
 		mousePos = Mouse.theMouse.getPosition();
 		
-		if (killCountdown > 0) { //if in killscreen
-			if (killCountdown >= Engine.KILL_SCREEN_TIME/2) {
-				LinkedList<GameObject> allObj = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
-				for (GameObject o : allObj) {
-					if (!(o instanceof Player || o.equals(GameObject.ROOT))) {
-						o.draw(gl);
-					}
+		
+		if (hitObjCounter > 0) { //if just hit object, show object and delete everything* else
+			LinkedList<GameObject> allObj = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
+			for (GameObject o : allObj) {
+				if (!(o instanceof Player || o.equals(GameObject.ROOT))) {
+					o.draw(gl);
 				}
-				
-			} else {
-				GameObject.ROOT.draw(gl);
-			}
-		} else { //if not then draw everything as normal
+			}	
+			
+		} else { //normal gamplay
 			GameObject.ROOT.draw(gl);
 		}
+		
 		
 		//start again to draw the GUI
 		gl.glPushMatrix();
@@ -206,16 +217,26 @@ public class Engine implements GLEventListener {
 		double dt = (time - myTime) / 1000.0;
 		myTime = time;
 		
-		if (killCountdown > 0) { //if kill count down is active
-			killCountdown -= dt;
+		if (hitObjCounter > 0) { //just hit something
+			hitObjCounter -= dt;
+			//animate just the particles because visuals are cool
+			LinkedList<Particle> all = new LinkedList<Particle>(Particle.ALL_THIS);
+			for (GameObject obj: all) {
+				obj.update(dt);
+			}
+			return; //because we don't want anything else to move
 			
-			if (killCountdown <= KILL_SCREEN_TIME/2) { //second half of countdown
-				if (killObj != null) { //only happens the once coming into the second half of killscreen
-					GameObject.ALL_OBJECTS.remove(killObj); //the obj that hit you is now removed as it doesn't need to be displayed anymore
-					killObj = null;
-					Engine.gameState.lostLife();
-					Engine.killAll(null, false, false);
-				}
+		} else if (respawnCounter > 0) {
+			respawnCounter -= dt;
+			
+			if (killObj != null) { //first time in respawn, 
+				killObj = null; //so it finally goes away
+				
+				Particle.ALL_THIS.clear(); //no more particles please
+				Engine.killAll(null, false, false); //kill everything for real this time
+				
+				Engine.spawner.lostLife(); //TODO listeners for this kind of stuff?
+				Engine.gameState.lostLife();
 				
 				Engine.player.x = 0;
 				Engine.player.y = 0;
@@ -224,21 +245,15 @@ public class Engine implements GLEventListener {
 				Engine.myCamera.x = 0;
 				Engine.myCamera.y = 0; //move camera and player to center
 				
+				@SuppressWarnings("unused")
 				TextPopup t = new TextPopup(WHITE, "Ready", 0.1, -0.6, 1);
-				t.angle = 0; //warning message
-				
-			} else if (killCountdown <= 0) { //the overflow happened this pass
-				killCountdown = 0; //so killscreen is over
+				@SuppressWarnings("unused")
+				TextPopup t2 = new TextPopup(WHITE, "Next Powerup At: " + Engine.spawner.getNextPowerup(), 0.1, -3, -2);
 			}
 			
-			//animate just the particles because visuals
-			LinkedList<Particle> all = new LinkedList<Particle>(Particle.ALL_THIS);
-			for (GameObject obj: all) {
-				obj.update(dt);
-			}
-			
-			return;
+			return; //nothing moves still
 		}
+		
 		
 		//lag handling TO?DO
 		dt = 0.016; //seems to work at this point, as its always the same
@@ -404,15 +419,13 @@ public class Engine implements GLEventListener {
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
 		//called by system when the window is closed
-
-//		System.out.println(Engine.curGame.toString());
 		//TODO possible double up between lostLife and this when closing the game
 		
 		FileHelper.writeScore(gameState.getDifficulty(), gameState.getScore(), "auto_"+settings.getName(), (int)gameState.getTime());
 		
 		FileHelper.addToStats(gameState);
 		
-		System.out.println(FileHelper.getStats() + "\t from dispose(), Engine");
+		System.out.println("Game Quit.\n\t- dispose(), Engine");
 	}
 	
 	
@@ -481,7 +494,7 @@ public class Engine implements GLEventListener {
 		if (isPaused) {
 			return false;
 		}
-		if (killCountdown > 0) {
+		if (Engine.respawnCounter > 0 || Engine.hitObjCounter > 0) { //in respawn/obj show mode
 			return false;
 		}
 		
@@ -493,18 +506,20 @@ public class Engine implements GLEventListener {
 	 * @param obj
 	 */
 	public static void lostLife(GameObject obj) { 
-		Engine.killAll(obj, true, true); //delete everything, then add the object later
+		Engine.killAll(obj, true, true); //delete everything, but obj
 		
-		killCountdown = Engine.KILL_SCREEN_TIME;
+		hitObjCounter = Engine.KILL_SCREEN_TIME;
+		respawnCounter = Engine.KILL_SCREEN_TIME;
+		
 		killObj = obj;
 		
 		if (gameState.getLives() < 1) { //no lives left
-			TheGame.reloadMenu(gameState, settings.getName());
-		} //TODO must stop itself (somehow, maybe through a "pause" like thing)
+			Engine.gameOver = true; //so in the next one it can be killed
+		}
 	}
 	
 	public static void togglePause() {
-		if (Engine.killCountdown > 0) {
+		if (Engine.respawnCounter > 0 || Engine.hitObjCounter > 0) {
 			return;
 		}
 		isPaused = !isPaused;

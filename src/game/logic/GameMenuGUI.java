@@ -26,16 +26,12 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	final TheGame theGame;
+	final TheGame theGame; //the actual game
 	JPanel menuPanel; //for the menu
 	
-	private double scale = 10; //you know, it kind of works on the stock game size
-	
 	private GridBagConstraints gbLayout;
-	private static JPanel leaderBoard;
-	
-	private ButtonGroup group;
-	
+	private static JPanel leaderBoard; //panel for showing the currently viewing leaderboard
+	private ButtonGroup group; //yay buttons
 	
 	//More settings?
 	JCheckBox particles;
@@ -47,7 +43,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 	JTextField pixelWidth, pixelHeight;
 	JTextField boardWidth, boardHeight;
 	
-	JTextField nameField;
+	JTextField nameField; //for your record name
 
 	
 	GameMenuGUI(final TheGame theGame) {
@@ -324,6 +320,9 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 
 	
 	public GameSettings getSettings() {
+		//should do maths on the size of the screen
+		int scale = 8; //it just should start like that ok
+		
 		GameSettings set = new GameSettings(getPixelWidth(), getPixelHeight(), getBoardWidth(), getBoardHeight(), scale);
 		set.setIfAliasing(antialiasing.isSelected());
 		set.setIfSound(sound.isSelected());

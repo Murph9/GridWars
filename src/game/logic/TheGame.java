@@ -16,14 +16,14 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class TheGame {
 
 	/**The frame for the menu*/
-	private GameMenuGUI GUIFrame; 
+	private static GameMenuGUI GUIFrame; 
 	
 	/**The frame for the game*/
-	private JFrame gameFrame;
+	private static JFrame gameFrame;
 	
-	private GLJPanel gamePanel; //used by the Engine
-	private FPSAnimator animator;
-	private Engine engine;
+	private static GLJPanel gamePanel; //used by the Engine
+	private static FPSAnimator animator;
+	private static Engine engine;
 	
 	private static final int DEFAULT_BOARD_WIDTH = 16; //at least 4x4
 	private static final int DEFAULT_BOARD_HEIGHT= 12; //here is default
@@ -39,10 +39,10 @@ public class TheGame {
 	//draw the menu
 	public void initMenu() {
 		gameFrame = new JFrame();
-		gameFrame.setTitle("GridWars");
+		gameFrame.setTitle("GridWars Game");
 		
 		GUIFrame = new GameMenuGUI(this);
-		GUIFrame.setTitle("GridWars");
+		GUIFrame.setTitle("GridWars Menu");
 		
 		//////////////////////////////////////////////////
 		////Other Things
@@ -73,7 +73,7 @@ public class TheGame {
 			GUIFrame.setVisible(true);
 			return;
 		}
-		//if either of these don't work .get#####Height() won't work, then need to work
+		//if either of these don't work .get#####Height() won't work, they need to work
 		
 		GLProfile.initSingleton();
         GLProfile glprofile = GLProfile.getDefault();
@@ -86,7 +86,7 @@ public class TheGame {
 		int boardHeight = GUIFrame.getBoardHeight();
 		
 		if (pixelWidth >= 800 && pixelHeight >= 600) { //the game really only works on resolutions bigger than this
-			this.GUIFrame.setSize(pixelWidth, pixelHeight);
+			GUIFrame.setSize(pixelWidth, pixelHeight);
 		} else {
 			pixelWidth = TheGame.DEFAULT_PIXEL_WIDTH;
 			pixelHeight = TheGame.DEFAULT_PIXEL_HEIGHT;
@@ -94,7 +94,7 @@ public class TheGame {
 		}
 		
 		if (boardWidth >= 4 && boardHeight >= 4) { //the game really only works on game fields bigger than this
-			this.GUIFrame.setSize(boardWidth, boardHeight);
+			GUIFrame.setSize(boardWidth, boardHeight);
 		} else {
 			boardWidth = TheGame.DEFAULT_BOARD_WIDTH;
 			boardHeight = TheGame.DEFAULT_BOARD_HEIGHT;
@@ -106,7 +106,7 @@ public class TheGame {
         //then write settings to file
         FileHelper.writeSettings(set);
         
-        this.engine = new Engine(new SpawnHandler(difficulty), new GameState(difficulty), set);
+        engine = new Engine(new SpawnHandler(difficulty), new GameState(difficulty), set);
         
         //////////////////////////////
         //JOGL Stuff:
@@ -131,17 +131,20 @@ public class TheGame {
         gamePanel.requestFocus();
         gameFrame.setLocationRelativeTo(null); //middle of the screen
         
-        animator = new FPSAnimator(60); //why is it fine that its 0 here? [infinite FPS!!]
+        animator = new FPSAnimator(60); //why is it fine that its 0 here? [infinite FPS!]
         animator.add(gamePanel);
         animator.start();
     }
 	
 	public static void reloadMenu(GameState state, String name) {
 		System.out.println("(lost all lives)\n   - reloadMenu");
-		FileHelper.writeScore(Engine.EASY_D, state.getScore(), "ME*", (int)state.getTime());
+		FileHelper.writeScore(Engine.EASY_D, state.getScore(), name, (int)state.getTime());
 		FileHelper.addToStats(state);
 		
 		
+		GUIFrame.setVisible(true);
+		animator.stop();
+		gameFrame.dispose();
 	}
 
 }

@@ -28,6 +28,8 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	private Timer timer;
 	private boolean shooting;
 	
+	private double shieldAngle;
+	
 	public Player(double size, double[] colour) {
 		super(size, colour);
 		
@@ -143,11 +145,9 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		//do rotation stuff
 		double[] s = Engine.getMousePos();
-		double angle = Math.toDegrees(Math.atan2((s[1]-y), (s[0]-x)));
-		if (angle > 0) angle += 360; // Math.toDegrees(2*Math.PI); //see here fix found
-		setRotation(angle);
+		this.angle = Math.toDegrees(Math.atan2((s[1]-y), (s[0]-x)));
+		if (angle > 0) angle += 360;
 
-		//tail of particles TODO maybe spawn better (also look at settings for particles)
 		double thresh = Engine.rand.nextDouble();
 		if (Math.sqrt(dx*dx + dy*dy) > thresh) { //only matters if going less than max speed
 			MovingObject q = new Particle(2, Engine.BLUE, 1, Particle.DEFAULT_DRAG); //also not really sure why blue but hey..
@@ -158,8 +158,12 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			q.dy = (-dy*4 - (s[1] -y)/2)*(Engine.rand.nextDouble()*2);
 			
 			MovingObject r = new Particle(2, Engine.BLUE, 1, Particle.DEFAULT_DRAG);
-			r.x = x; 
-			r.y = y; //TODO make this not look like a line
+			r.x = x+0.1*(Engine.rand.nextDouble()*2 -1); 
+			r.y = y+0.1*(Engine.rand.nextDouble()*2 -1);
+		}
+		
+		if (Engine.gameState.ifTempShield()) {
+			shieldAngle += dt*100;
 		}
 		
 		//acceleration calculations 
@@ -242,10 +246,20 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
 		Helper.square(gl);
 		
-		if (Engine.gameState.ifTempShield()) { //shield is active, UGLY PLEASE FIX TODO
+		if (Engine.gameState.ifTempShield()) {
 			gl.glPushMatrix();
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BLACKHOLE].getTextureId());
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.PLAYER_SHEILD].getTextureId());
 			
+			gl.glRotated(shieldAngle- angle,0,0,1);
+			gl.glScaled(2, 2, 1);
+			Helper.square(gl);
+			
+			gl.glPopMatrix();
+			
+			gl.glPushMatrix();
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.PLAYER_SHEILD].getTextureId());
+			
+			gl.glRotated(-shieldAngle- angle,0,0,1);
 			gl.glScaled(2, 2, 1);
 			Helper.square(gl);
 			

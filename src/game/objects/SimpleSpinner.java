@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 
+//TODO have a few colours to pick from (stops it being bland)
 
 public class SimpleSpinner extends MovingObject {
 	

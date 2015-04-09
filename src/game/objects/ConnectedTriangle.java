@@ -27,7 +27,7 @@ public class ConnectedTriangle extends MovingObject {
 	ConnectedTriangle(double spawnTimer, double size, double[] colour, ConnectedTriangle in) {
 		super(size, colour);
 		ALL_THIS.add(this);
-		strength = 0; //TODO, balance :D
+		strength = 0;
 		partner = in;
 		score = 150;
 		this.spawnTimer = spawnTimer;

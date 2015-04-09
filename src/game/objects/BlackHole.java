@@ -14,7 +14,7 @@ public class BlackHole extends MovingObject {
 	public static final int SUCK_RADIUS = 6;
 	public static double MAX_SPEED = 1; //yeah kinda slow
 	
-	public static final int MAX_PARTICLES = 20; //low TODO balance
+	public static final int MAX_PARTICLES = 20;
 	
 	private boolean isInert;
 	private int numCount; //number of objects consumed

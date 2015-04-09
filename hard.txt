@@ -6,5 +6,5 @@
 50000	 FFF	 1
 40000	 ME	 1
 30000	 GGG	 1
+29885	 auto_Murph	 585
 20905	 auto_Murph	 388
-20000	 HHH	 1

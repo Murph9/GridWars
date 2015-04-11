@@ -1,6 +1,6 @@
 pixel_width 1024
 pixel_height 728
-board_width 6
+board_width 16
 board_height 6
 scale 8.0
 name Murph

@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
-public class GameMenuGUI extends JFrame implements ActionListener {
+public class GameMenu extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -46,7 +46,7 @@ public class GameMenuGUI extends JFrame implements ActionListener {
 	JTextField nameField; //for your record name
 
 	
-	GameMenuGUI(final TheGame theGame) {
+	GameMenu(final TheGame theGame) {
 		this.theGame = theGame;
 		
 		menuPanel = new JPanel();

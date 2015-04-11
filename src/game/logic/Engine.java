@@ -38,37 +38,39 @@ public class Engine implements GLEventListener {
 			PURPLE = {1,0,1,0.5}, YELLOW = {1,1,0,0.5}, LIGHT_YELLOW = {1,1,0.2,0.5}, BROWN = {0.8, 0.3, 0.2,0.5}, 
 			BLUE = {0.2,0.2,1,0.5},	ORANGE = {1,0.6,0,0.5}, REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 
+	//Difficulty:
 	public static final String 	EASY_D = "easy", MEDIUM_D = "medium", 
 								HARD_D = "hard", EXT_D = ".txt";
 	
-	public static final Random rand = new Random();
-		//just because ease of use, ive heard making a random object is slow [unconfirmed]
-	
+	//Game Static variables
 	public static SpawnHandler spawner;
 	public static GameState gameState; //so every file can access these
 	public static GameSettings settings;
-	
-	private double curAspect; //for the GUI positioning
+	private ShaderControl shader; //might have an option to change this later
 
 	public static Camera myCamera;
 	public static Player player;
 	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; 
 				//updated each 'update()' for speed of access, all methods should use this
 	
+	public static final Random rand = new Random();
+				//just because ease of use, ive heard making a random object is slow [unconfirmed]
+
+	private static final double KILL_SCREEN_TIME = 2;
+				//for measuring the respawn speed
+
+	private double curAspect; //for the GUI positioning
 	private long myTime;
 	
-	private static final double KILL_SCREEN_TIME = 2;
-	//for measuring the respawn speed
 	
 	private static boolean isPaused;
 	
 	private static GameObject killObj;
-	
 	private static double hitObjCounter; //if just died
+
 	private static double respawnCounter; //if respawning
 	private static boolean gameOver = false;
 	
-	private ShaderControl shader; //might have an option to change this later
 	
 	/**Instantiates a new game engine, should have an animator called on this as well.
 	 */
@@ -87,6 +89,12 @@ public class Engine implements GLEventListener {
 		settings = inSettings;
 		
 		isPaused = false;
+		respawnCounter = 2; //seems fine
+		
+		@SuppressWarnings("unused")
+		TextPopup t = new TextPopup(WHITE, "Ready", 0.1, -0.6, 1);
+		@SuppressWarnings("unused")
+		TextPopup t2 = new TextPopup(WHITE, "Next Powerup At: " + Engine.spawner.getNextPowerup(), 0.1, -3, -2);
 	}
 	
 	public static double[] getPlayerPos(){  return playerPos; }
@@ -146,6 +154,10 @@ public class Engine implements GLEventListener {
 			gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
+		} else {
+			gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_FASTEST);
+			gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_FASTEST);
+			gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_FASTEST);
 		}
 		
 		// create a new shader object that we can reference later to activate it.
@@ -169,8 +181,9 @@ public class Engine implements GLEventListener {
 		settings.setPixelWidth(drawable.getSurfaceWidth());
 		
 		if (gameOver) { //killed in the last update
-//			TheGame.reloadMenu(gameState, settings.getName());
-			return; //game will die now :) //TODO here it is
+			TheGame.reloadMenu(gameState, settings.getName());
+			GameObject.ALL_OBJECTS.clear();
+			return; //game will die now :)
 		}
 		
 		update();
@@ -422,14 +435,12 @@ public class Engine implements GLEventListener {
 		//TODO possible double up between lostLife and this when closing the game
 		
 		FileHelper.writeScore(gameState.getDifficulty(), gameState.getScore(), "auto_"+settings.getName(), (int)gameState.getTime());
-		
 		FileHelper.addToStats(gameState);
-		
-		System.out.println("Game Quit.\n\t- dispose(), Engine");
+		System.err.println("Game Quit.\n\t- dispose(), Engine");
 	}
 	
 	
-	///////////////////////////// STATIC things
+	///////////////////////////// Outside reference things
 	
 	/**Kill all objects on the screen (excluding Player,Border,Camera,Powerups,ROOT)
 	 * @param object Optional game object that will not be deleted after method
@@ -527,5 +538,4 @@ public class Engine implements GLEventListener {
 		TextPopup text = new TextPopup(WHITE, "Paused", 0.1, playerPos[0]-0.8, playerPos[1]+1.2);
 		text.angle = 0;
 	}
-	
 }

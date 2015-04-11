@@ -276,7 +276,7 @@ public class FileHelper {
 		return out;
 	}
 	
-	
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//SCORES:
 	
@@ -453,7 +453,7 @@ public class FileHelper {
 			count++;
 		}
 		
-//		positionS = positionS.replaceFirst("^\n", ""); //here just for reference (removes leading \n)
+//		positionS = positionS.replaceFirst("^\n", ""); //just here for reference (removes leading '\n')
 		
 		JTextArea position = new JTextArea(positionS);
 		position.setOpaque(false); //because of the 'ghastly' white colour behind the text
@@ -519,46 +519,3 @@ class Record {
 		return false;
 	}
 }
-
-
-
-
-//returns the text from the file for the text area
-//private static String getScoresText(File file) {
-//	LinkedList<Record> records = new LinkedList<Record>();
-//	
-//	if (file.exists()) {
-//		try {
-//			Scanner scores = new Scanner(new FileReader(file));
-//			while (scores.hasNext()) {
-//				records.add(new Record(scores.nextInt(), scores.next(), scores.nextInt()));
-//			}
-//			scores.close();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	Collections.sort(records, new Comparator<Record>() {
-//		public int compare(Record a, Record b) {
-//			if (a.equals(b)) { return 0; }
-//			if (a.getScore() <= b.getScore()) { 
-//				return 1; // a
-//			}
-//			return -1; // b
-//		}
-//	});
-//	
-//	String text = "";
-//	
-//	int count = 0;
-//	for (Record i: records) {
-//		text += ("\n" +(count+1) + " - " + i.toLineString());
-//
-//		if (count >= 10) break;
-//		count++;
-//	}
-//	text = text.replaceFirst("^\n", ""); //remove first newline...
-//	
-//	return text;
-//}

@@ -13,6 +13,8 @@ import game.objects.*;
 public class GameState {
 	
 	private final double SPEED_INC = 0.15;
+	
+	//TODO these change value depending on the level
 	private static final double POWERUP_LENGTH_LONG = 15; //15 seconds is the standard (according to the game)
 	private static final double POWERUP_LENGTH_SHORT = 15; //10 is for super shots
 	
@@ -237,9 +239,9 @@ public class GameState {
 
 	public String getDifficulty() {	return difficulty; }
 	
-	public int getTotalDeaths(){ return deaths;     }
-	public int getTotalKills() { return totalKills; }
-	public int getPowerUpCount(){return powerupCount;}
+	public int getTotalDeaths() { return deaths;      }
+	public int getTotalKills()  { return totalKills;  }
+	public int getPowerUpCount(){ return powerupCount;}
 	
 	public int    getBombCount()   { return bombCount;   }
 	public int    getBulletCount() { return bulletCount; }
@@ -251,7 +253,8 @@ public class GameState {
 	public boolean ifBouncyShot() { return (hasBouncyShot > 0);  }
 	public boolean ifSuperShot()  { return (hasSuperShot > 0);   }
 	
+	
 	public String toString() { //has been outdated
-		return "Closed score = "+score;
+		return "Score:  " +score + "\nKills: " + kills + "\nPower ups: " + powerupCount;
 	}
 }

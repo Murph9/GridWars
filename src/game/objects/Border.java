@@ -13,19 +13,24 @@ public class Border extends GameObject {
 		this.height = height;
 	}
 	
+	@Override
+	public double[] getCollisionPosition() { //never collides with anything
+		return new double[]{Double.MAX_VALUE, Double.MAX_VALUE};
+	}
+	
 	public void drawSelf(GL2 gl) {
 		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
 		gl.glLineWidth(1);
 		
-		gl.glColor3d(0.3, 0.3, 0.3);
+		gl.glColor4d(0.3, 0.3, 0.3, 0.5);
 		gl.glBegin(GL2.GL_LINES);
 		for (int i = -width; i < width; i+=2) {
-			gl.glVertex2d(i,height);
-			gl.glVertex2d(i,-height);
+//			gl.glVertex2d(i,height);
+//			gl.glVertex2d(i,-height);
 		}
 		for (int i = -height; i < height; i+=2) {
-			gl.glVertex2d(-width, i);
-			gl.glVertex2d(width, i);
+//			gl.glVertex2d(-width, i);
+//			gl.glVertex2d(width, i);
 		}
 		gl.glEnd();
 		

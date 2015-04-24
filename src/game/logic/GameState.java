@@ -55,6 +55,8 @@ public class GameState {
 		bulletCount = 2;
 		bulletSpeed = 1.6;
 		
+//		hasShield =1000;
+		
 		resetSpeeds(difficulty);
 	}
 	

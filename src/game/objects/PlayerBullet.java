@@ -51,6 +51,8 @@ public class PlayerBullet extends MovingObject {
 		if (hasCollided && !Engine.gameState.ifBouncyShot()) {
 			this.amHit(false);
 			return;
+		} else {
+			Engine.grid.Push(x+dx*0.02, y+dy*0.02, 0.75, 4); //TODO balance
 		}
 		
 		selfCol();

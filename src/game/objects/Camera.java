@@ -44,7 +44,7 @@ public class Camera extends GameObject {
     	
     	double pixelAspect = pixelWidth/(double)(Engine.settings.getPixelHeight());
     	int height = Engine.settings.getBoardHeight() + 1;
-    	int width = Engine.settings.getBoardWidth() + 1; //+1 is for buffer size
+    	int width = Engine.settings.getBoardWidth() + 1; //+1 is for buffer size of the game field
     	
     	if (this.y > (height - this.size)) {
     		this.y = (height - this.size); //want to keep the camera from this.size from the edge

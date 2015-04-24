@@ -19,7 +19,7 @@ public class Helper {
 		else if (a < 0) return -1;
 		else return (Engine.rand.nextInt(2)*2 -1); //i was trying to make them move when they didn't want to
 	}
-	public static double sgn(double a) {
+	public static int sgn(double a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
 		else return (Engine.rand.nextInt()*2 -1); //yes i know i used nextInt(), it must be full or nothing

@@ -12,7 +12,7 @@ public class BlackHole extends MovingObject {
 
 	public static final ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
 	public static final int SUCK_RADIUS = 6;
-	public static double MAX_SPEED = 1; //yeah kinda slow
+	public static double MAX_SPEED = 0.5; //yeah kinda slow
 	
 	public static final int MAX_PARTICLES = 20;
 	
@@ -140,6 +140,8 @@ public class BlackHole extends MovingObject {
 				}
 			}
 		}
+		
+		Engine.grid.pull(x,y,4+(int)size, 6); //pull on the grid
 	}
 	
 	public void selfCol() {
@@ -171,6 +173,8 @@ public class BlackHole extends MovingObject {
 		score = 150 + (5/2)*numCount*(numCount+1); //from the wiki, as you can see its a quadratic
 		super.amHit(wasShot);
 		ALL_THIS.remove(this);
+		
+		Engine.grid.Push(x, y, (int)size, 10);
 		
 		if (wasShot) { 
 			//then add score

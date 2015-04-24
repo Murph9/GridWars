@@ -321,8 +321,11 @@ public class SpawnHandler {
 		//actually place it in the corner (or random or player)
 		switch (location) {
 		case 0: //random spawn
-			o.x = 2*(random.nextInt(Engine.settings.getBoardWidth())-Engine.settings.getBoardWidth()/2);
-			o.y = 2*(random.nextInt(Engine.settings.getBoardHeight())-Engine.settings.getBoardHeight()/2);
+//			o.x = 2*(random.nextInt(Engine.settings.getBoardWidth())-Engine.settings.getBoardWidth()/2);
+//			o.y = 2*(random.nextInt(Engine.settings.getBoardHeight())-Engine.settings.getBoardHeight()/2);
+			
+			o.x = random.nextDouble()*Engine.settings.getBoardWidth()*2 - Engine.settings.getBoardWidth();
+			o.y = random.nextDouble()*Engine.settings.getBoardHeight()*2 - Engine.settings.getBoardHeight();
 			break;
 		case 1: //corners 1,2,3,4
 			o.x = Engine.settings.getBoardWidth()-o.size;
@@ -357,6 +360,8 @@ public class SpawnHandler {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			Engine.grid.Shockwave(o.x, o.y);
 		}
 		
 		//TODO fix this: trying to stop objects directly spawning on player

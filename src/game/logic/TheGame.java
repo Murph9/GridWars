@@ -32,6 +32,9 @@ public class TheGame {
 	private static final int DEFAULT_PIXEL_WIDTH = 1024; //at least 800x600
 	private static final int DEFAULT_PIXEL_HEIGHT= 768; //default
 	
+	private static final int DEFAULT_GRID_X_COUNT = 100;
+	private static final int DEFAULT_GRID_Y_COUNT = 60;
+	
  	public static void main(String[] args) {
 		TheGame system = new TheGame();
 		system.initMenu();
@@ -40,7 +43,7 @@ public class TheGame {
 	//draw the menu
 	public void initMenu() {
 		gameFrame = new JFrame();
-		gameFrame.setTitle("GridWars Game");
+		gameFrame.setTitle("GridWars");
 		
 		GUIFrame = new GameMenu(this);
 		GUIFrame.setTitle("GridWars Menu");
@@ -117,6 +120,12 @@ public class TheGame {
 		}
 		//if either of these don't work .get#####Height() won't work, they need to work
 		
+		if (!GUIFrame.hasValidGridCounts()) {
+			System.err.println("Grid values are only positive integers");
+			GUIFrame.setVisible(true);
+			return false;
+		}
+		
 		int pixelWidth = GUIFrame.getPixelWidth();
 		int pixelHeight = GUIFrame.getPixelHeight();
 		
@@ -128,16 +137,28 @@ public class TheGame {
 		} else {
 			pixelWidth = TheGame.DEFAULT_PIXEL_WIDTH;
 			pixelHeight = TheGame.DEFAULT_PIXEL_HEIGHT;
-			System.out.println("setting defualt pixel sizes "+DEFAULT_PIXEL_HEIGHT +" x "+DEFAULT_PIXEL_WIDTH);
+			System.out.println("setting defualt pixel sizes "+pixelWidth +" x "+pixelHeight);
 		}
 		
 		if (boardWidth >= 4 && boardHeight >= 4) { //the game really only works on game fields bigger than this
-			GUIFrame.setSize(boardWidth, boardHeight);
+//			GUIFrame.setSize(boardWidth, boardHeight);
 		} else {
 			boardWidth = TheGame.DEFAULT_BOARD_WIDTH;
 			boardHeight = TheGame.DEFAULT_BOARD_HEIGHT;
-			System.out.println("setting defualt game board sizes"+DEFAULT_BOARD_HEIGHT +" x "+DEFAULT_BOARD_WIDTH);
+			System.out.println("setting defualt game board sizes"+boardWidth +" x "+boardHeight);
 		}
+		
+		int gridX = GUIFrame.getGridXCount();
+		int gridY = GUIFrame.getGridYCount();
+		
+		if (gridX >= 4 && gridY >= 4) { //the game really only works on bigger
+//			GUIFrame.setSize(boardWidth, boardHeight);
+		} else {
+			gridX = TheGame.DEFAULT_GRID_X_COUNT;
+			gridY = TheGame.DEFAULT_GRID_Y_COUNT;
+			System.out.println("setting defualt game board sizes"+gridX +" x "+gridY);
+		}
+		
 		
         //then write settings to file
         FileHelper.writeSettings(GUIFrame.getSettings());

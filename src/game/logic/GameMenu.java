@@ -43,6 +43,8 @@ public class GameMenu extends JFrame implements ActionListener {
 	JTextField pixelWidth, pixelHeight;
 	JTextField boardWidth, boardHeight;
 	
+	JTextField gridXCount, gridYCount;
+	
 	JTextField nameField; //for your record name
 
 	
@@ -73,8 +75,6 @@ public class GameMenu extends JFrame implements ActionListener {
 		group.add(buttonEasy);
 		group.add(buttonMed);
 		group.add(buttonHard);
-		
-		buttonMed.setSelected(true); //because its hard coded somewhere else i think (in this file)
 		
 		buttonEasy.addActionListener(this);
 		buttonMed.addActionListener(this);
@@ -163,7 +163,10 @@ public class GameMenu extends JFrame implements ActionListener {
 
 		wxh.gridy++;
 		widthXHeight.add(new JLabel("Game Field"), wxh);
-		wxh.fill = GridBagConstraints.HORIZONTAL;
+		
+		wxh.gridy++;
+		widthXHeight.add(new JLabel("Grid Count"), wxh);
+		wxh.fill = GridBagConstraints.HORIZONTAL;		
 		
 		//textboxes
 		wxh.gridx++;
@@ -174,9 +177,15 @@ public class GameMenu extends JFrame implements ActionListener {
 		wxh.gridy++;
 		boardWidth = new JTextField("null*");
 		widthXHeight.add(boardWidth, wxh);
+		
+		wxh.gridy++;
+		gridXCount = new JTextField("null*");
+		widthXHeight.add(gridXCount, wxh);
 
 		wxh.gridx++;
 		wxh.gridy = 0;
+		widthXHeight.add(new JLabel("x"), wxh);
+		wxh.gridy++;
 		widthXHeight.add(new JLabel("x"), wxh);
 		wxh.gridy++;
 		widthXHeight.add(new JLabel("x"), wxh);
@@ -190,6 +199,11 @@ public class GameMenu extends JFrame implements ActionListener {
 		wxh.gridy++;
 		boardHeight = new JTextField("null*");
 		widthXHeight.add(boardHeight, wxh);
+		
+		wxh.gridy++;
+		gridYCount = new JTextField("null*");
+		widthXHeight.add(gridYCount, wxh);
+		
 
 		//checkboxes
 		set.gridwidth = 1;
@@ -219,7 +233,7 @@ public class GameMenu extends JFrame implements ActionListener {
 		////Heading Info + positions		
 		gbLayout = new GridBagConstraints();
 		gbLayout.fill = GridBagConstraints.BOTH;
-		gbLayout.insets = new Insets(5,5,5,5);
+		gbLayout.insets = new Insets(8,8,8,8);
 		
 		JPanel headPanel = new JPanel();
 		headPanel.setLayout(new GridBagLayout());
@@ -250,30 +264,48 @@ public class GameMenu extends JFrame implements ActionListener {
 		gbLayout.gridx++;
 		menuPanel.add(settingsPanel, gbLayout);
 
-		////Scoreboard
-		leaderBoard = FileHelper.getLeaderBoard(Engine.MEDIUM_D);
-		
 		gbLayout.gridx = 1;
 		gbLayout.gridy = 1;
 		gbLayout.gridwidth = 1;
 		gbLayout.gridheight = 2;
-		menuPanel.add(leaderBoard, gbLayout);
+		//the line is applies to is down below the switch case stuff
+		//scoreboard is below
 		
 		//////////////////////////////////////////////////
 		GameSettings fileSettings = FileHelper.readSettings();
-		pixelWidth.setText(""+fileSettings.getPixelWidth());
-		pixelHeight.setText(""+fileSettings.getPixelHeight());
-		
-		boardWidth.setText(""+fileSettings.getBoardWidth());
-		boardHeight.setText(""+fileSettings.getBoardHeight());
-		
 		nameField.setText(fileSettings.getName());
+		
+		String diff = fileSettings.getDifficulty();
+		switch (diff) {
+		case Engine.EASY_D:
+			buttonEasy.setSelected(true);
+			break;
+		case Engine.MEDIUM_D:
+			buttonMed.setSelected(true);
+			break;
+		case Engine.HARD_D:
+			buttonHard.setSelected(true);
+			break;
+		default:
+			System.err.println("NOT VALID DIFFICULTY");
+		}
+		leaderBoard = FileHelper.getLeaderBoard(diff);
+		menuPanel.add(leaderBoard, gbLayout); //this should be up above
 		
 		particles.setSelected(fileSettings.ifParticles());
 		antialiasing.setSelected(fileSettings.ifAliasing());
 		sound.setSelected(fileSettings.ifSound());
 		
 		particleCount.setValue(fileSettings.getParticleCount());
+		
+		pixelWidth.setText(""+fileSettings.getPixelWidth());
+		pixelHeight.setText(""+fileSettings.getPixelHeight());
+		
+		boardWidth.setText(""+fileSettings.getBoardWidth());
+		boardHeight.setText(""+fileSettings.getBoardHeight());
+		
+		gridXCount.setText(""+fileSettings.getGridXCount());
+		gridYCount.setText(""+fileSettings.getGridYCount());
 	}
 	
 
@@ -302,6 +334,13 @@ public class GameMenu extends JFrame implements ActionListener {
 		}
 		return false;
 	}
+	
+	public boolean hasValidGridCounts() {
+		if (gridXCount.getText().matches("[0-9]+") && gridYCount.getText().matches("[0-9]+")) {
+			return true;
+		}
+		return false;
+	}
 
 
 	public int getPixelWidth() {
@@ -318,16 +357,31 @@ public class GameMenu extends JFrame implements ActionListener {
 		return Integer.parseInt(boardHeight.getText());
 	}
 
+	public int getGridXCount() {
+		return Integer.parseInt(gridXCount.getText());
+	}
+	public int getGridYCount() {
+		return Integer.parseInt(gridYCount.getText());
+	}
 	
 	public GameSettings getSettings() {
 		//should do maths on the size of the screen
-		int scale = 8; //it just should start like that ok
-		
-		GameSettings set = new GameSettings(getPixelWidth(), getPixelHeight(), getBoardWidth(), getBoardHeight(), scale);
+		GameSettings set = new GameSettings(getPixelWidth(), getPixelHeight(), getBoardWidth(), getBoardHeight(), 8);
 		set.setIfAliasing(antialiasing.isSelected());
 		set.setIfSound(sound.isSelected());
 		set.setIfParticles(particles.isSelected());
 		set.setName(nameField.getText());
+		
+		for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+            	set.setDifficulty(button.getActionCommand());
+            }
+        }
+		
+		set.setGridXCount(getGridXCount());
+		set.setGridYCount(getGridYCount());
 		
 		set.setParticleCount((int)particleCount.getValue());
 		return set;

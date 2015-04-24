@@ -113,7 +113,7 @@ public class GameObject {
         gl.glTranslated(x, y, 0);
         gl.glRotated(angle, 0, 0, 1); //because 2D, everything rotates about the z axis
         if (spawnTimer > 0) {
-        	gl.glScaled(size/(1-spawnTimer), size/(1-spawnTimer), 1);
+        	gl.glScaled(size/(1-spawnTimer), size/(1-spawnTimer), 1); //so it spawns in with an effect
         } else {
         	gl.glScaled(size, size, 1);
         }

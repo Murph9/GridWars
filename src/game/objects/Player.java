@@ -339,8 +339,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			return;
 		}
 		if (arg0.getButton() == MouseEvent.BUTTON3) {
-			if (!Engine.gameState.ifTempShield())
-				Engine.gameState.useBomb();
+			Engine.gameState.useBomb();
 		}
 		if (arg0.getButton() == MouseEvent.BUTTON1) {
 			shooting = true;

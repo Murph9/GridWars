@@ -49,6 +49,7 @@ public class Engine implements GLEventListener {
 	private ShaderControl shader; //might have an option to change this later
 
 	public static Camera myCamera;
+	public static SpringGrid grid;
 	public static Player player;
 	private static double[] playerPos = new double[]{0,0}, mousePos = new double[]{0,0}; 
 				//updated each 'update()' for speed of access, all methods should use this
@@ -62,6 +63,9 @@ public class Engine implements GLEventListener {
 	private double curAspect; //for the GUI positioning
 	private long myTime;
 	
+	@SuppressWarnings("unused")
+	private double fps;
+	
 	
 	private static boolean isPaused;
 	
@@ -74,9 +78,13 @@ public class Engine implements GLEventListener {
 	
 	/**Instantiates a new game engine, should have an animator called on this as well.
 	 */
+	@SuppressWarnings("unused")
 	public Engine(SpawnHandler inSpawnner, GameState inState, GameSettings inSettings) {
+		
 		Border border = new Border(inSettings.getBoardWidth(), inSettings.getBoardHeight());
-		border.setSize(1); //just incase it stopped being 1 (removes warning)
+		
+		grid = new SpringGrid(inSettings.getGridXCount(),inSettings.getGridYCount(),
+										inSettings.getBoardWidth(),inSettings.getBoardHeight());
 		
 		myCamera = new Camera();
 		myCamera.setSize(inSettings.getScale());
@@ -91,9 +99,7 @@ public class Engine implements GLEventListener {
 		isPaused = false;
 		respawnCounter = 2; //seems fine
 		
-		@SuppressWarnings("unused")
 		TextPopup t = new TextPopup(WHITE, "Ready", 0.1, -0.6, 1);
-		@SuppressWarnings("unused")
 		TextPopup t2 = new TextPopup(WHITE, "Next Powerup At: " + Engine.spawner.getNextPowerup(), 0.1, -3, -2);
 	}
 	
@@ -227,8 +233,12 @@ public class Engine implements GLEventListener {
 	 */
 	private void update() {
 		long time = System.currentTimeMillis();
+		this.fps = time - myTime;
 		double dt = (time - myTime) / 1000.0;
 		myTime = time;
+		
+		//lag handling TO?DO
+		double lagfixeddt = 0.01666; //seems to work at this point, as its always the same
 		
 		if (hitObjCounter > 0) { //just hit something
 			hitObjCounter -= dt;
@@ -237,6 +247,8 @@ public class Engine implements GLEventListener {
 			for (GameObject obj: all) {
 				obj.update(dt);
 			}
+			grid.update(dt);
+			
 			return; //because we don't want anything else to move
 			
 		} else if (respawnCounter > 0) {
@@ -250,6 +262,8 @@ public class Engine implements GLEventListener {
 				
 				Engine.spawner.lostLife(); //TODO listeners for this kind of stuff?
 				Engine.gameState.lostLife();
+				
+				grid.resetAll(); //reset grid so its easier
 				
 				Engine.player.x = 0;
 				Engine.player.y = 0;
@@ -268,21 +282,18 @@ public class Engine implements GLEventListener {
 		}
 		
 		
-		//lag handling TO?DO
-		dt = 0.016; //seems to work at this point, as its always the same
-		
 		if (isPaused) {
 			//no updates
 		} else {
-			spawner.update(dt); //needs to spawn objects before objects are updated (because they spawn in the middle)
+			spawner.update(lagfixeddt); //needs to spawn objects before objects are updated (because they spawn in the middle)
 			
 			// update all objects
 			List<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 			for (GameObject g: objects) {
-				g.update(dt);
+				g.update(lagfixeddt);
 			}
 
-			gameState.update(dt); //to count down the powerups timers
+			gameState.update(lagfixeddt); //to count down the powerups timers
 		}
 	}
 
@@ -425,6 +436,19 @@ public class Engine implements GLEventListener {
 			}
 			gl.glPopMatrix();
 		
+		//frame speed TODO setting
+			/*String fString = Double.toString(fps); //math so its in the form ddddd.d
+			
+			gl.glPushMatrix();
+			gl.glTranslated(0.9*curAspect,0.5,0);
+			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
+	
+			for (int i = 0; i < fString.length(); i++) {
+				char ch = fString.charAt(i);
+				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
+			}
+			gl.glPopMatrix();*/
+			
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
@@ -448,7 +472,7 @@ public class Engine implements GLEventListener {
 	public static void killAll(GameObject object, boolean particles, boolean killPowerups) {
 		LinkedList<GameObject> allList = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
 		for (GameObject obj: allList) {
-			if (obj instanceof Player || obj instanceof Border || obj instanceof Camera || obj.equals(GameObject.ROOT)) {
+			if (obj instanceof Player || obj instanceof Border || obj instanceof Camera || obj instanceof SpringGrid || obj.equals(GameObject.ROOT)) {
 			} else if (obj instanceof PowerUp) {
 				if (killPowerups) { //if we want it gone
 					GameObject.ALL_OBJECTS.remove(obj);
@@ -477,6 +501,7 @@ public class Engine implements GLEventListener {
 			PowerUp.ALL_THIS.clear(); //remove all powerups on a lost life
 		}
 		
+//		grid.Push(player.x, player.y, 60, 20); //large
 		
 		if (particles) {
 			double pCount = 40*((double)Engine.settings.getParticleCount()/100.0f); //% total particles

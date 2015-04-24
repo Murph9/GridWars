@@ -79,7 +79,7 @@ public class Particle extends MovingObject {
 		if (decayTimer <= 0) {
 			amHit(false);
 		}
-		
+//		decayTimer *= 1.2;
 		blackHole();
 	}
 
@@ -108,7 +108,7 @@ public class Particle extends MovingObject {
 				
 				if (dist < h.size*BlackHole.SUCK_RADIUS/2 && dist > 0.01) {
 					inOrbit = true; //they don't decay when in orbit
-//					decayTimer *= 1.2; //please don't they don't go away
+//					decayTimer *= 1.2; //please don't they don't go away with this
 					h.giveParticle();
 					
 					ddx /= dist;
@@ -124,12 +124,17 @@ public class Particle extends MovingObject {
 		} 
 	}
 	
+	//this is overriden for faster speed
+	public void draw(GL2 gl) {
+		drawSelf(gl); //stops all of the expensive ass code that translates, rotates and scales
+	}
+	
 	public void drawSelf(GL2 gl) {
 		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
 		
 		gl.glPointSize((float)thickness);
 		gl.glBegin(GL2.GL_POINTS);
-			gl.glVertex2d(0,0);
+			gl.glVertex2d(x,y); //testing?
 		gl.glEnd();
 	}
 }

@@ -37,7 +37,7 @@ public class FileHelper {
 			PIXEL_WIDTH = "pixel_width", PIXEL_HEIGHT = "pixel_height",
 			BOARD_WIDTH = "board_width", BOARD_HEIGHT = "board_height", SCALE = "scale",
 			IF_PARTICLES = "particles", PARTICLE_COUNT = "particle_count", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
-			NAME = "name";
+			NAME = "name", DIFFICULTY = "difficulty", GRID_X_COUNT = "grid_x_count", GRID_Y_COUNT = "grid_y_count";
 	
 	
 	
@@ -51,7 +51,8 @@ public class FileHelper {
 		int pixel_width = -1, pixel_height = -1, board_width = -1, board_height = -1, particleCount = 0;
 		double scale = -1;
 		boolean	particles = true, antialiasing = true, sound = true;
-		String name = "null";
+		String name = "null", diff = "null";
+		int gridX = -1, gridY = -1;
 		
 		if (file.exists()) {
 			try {
@@ -66,6 +67,10 @@ public class FileHelper {
 
 					else if (text.equals(NAME)) name = settings.next();
 					else if (text.equals(SCALE)) scale = settings.nextDouble();
+					
+					else if (text.equals(DIFFICULTY)) diff = settings.next();
+					else if (text.equals(GRID_X_COUNT)) gridX = settings.nextInt();
+					else if (text.equals(GRID_Y_COUNT)) gridY = settings.nextInt();
 					
 					else if (text.equals(IF_SOUND)) sound = settings.nextBoolean();
 					else if (text.equals(IF_PARTICLES)) particles = settings.nextBoolean(); 
@@ -87,6 +92,9 @@ public class FileHelper {
 						antialiasing = true;
 						name = "me";
 						particleCount = 100;
+						
+						gridX = 100;
+						gridY = 100;
 						
 						file.delete();
 						writeSettings(b);
@@ -110,6 +118,9 @@ public class FileHelper {
 			name = "me";
 			particleCount = 100;
 			
+			gridX = 100;
+			gridY = 100;
+			
 			GameSettings a = new GameSettings();
 			writeSettings(a); //so it now exists to read from
 			return a;
@@ -121,6 +132,10 @@ public class FileHelper {
 		set.setIfSound(sound); //wouldn't fit into constructor
 		set.setName(name);
 		set.setParticleCount(particleCount);
+		
+		set.setDifficulty(diff);
+		set.setGridXCount(gridX);
+		set.setGridYCount(gridY);
 		
 		return set;
 	}
@@ -146,6 +161,10 @@ public class FileHelper {
 		out.println(SCALE +" "+ settings.getScale());
 		
 		out.println(NAME +" "+ settings.getName());
+		
+		out.println(DIFFICULTY + " " + settings.getDifficulty());
+		out.println(GRID_X_COUNT + " " + settings.getGridXCount());
+		out.println(GRID_Y_COUNT + " " + settings.getGridYCount());
 		
 		out.println(IF_SOUND +" "+ settings.ifSound());
 		out.println(IF_PARTICLES +" "+ settings.ifParticles());

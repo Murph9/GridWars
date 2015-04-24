@@ -10,6 +10,9 @@ package game.logic;
 public class GameSettings {
 	
 	private String name;
+	private String diff;
+	private int gridXCount;
+	private int gridYCount;
 	
 	private int pixelWidth, pixelHeight;
 	private int boardWidth, boardHeight;
@@ -57,11 +60,22 @@ public class GameSettings {
 	public void setIfAliasing(boolean ni) {
 		ifAliasing = ni;
 	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 	public void setParticleCount(int count) {
 		particleCount = count;
+	}
+	
+	public void setDifficulty(String diff) {
+		this.diff = diff;
+	}
+	public void setGridXCount(int in) { 
+		this.gridXCount = in; 
+	}
+	public void setGridYCount(int in) { 
+		this.gridYCount = in; 
 	}
 	
 	public int getPixelWidth()  { return pixelWidth;  }
@@ -71,12 +85,16 @@ public class GameSettings {
 	
 	public double getScale() { return scale; }
 	public String getName()  { return name;  }
+	public String getDifficulty()  { return diff; }
 	
-	public boolean ifSound()       { return ifSound;     }
-	public boolean ifParticles()   { return ifParticles; }
-	public boolean ifAliasing()    { return ifAliasing;  }
+	public int getGridXCount() { return gridXCount; }
+	public int getGridYCount() { return gridYCount; }
 	
-	public int getParticleCount()  { return particleCount; }
+	public boolean ifSound()      { return ifSound;     }
+	public boolean ifParticles()  { return ifParticles; }
+	public boolean ifAliasing()   { return ifAliasing;  }
+	
+	public int getParticleCount() { return particleCount; }
 
 
 	public void setPixelWidth(int width) {

@@ -17,12 +17,12 @@ public class Helper {
 	public static int sgn(int a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return (Engine.rand.nextInt(2)*2 -1); //i was trying to make them move when they didn't want to
+		else return 0;
 	}
 	public static int sgn(double a) {
 		if (a > 0) return 1;
 		else if (a < 0) return -1;
-		else return (Engine.rand.nextInt()*2 -1); //yes i know i used nextInt(), it must be full or nothing
+		else return 0;
 	}
 	
 	/**Draw a gl square centered about the position of the object

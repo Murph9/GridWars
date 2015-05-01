@@ -75,19 +75,19 @@ public class Spawner extends GameObject {
 			GameObject o = null;
 			switch(spawnType) {
 			case Engine.SPINNER:
-				o = new SimpleSpinner(0); 	break;
+				o = new SimpleSpinner(0); 		break;
 			case Engine.DIAMOND:
-				o = new HomingDiamond(0); 	break;
+				o = new HomingDiamond(0); 		break;
 			case Engine.SQUARE:
-				o = new SplitingSquare(0); 	break;
+				o = new SplitingSquare(0); 		break;
 			case Engine.SNAKEHEAD:
-				o = new SnakeHead(0); 	break;
+				o = new SnakeHead(0); 			break;
 			case Engine.BUTTERFLY:
 				o = new HomingButterfly(0); 	break;
 			case Engine.CIRCLE:
-				o = new HomingCircle(0); 	break;
+				o = new HomingCircle(0); 		break;
 			case Engine.SHY:
-				o = new ShySquare(0); 	break;
+				o = new ShySquare(0); 			break;
 			case Engine.TRIANGLE:
 				o = new ConnectedTriangle(0); 	break;
 			}

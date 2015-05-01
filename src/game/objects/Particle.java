@@ -22,6 +22,8 @@ public class Particle extends MovingObject {
 	
 	public Particle(double thickness, double[] colour, double time, double drag) {
 		super(1, colour);
+		
+		
 		ALL_THIS.add(this);
 		
 		this.thickness = thickness;
@@ -35,6 +37,11 @@ public class Particle extends MovingObject {
 		ifBlackHoleParticle = false;
 		
 		if (!Engine.settings.ifParticles()) {
+			amHit(false);
+		}
+
+		double d = Engine.rand.nextDouble()*100;
+		if (d > Engine.settings.getParticlePercentage()) {
 			amHit(false);
 		}
 	}
@@ -96,6 +103,7 @@ public class Particle extends MovingObject {
 	//this is if you want orbiting particles (looks kind of weird at the moment)
 		//causes lag and needs refining 
 	public void blackHole() {
+//		decayTimer *= 1.2; //please don't they don't go away, ever
 		if (!ifBlackHoleParticle) {
 			return;
 		}
@@ -108,7 +116,7 @@ public class Particle extends MovingObject {
 				
 				if (dist < h.size*BlackHole.SUCK_RADIUS/2 && dist > 0.01) {
 					inOrbit = true; //they don't decay when in orbit
-//					decayTimer *= 1.2; //please don't they don't go away with this
+					
 					h.giveParticle();
 					
 					ddx /= dist;
@@ -126,7 +134,7 @@ public class Particle extends MovingObject {
 	
 	//this is overriden for faster speed
 	public void draw(GL2 gl) {
-		drawSelf(gl); //stops all of the expensive ass code that translates, rotates and scales
+		drawSelf(gl); //stops all of the expensive ass code that translates, rotates and scales a 4d matrix every particle
 	}
 	
 	public void drawSelf(GL2 gl) {

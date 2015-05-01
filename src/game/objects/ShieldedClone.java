@@ -29,6 +29,7 @@ public class ShieldedClone extends MovingObject {
 		
 		score = 100;
 		this.spawnTimer = spawnTimer;
+		
 		SoundEffect.SHOOT.play(10, 0);
 	}
 

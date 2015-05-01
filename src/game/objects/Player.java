@@ -1,8 +1,6 @@
 package game.objects;
 import game.logic.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -10,7 +8,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
-import javax.swing.Timer;
+import javax.swing.JOptionPane;
 
 
 public class Player extends MovingObject implements KeyListener, MouseListener {
@@ -19,13 +17,14 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	public static double MAX_ACCEL = 1;
 	
 	public static double PLAYER_INERTIA = 1.04; //please don't change these numbers again (user defined probably)
+	public static double SHOOT_RATE = 0.14;
 	
 	private boolean xPosAccel = false,
 					xNegAccel = false,
 					yPosAccel = false,
 					yNegAccel = false;
 	
-	private Timer timer;
+	private double shootTimer;
 	private boolean shooting;
 	
 	private double shieldAngle;
@@ -38,19 +37,13 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		double angle = Math.toDegrees(Math.atan2((s[1]-myPos[1]), (s[0]-myPos[0])));
 		setRotation(angle);
 		
-		ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				newBullet();
-			}
-		};
-		this.timer = new Timer(140, taskPerformer);
-		this.timer.start();
+		shootTimer = SHOOT_RATE;
 		
 		this.shooting = true;
 		this.spawnTimer = 0; //doesn't have spawn delay
 	}
 	
-	private void newBullet() { //creates PlayerBullets, large
+	private void shoot() { //creates PlayerBullets, large
 		if (!Engine.canSpawn()) {
     		return;
     	}
@@ -143,6 +136,13 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
     	
     	Helper.keepInside(this, Helper.SPLAT);
 		
+    	//shoot:
+    	shootTimer -= dt;
+    	if (shootTimer < 0) {
+    		shoot();
+    		shootTimer = SHOOT_RATE;
+    	}
+    	
 		//do rotation stuff
 		double[] s = Engine.getMousePos();
 		this.angle = Math.toDegrees(Math.atan2((s[1]-y), (s[0]-x)));
@@ -204,7 +204,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
 		for (GameObject o: objects) {
-			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof Shield || o instanceof Particle) {
+			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o instanceof Shield || o instanceof Particle) {
 				continue; //nothing, can't hit these things
 			} else {
 				double[] pos = o.getCollisionPosition();
@@ -314,6 +314,15 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { //escape is a good pause button I think
 			Engine.togglePause();
+		}
+		
+		if (e.getKeyCode() == KeyEvent.VK_Q && Engine.isPaused()) { //quit on a 'q' press while paused
+			int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to quit?", "Confirm",
+			        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			
+			if (dialogResult == JOptionPane.YES_OPTION) {
+				Engine.gameQuit();
+			}
 		}
 	}
 

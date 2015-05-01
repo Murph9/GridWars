@@ -16,6 +16,7 @@ import java.util.Random;
 public class SpawnHandler {
 
 	private static final int POWER_UP_OFFSET = 2500; //according to the info, TODO balance?
+	private static final int PLAYER_SPAWN_RANGE = 4;
 	private int powerUpScore;
 	
 	private Random random;
@@ -89,6 +90,8 @@ public class SpawnHandler {
 			}
 			
 			powerUpScore += POWER_UP_OFFSET*mult; //so it get slowly further and further away
+				//TODO: balance this number
+//			System.out.println(powerUpScore);
 			
 			PowerUp up = new PowerUp(type);
 			chooseSpawn(up, 0);
@@ -151,9 +154,9 @@ public class SpawnHandler {
 
 		if (frameCount % 444 == 0) {
 			int count =  16 + random.nextInt(Math.min((int)(frameCount/2000) + 1, 16));
-			double rate = 0.8 + random.nextInt(60)/100  - (double)(frameCount)/100000; //TODO fix timing of spawners
-			if (rate > 0.8) 
-				rate = 0.8;
+			double rate = 1.5 + (double)random.nextInt(60)/100d  - (double)(frameCount)/100000; //TODO fix timing of spawners [properly]
+			if (rate > 1.5) 
+				rate = 1.5;
 
 			int type = pickEnemy(frameCount/4) + 1;
 			if (type == 5) type = 3+ random.nextInt(3); //3,4,5
@@ -286,6 +289,8 @@ public class SpawnHandler {
 		//these options are for picking many corners with the same number
 			//e.g. 6 will alternate between corners 1 and 2 (good for swarms)
 		
+		location = 5;
+		
 		switch (location) {
 		case 5: //random corner
 			location = random.nextInt(4) + 1; //1,2,3,4
@@ -321,9 +326,6 @@ public class SpawnHandler {
 		//actually place it in the corner (or random or player)
 		switch (location) {
 		case 0: //random spawn
-//			o.x = 2*(random.nextInt(Engine.settings.getBoardWidth())-Engine.settings.getBoardWidth()/2);
-//			o.y = 2*(random.nextInt(Engine.settings.getBoardHeight())-Engine.settings.getBoardHeight()/2);
-			
 			o.x = random.nextDouble()*Engine.settings.getBoardWidth()*2 - Engine.settings.getBoardWidth();
 			o.y = random.nextDouble()*Engine.settings.getBoardHeight()*2 - Engine.settings.getBoardHeight();
 			break;
@@ -346,8 +348,8 @@ public class SpawnHandler {
 		case 12:
 			while (true) {
 				double angle = random.nextDouble()*Math.PI*2;
-		    	o.x = playerPos[0]+(Math.cos(angle)*5);
-		    	o.y = playerPos[1]+(Math.sin(angle)*5);
+		    	o.x = playerPos[0]+(Math.cos(angle)*PLAYER_SPAWN_RANGE);
+		    	o.y = playerPos[1]+(Math.sin(angle)*PLAYER_SPAWN_RANGE);
 		    	if (o.x < Engine.settings.getBoardWidth() && o.x > -Engine.settings.getBoardWidth() && 
 		    			o.y < Engine.settings.getBoardHeight() && o.y > -Engine.settings.getBoardHeight()) {
 		    		break;
@@ -360,14 +362,16 @@ public class SpawnHandler {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			Engine.grid.Shockwave(o.x, o.y);
 		}
-		
-		//TODO fix this: trying to stop objects directly spawning on player
-//		if ((o.x - playerPos[0] < 3) && (o.y - playerPos[1] < 3)) {
-//			chooseSpawn(o, 5); //random corner
-//		}
+
+		//trying to stop objects directly spawning on player
+		double dist = (playerPos[0]-o.x)*(playerPos[0]-o.x) + (playerPos[1]-o.y)*(playerPos[1]-o.y);
+		if (dist < 5) {
+			chooseSpawn(o, 0);
+		} else {
+			//we done here, shockwave!:
+			Engine.grid.shockwaveGrid(o.x, o.y, 3, 3);
+		}
 	}
 
 	public int getNextPowerup() {

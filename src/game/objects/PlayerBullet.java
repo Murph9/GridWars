@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javax.media.opengl.GL2;
 
 
+//TODO bullet blackhole stuff not working
+
 public class PlayerBullet extends MovingObject {
 
 	public final static ArrayList<PlayerBullet> ALL_THIS = new ArrayList<PlayerBullet>();
@@ -52,7 +54,7 @@ public class PlayerBullet extends MovingObject {
 			this.amHit(false);
 			return;
 		} else {
-			Engine.grid.Push(x+dx*0.02, y+dy*0.02, 0.75, 4); //TODO balance
+			Engine.grid.pushGrid(x+dx*0.04, y+dy*0.04, 0.75, 3);
 		}
 		
 		selfCol();
@@ -64,7 +66,7 @@ public class PlayerBullet extends MovingObject {
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
 		
 		for (GameObject o: objects) {
-			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o.equals(GameObject.ROOT) || o instanceof PowerUp || o instanceof Particle) {
+			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o instanceof PowerUp || o instanceof Particle) {
 				continue; //nothing, can't hit these things
 
 			} else if (o instanceof BlackHole) {
@@ -87,7 +89,7 @@ public class PlayerBullet extends MovingObject {
 				
 			} else {
 				double[] pos = o.getCollisionPosition();
-				if (o.getCollisionPosition()[0] == Double.MAX_VALUE) {
+				if (pos[0] == Double.MAX_VALUE || pos[1] == Double.MAX_VALUE) { //the object doesn't want to be found
 					continue;
 				}
 				double distX = pos[0] - x;

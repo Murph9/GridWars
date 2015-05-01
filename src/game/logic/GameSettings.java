@@ -22,7 +22,7 @@ public class GameSettings {
 	private boolean ifParticles;
 	private boolean ifAliasing;
 	
-	private int particleCount;
+	private int particlePercent;
 	
 	GameSettings() {
 		this(1024, 728, 16, 12, 10); //default
@@ -47,7 +47,7 @@ public class GameSettings {
 		ifSound = true;
 		ifAliasing = true; //default, change with setters if needed
 		ifParticles = true;
-		particleCount = 100;
+		particlePercent = 100;
 	}
 	
 	public void setIfSound(boolean ni) {
@@ -64,8 +64,10 @@ public class GameSettings {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void setParticleCount(int count) {
-		particleCount = count;
+	public void setParticlePercentage(int count) {
+		if (count > 100) count = 100;
+		if (count < 0) count = 0; //its a percentage
+		particlePercent = count;
 	}
 	
 	public void setDifficulty(String diff) {
@@ -94,7 +96,7 @@ public class GameSettings {
 	public boolean ifParticles()  { return ifParticles; }
 	public boolean ifAliasing()   { return ifAliasing;  }
 	
-	public int getParticleCount() { return particleCount; }
+	public int getParticlePercentage() { return particlePercent; }
 
 
 	public void setPixelWidth(int width) {

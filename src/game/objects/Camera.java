@@ -17,6 +17,9 @@ public class Camera extends GameObject {
 
     public Camera() {
         this.myBackground = new float[4];
+        
+        double pixelWidth = Engine.settings.getPixelHeight();
+    	this.size = pixelWidth/GAME_SCALE_CONSTANT;
     }
     
     public float[] getBackground() {

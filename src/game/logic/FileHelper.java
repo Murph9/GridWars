@@ -131,7 +131,7 @@ public class FileHelper {
 		set.setIfParticles(particles);
 		set.setIfSound(sound); //wouldn't fit into constructor
 		set.setName(name);
-		set.setParticleCount(particleCount);
+		set.setParticlePercentage(particleCount);
 		
 		set.setDifficulty(diff);
 		set.setGridXCount(gridX);
@@ -170,7 +170,7 @@ public class FileHelper {
 		out.println(IF_PARTICLES +" "+ settings.ifParticles());
 		out.println(IF_ANTIALIASING +" "+ settings.ifAliasing());
 		
-		out.println(PARTICLE_COUNT +" "+ settings.getParticleCount());
+		out.println(PARTICLE_COUNT +" "+ settings.getParticlePercentage());
 		
 		out.close();
 	}

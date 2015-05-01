@@ -239,7 +239,7 @@ public class GameMenu extends JFrame implements ActionListener {
 		headPanel.setLayout(new GridBagLayout());
 		
 		JTextArea t = new JTextArea("Welcome to NotGridWars2\nArrow keys or WASD to move, "
-				+ "right/left mouse button do things.\nEsc is pause.");
+				+ "right/left mouse button do things.\nEsc is pause, 'q' is quit while paused.");
 		t.setEditable(false);
 		t.setOpaque(false);
 		headPanel.add(t, gbLayout);
@@ -296,7 +296,7 @@ public class GameMenu extends JFrame implements ActionListener {
 		antialiasing.setSelected(fileSettings.ifAliasing());
 		sound.setSelected(fileSettings.ifSound());
 		
-		particleCount.setValue(fileSettings.getParticleCount());
+		particleCount.setValue(fileSettings.getParticlePercentage());
 		
 		pixelWidth.setText(""+fileSettings.getPixelWidth());
 		pixelHeight.setText(""+fileSettings.getPixelHeight());
@@ -383,7 +383,7 @@ public class GameMenu extends JFrame implements ActionListener {
 		set.setGridXCount(getGridXCount());
 		set.setGridYCount(getGridYCount());
 		
-		set.setParticleCount((int)particleCount.getValue());
+		set.setParticlePercentage((int)particleCount.getValue());
 		return set;
 	}
 }

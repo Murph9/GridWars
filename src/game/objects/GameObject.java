@@ -1,7 +1,6 @@
 
 package game.objects;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.media.opengl.GL2;
@@ -12,9 +11,6 @@ import game.logic.*;
 public class GameObject {
 
 	public final static LinkedList<GameObject> ALL_OBJECTS = new LinkedList<GameObject>();
-	
-	// the root of the scene tree
-	public final static GameObject ROOT = new GameObject();
 	
 	public double angle;
 	public double size;
@@ -119,14 +115,7 @@ public class GameObject {
         }
         
         drawSelf(gl);
-        
-        if (this.equals(GameObject.ROOT)) { // the root
-        	ArrayList<GameObject> objects = new ArrayList<GameObject>(GameObject.ALL_OBJECTS);
-        	for (GameObject o: objects) { 	// then draws everything
-        		if (!o.equals(GameObject.ROOT)) //doesn't draw itself because thats called recursive
-        			o.draw(gl);
-        	}
-        }
+        //this used to have ROOT code, but it seem to have just been slowing things down?
         
         gl.glPopMatrix(); //.... then put it back 
     }

@@ -13,7 +13,7 @@ import javax.media.opengl.GLEventListener;
 import com.jogamp.opengl.util.gl2.GLUT;
 
 
-//TODO Idea for gameplay slow down when blackhole is exploded from numing too much (mixed with a overpowering sound to help effect)
+//TODO Idea for gameplay slow down when blackhole is exploded (mixed with a overpowering sound to help the effect)
 
 /**
  * Handles all moving objects and all OpenGL initialisation.
@@ -66,7 +66,6 @@ public class Engine implements GLEventListener {
 	@SuppressWarnings("unused")
 	private double fps;
 	
-	
 	private static boolean isPaused;
 	
 	private static GameObject killObj;
@@ -85,16 +84,15 @@ public class Engine implements GLEventListener {
 		
 		grid = new SpringGrid(inSettings.getGridXCount(),inSettings.getGridYCount(),
 										inSettings.getBoardWidth(),inSettings.getBoardHeight());
-		
-		myCamera = new Camera();
-		myCamera.setSize(inSettings.getScale());
-		
-		Engine.player = new Player(1, Engine.WHITE);
-		textures = new MyTexture[TEXTURE_SIZE];
-		
+
 		spawner = inSpawnner;
 		gameState = inState;
 		settings = inSettings;
+		
+		myCamera = new Camera();
+		
+		Engine.player = new Player(1, Engine.WHITE);
+		textures = new MyTexture[TEXTURE_SIZE];
 		
 		isPaused = false;
 		respawnCounter = 2; //seems fine
@@ -206,16 +204,19 @@ public class Engine implements GLEventListener {
 		mousePos = Mouse.theMouse.getPosition();
 		
 		
-		if (hitObjCounter > 0) { //if just hit object, show object and delete everything* else
+		if (hitObjCounter > 0) { //if just hit object, show object
 			LinkedList<GameObject> allObj = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
 			for (GameObject o : allObj) {
-				if (!(o instanceof Player || o.equals(GameObject.ROOT))) {
+				if (!(o instanceof Player)) {
 					o.draw(gl);
 				}
 			}	
 			
 		} else { //normal gamplay
-			GameObject.ROOT.draw(gl);
+			LinkedList<GameObject> allObj = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
+			for (GameObject o: allObj) {
+				o.draw(gl);
+			}
 		}
 		
 		
@@ -229,7 +230,7 @@ public class Engine implements GLEventListener {
 	}
 
 	
-	/** Updates all the game objects
+	/** Updates all the game objects, called from display(GL)
 	 */
 	private void update() {
 		long time = System.currentTimeMillis();
@@ -260,7 +261,7 @@ public class Engine implements GLEventListener {
 				Particle.ALL_THIS.clear(); //no more particles please
 				Engine.killAll(null, false, false); //kill everything for real this time
 				
-				Engine.spawner.lostLife(); //TODO listeners for this kind of stuff?
+				Engine.spawner.lostLife(); //TODO?: maybe listeners for this kind of stuff?
 				Engine.gameState.lostLife();
 				
 				grid.resetAll(); //reset grid so its easier
@@ -456,23 +457,24 @@ public class Engine implements GLEventListener {
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
 		//called by system when the window is closed
-		//TODO possible double up between lostLife and this when closing the game
-		
+		//no longer a chance of double up as it quits on the next frame :), using gameOver. 
+
 		FileHelper.writeScore(gameState.getDifficulty(), gameState.getScore(), "auto_"+settings.getName(), (int)gameState.getTime());
 		FileHelper.addToStats(gameState);
 		System.err.println("Game Quit.\n\t- dispose(), Engine");
+
 	}
 	
 	
 	///////////////////////////// Outside reference things
 	
-	/**Kill all objects on the screen (excluding Player,Border,Camera,Powerups,ROOT)
+	/**Kill all objects on the screen (excluding Player,Border,Camera,Powerups)
 	 * @param object Optional game object that will not be deleted after method
 	 */
 	public static void killAll(GameObject object, boolean particles, boolean killPowerups) {
 		LinkedList<GameObject> allList = new LinkedList<GameObject>(GameObject.ALL_OBJECTS);
 		for (GameObject obj: allList) {
-			if (obj instanceof Player || obj instanceof Border || obj instanceof Camera || obj instanceof SpringGrid || obj.equals(GameObject.ROOT)) {
+			if (obj instanceof Player || obj instanceof Border || obj instanceof Camera || obj instanceof SpringGrid) {
 			} else if (obj instanceof PowerUp) {
 				if (killPowerups) { //if we want it gone
 					GameObject.ALL_OBJECTS.remove(obj);
@@ -504,9 +506,7 @@ public class Engine implements GLEventListener {
 //		grid.Push(player.x, player.y, 60, 20); //large
 		
 		if (particles) {
-			double pCount = 40*((double)Engine.settings.getParticleCount()/100.0f); //% total particles
-			
-			for (int i = 0; i < pCount; i++) {
+			for (int i = 0; i < 40; i++) {
 				for (int j = 0; j < 20; j++) {
 					MovingObject p = new Particle(2, Engine.WHITE, 0.7, Particle.DEFAULT_DRAG);
 					p.x = playerPos[0];
@@ -537,6 +537,14 @@ public class Engine implements GLEventListener {
 		return true;
 	}
 	
+	public static boolean isPaused() {
+		return isPaused;
+	}
+	
+	
+	public static void gameQuit() {
+		gameOver = true;
+	}
 	
 	/** Called when a life is lost
 	 * @param obj
@@ -554,13 +562,14 @@ public class Engine implements GLEventListener {
 		}
 	}
 	
+	
+	@SuppressWarnings("unused")
 	public static void togglePause() {
 		if (Engine.respawnCounter > 0 || Engine.hitObjCounter > 0) {
 			return;
 		}
 		isPaused = !isPaused;
 		
-		TextPopup text = new TextPopup(WHITE, "Paused", 0.1, playerPos[0]-0.8, playerPos[1]+1.2);
-		text.angle = 0;
+		TextPopup text = new TextPopup(WHITE, "Paused (q quits)", 0.1, playerPos[0]-2, playerPos[1]+1.2);
 	}
 }

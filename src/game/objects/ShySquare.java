@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 
+//TODO seems to disappear when pushed to the edge
 
 public class ShySquare extends MovingObject {
 
@@ -24,6 +25,7 @@ public class ShySquare extends MovingObject {
 		score = 100;
 		
 		this.spawnTimer = spawnTimer;
+		
 		SoundEffect.SHOOT.play(10, 0);
 	}
 

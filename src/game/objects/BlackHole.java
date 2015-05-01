@@ -1,6 +1,7 @@
 package game.objects;
 
-import game.logic.*;
+import game.logic.Engine;
+import game.logic.Helper;
 
 import java.util.ArrayList;
 
@@ -11,19 +12,19 @@ import javax.media.opengl.GL2;
 public class BlackHole extends MovingObject {
 
 	public static final ArrayList<BlackHole> ALL_THIS = new ArrayList<BlackHole>();
+	public static double MAX_SPEED = 0.05; //yeah kinda slow
+
 	public static final int SUCK_RADIUS = 6;
-	public static double MAX_SPEED = 0.5; //yeah kinda slow
 	
-	public static final int MAX_PARTICLES = 20;
+	private static final double MAX_SIZE = 2;
+	private static final double MIN_SIZE = 0.7;
+	private static final double SIZE_INC = 30;
 	
 	private boolean isInert;
 	private int numCount; //number of objects consumed
 				//as in NumNumNumNum [aggressively eating]
 	
-	private int maxNum; //if hit points hits this number it will explode
-	private int hitPoints; //hits it will take to destroy, increases on nums
-	
-	private int particleCount; //count of orbiting particles, visual indication of how many hits remaining = cool
+	private int particleCount; //count of orbiting particles, visual indication of size as well
 	
 	public BlackHole(double spawnTimer) {
 		this(spawnTimer, 1, Engine.RED);
@@ -32,24 +33,19 @@ public class BlackHole extends MovingObject {
 	BlackHole(double spawnTimer, double size, double[] colour) {
 		super(size, colour); //this colour is ignored in the draw method
 		isInert = true;
-		numCount = 0;
-		maxNum = 60;
-		hitPoints = 10; //starts with hit points of 10 shots to kill
 		ALL_THIS.add(this);
 		
 		this.spawnTimer = spawnTimer;
 		score = 150; //default score value
-		
-		SoundEffect.SHOOT.play(10, 0);
 	}
 	
 	public void giveObject(double x, double y) {
-		dx += x/6; //objects give it speed
-		dy += y/6;
+		dx += x/12; //objects give it speed, TODO depending on size?
+		dy += y/12;
+		
 		numCount++;
-		hitPoints += 2; //because it would be too easy on 1
-		size += 0.025; //so it can grow
-		if (hitPoints >= maxNum) { //if its to big, explode
+		size += 1/SIZE_INC; //SIZE_INC hit points
+		if (size > MAX_SIZE) { //2 is now the biggest size it can be
 			delete(false); //explode
 		}
 	}
@@ -58,8 +54,8 @@ public class BlackHole extends MovingObject {
 	public boolean isInert() { return isInert; }
 	
 	public boolean canAcceptParticle() { 
-		return (particleCount < hitPoints);
-	} 
+		return (particleCount < (size-MIN_SIZE)*SIZE_INC);
+	}
 	
 	public void giveParticle() {
 		particleCount++;
@@ -71,14 +67,14 @@ public class BlackHole extends MovingObject {
 			this.spawnTimer -= dt*2;
 		}
 		
-		x += dx*dt*MAX_SPEED;
-		y += dy*dt*MAX_SPEED;
+		x += dx*dt;//*BlackHole.MAX_SPEED; //TODO why do they still go so fast?
+		y += dy*dt;//*BlackHole.MAX_SPEED;
 		
 		particleCount = 0;
 		
 		//particle effects yay - maybe fix spawning positions later
 		double rand = Engine.rand.nextDouble();
-		if (!isInert && rand < ((float)numCount/(float)maxNum)){
+		if (!isInert && rand < (size/MAX_SIZE)){
 			Particle a = new Particle(3, new double[]{Engine.rand.nextDouble(),Engine.rand.nextDouble(),Engine.rand.nextDouble(),0.5}, 1, 1.04);
 			double angle = Engine.rand.nextDouble()*Math.PI*2;
 			
@@ -107,8 +103,8 @@ public class BlackHole extends MovingObject {
 		
 		speed = Math.sqrt(dx*dx + dy*dy); 
 		if (speed != 0 && speed > 1) {
-			dx = dx/speed;
-			dy = dy/speed;
+			dx /= speed;
+			dy /= speed;
 		}
 	}
 	
@@ -131,7 +127,7 @@ public class BlackHole extends MovingObject {
 					h.giveObject(distx, disty);
 				}
 				
-				if (dist < h.size*BlackHole.SUCK_RADIUS/3) { //stolen from the particle code, it kind-of orbits
+				if (dist < h.size*BlackHole.SUCK_RADIUS/3) { //stolen from the particle code, it kind-of orbits them now
 					dy -= (h.x - x)*2 + h.dy;
 					dx += (h.y - y)*2 + h.dx;
 				} else {
@@ -141,7 +137,8 @@ public class BlackHole extends MovingObject {
 			}
 		}
 		
-		Engine.grid.pull(x,y,4+(int)size, 6); //pull on the grid
+		Engine.grid.pullGrid(x,y, BlackHole.SUCK_RADIUS*Math.sqrt(size), 20); //pull on the grid, TODO CHANGE '20' to not so hardcoded
+			//TODO gets too big [fixed?]
 	}
 	
 	public void selfCol() {
@@ -158,12 +155,11 @@ public class BlackHole extends MovingObject {
 		}
 	}
 
-	//function handles destroying things into itself
 	public void amHit() {
 		isInert = false;
-		hitPoints--;
 		size -= 0.01;
-		if (hitPoints <= 0) {
+		size -= 1/SIZE_INC;
+		if (size < MIN_SIZE) {
 			delete(true);
 		}
 	}
@@ -174,7 +170,7 @@ public class BlackHole extends MovingObject {
 		super.amHit(wasShot);
 		ALL_THIS.remove(this);
 		
-		Engine.grid.Push(x, y, (int)size, 10);
+		Engine.grid.pushGrid(x, y, (int)size, 10);
 		
 		if (wasShot) { 
 			//then add score
@@ -193,23 +189,21 @@ public class BlackHole extends MovingObject {
 				s.spawnTimer = 0;
 			}
 			
-			double pCount = (double) Engine.settings.getParticleCount()/100d;
-			for (int i = 0; i < 50*pCount; i++) {
+			for (int i = 0; i < 50; i++) {
 				Particle a = new Particle(1, this.colour, 2, Particle.DEFAULT_DRAG*0.85); //little bit longer than usual
 				a.x = this.x;
 				a.y = this.y;
 				a.dx = Engine.rand.nextDouble()*2 - 1;
 				a.dy = Engine.rand.nextDouble()*2 - 1;
-
 			}
 		}
 	}
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BLACKHOLE].getTextureId());
-		if (isInert) { //Its ALLWAYS purple when inert..
+		if (isInert) { //Its ALWAYS purple when inert..
 			colour = Engine.PURPLE;
-		} else {
+		} else { //and always red when active...
 			colour = Engine.RED;
 		}
 		super.drawSelf(gl);

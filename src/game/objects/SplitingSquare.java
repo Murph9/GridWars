@@ -37,6 +37,8 @@ public class SplitingSquare extends HomingObject {
 		score = 100;
 		this.x = x+Math.cos(angle+offset)*0.8;
 		this.y = y+Math.sin(angle+offset)*0.8;
+		
+		//needs no sound effect as its the child spawn
 	}
 	
 	/**if the size is 1 is a 'parent square', else its a 'child square'

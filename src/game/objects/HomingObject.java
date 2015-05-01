@@ -9,7 +9,6 @@ public abstract class HomingObject extends MovingObject {
 	HomingObject(double size, double[] colour, double speed) {
 		super(size, colour);
 		this.MAX_SPEED = speed;
-		SoundEffect.SHOOT.play(10, 0);
 	}
 
 	protected void setSpeed(int speed) { //because objects have different speeds

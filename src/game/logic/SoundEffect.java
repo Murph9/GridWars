@@ -23,13 +23,13 @@ public enum SoundEffect {
 	*/
 	
 	//Good:
-	OBJECT_KILL("sounds/bullet1.wav"), //bullet shoot 
+	OBJECT_KILL("sounds/bullet1.wav"), //bullet shoot, make shorter 
 
 	//Bad:
 	BULLET_KILL("sounds/bullet_hit.wav"), //bullet die 
 	POWERUP("sounds/Powerup.wav"),   // powerup
 	POWERUP2("sounds/Powerup2.wav"),         // gong
-	SHOOT("sounds/shot.wav");       // bullet
+	SHOOT("sounds/shot.wav");       // bullet hit
 
 	
 	// Nested class for specifying volume

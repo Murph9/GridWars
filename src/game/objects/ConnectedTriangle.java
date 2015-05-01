@@ -31,7 +31,7 @@ public class ConnectedTriangle extends MovingObject {
 		partner = in;
 		score = 150;
 		this.spawnTimer = spawnTimer;
-
+		
 		SoundEffect.SHOOT.play(10, 0);
 	}
 

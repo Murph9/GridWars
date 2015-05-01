@@ -16,6 +16,8 @@ public abstract class MovingObject extends GameObject {
 		this.colour = colour;
 		this.size = size;
 		this.spawnTimer = 0;
+		
+		//don't put SoundEffect object spawn here, objects might want their own sound
 	}
 
 	public void setSpeed(double x, double y) {
@@ -31,11 +33,9 @@ public abstract class MovingObject extends GameObject {
 		
 		if (! (this instanceof Particle)) {
 			
-			double pCount = (double)Engine.settings.getParticleCount()/100d;
-			
 			if (this instanceof PlayerBullet) { //produces 4 (much more bullets than anything else)
 				int offset = Engine.rand.nextInt(180);
-				for (int i = 0; i < 4*pCount; i++) {
+				for (int i = 0; i < 4; i++) {
 					MovingObject p = new Particle(2, colour, 0.7, Particle.DEFAULT_DRAG);
 					p.x = x;
 					p.y = y;
@@ -44,7 +44,7 @@ public abstract class MovingObject extends GameObject {
 				}
 			} else {
 				int offset = Engine.rand.nextInt(180);
-				for (int i = 0; i < 8*pCount; i++) {
+				for (int i = 0; i < 8; i++) {
 					MovingObject p = new Particle(2, this.colour, 1, Particle.DEFAULT_DRAG);
 					p.x = x;
 					p.y = y;

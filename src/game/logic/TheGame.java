@@ -133,7 +133,6 @@ public class TheGame {
 		int boardHeight = GUIFrame.getBoardHeight();
 		
 		if (pixelWidth >= 800 && pixelHeight >= 600) { //the game really only works on resolutions bigger than this
-			GUIFrame.setSize(pixelWidth, pixelHeight);
 		} else {
 			pixelWidth = TheGame.DEFAULT_PIXEL_WIDTH;
 			pixelHeight = TheGame.DEFAULT_PIXEL_HEIGHT;
@@ -141,7 +140,6 @@ public class TheGame {
 		}
 		
 		if (boardWidth >= 4 && boardHeight >= 4) { //the game really only works on game fields bigger than this
-//			GUIFrame.setSize(boardWidth, boardHeight);
 		} else {
 			boardWidth = TheGame.DEFAULT_BOARD_WIDTH;
 			boardHeight = TheGame.DEFAULT_BOARD_HEIGHT;
@@ -152,18 +150,17 @@ public class TheGame {
 		int gridY = GUIFrame.getGridYCount();
 		
 		if (gridX >= 4 && gridY >= 4) { //the game really only works on bigger
-//			GUIFrame.setSize(boardWidth, boardHeight);
 		} else {
 			gridX = TheGame.DEFAULT_GRID_X_COUNT;
 			gridY = TheGame.DEFAULT_GRID_Y_COUNT;
-			System.out.println("setting defualt game board sizes"+gridX +" x "+gridY);
+			System.out.println("setting defualt game board sizes" + gridX + " x " + gridY);
 		}
 		
 		
-        //then write settings to file
-        FileHelper.writeSettings(GUIFrame.getSettings());
-        
-        GUIFrame.setVisible(false);
+		//then write settings to file
+		FileHelper.writeSettings(GUIFrame.getSettings());
+		
+		GUIFrame.setVisible(false);
 		return true;
 	}
 	

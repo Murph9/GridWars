@@ -1,5 +1,7 @@
 package game.objects;
 
+import game.logic.Helper;
+
 import javax.media.opengl.GL2;
 
 public class SpringGrid extends GameObject{
@@ -27,7 +29,7 @@ public class SpringGrid extends GameObject{
 		}
 	}
 	
-	public void update(double dt) {
+	public void update(double dt) { //please stop touching this method, it doesn't like it
 		for (int i = 1; i < xCount-1; i++) {
 			for (int j = 1; j < yCount-1; j++) {
 				
@@ -45,7 +47,7 @@ public class SpringGrid extends GameObject{
 				tempY += grid[i+1][j].y;
 				tempY /= 4;
 		
-				grid[i][j].update(dt, tempX, tempY);
+				grid[i][j].update(dt, tempX-grid[i][j].x, tempY-grid[i][j].y);
 			}
 		}
 	}
@@ -55,69 +57,46 @@ public class SpringGrid extends GameObject{
 		return new double[]{Double.MAX_VALUE, Double.MAX_VALUE};
 	}
 	
-	public void drawSelf(GL2 gl) {
-		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-		gl.glLineWidth(1); //a setting option maybe?
-		
-		gl.glColor4d(0.1, 0.1, 0.1, 0.5);
-		gl.glBegin(GL2.GL_LINES);
-			
-			for (int i = 0; i < xCount-1; i++) { //grid lines across
-				for (int j = 1; j < yCount-1; j++) {
-					gl.glVertex2d(grid[i][j].x, grid[i][j].y);
-					gl.glVertex2d(grid[i+1][j].x, grid[i+1][j].y);
-				}
-			}
-			
-			for (int i = 1; i < xCount-1; i++) { //grid lines vertical
-				for (int j = 0; j < yCount-1; j++) {
-					gl.glVertex2d(grid[i][j].x, grid[i][j].y);
-					gl.glVertex2d(grid[i][j+1].x, grid[i][j+1].y);
-				}
-			}
-			
-		gl.glEnd();
-		
-		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-	}
-
 	//these methods are taken from http://maxgames.googlecode.com/svn/trunk/vectorzone/gridparttrail.bmx
-	/**
-	 * @param x location of the pull in x,y
-	 * @param y
+	/**Pull grid for a gravity look
+	 * @param x x origin of pull
+	 * @param y y origin of pull
 	 * @param size - effect of pull size
 	 * @param strength - strength of the pull
 	 */
-	public void pull(double x, double y, int size, double strength) { //pull at location
-		//blackholes pull(x,y,5+size,4)
-		
-		for (int i = 0; i < xCount-1; i++) { //grid lines across
+	public void pullGrid(double x, double y, double size, double strength) { //pull at location
+		for (int i = 0; i < xCount-1; i++) {
 			for (int j = 1; j < yCount-1; j++) {
-				Cell curCell = grid[i][j]; //ease of use
+				Cell c = grid[i][j]; //ease of use
 				
-				double diffx = curCell.x-x;
-				double diffy = curCell.y-y;
-				
-				double diffxo = curCell.ox - curCell.x;
-				double diffyo = curCell.oy - curCell.y;
-				
+				double diffx = c.x-x;
+				double diffy = c.y-y;
 				double dist = Math.sqrt(diffx*diffx+diffy*diffy);
-				double disto = Math.sqrt(diffxo*diffxo + diffyo*diffyo);
 
-				if (dist > 0 && dist < size) {
-					if (disto < size) { //don't pull things that are to far away
-						curCell.dx = -(diffx/dist)*strength;
-						curCell.dy = -(diffy/dist)*strength;
-					}
+				double diffox = c.ox-x;
+				double diffoy = c.oy-y;
+				double disto = Math.sqrt(diffox*diffox+diffoy*diffoy);
+
+				if (dist > 0.1 && dist < size && disto < size) {
+					c.dx -= strength*(diffx/dist);
+					c.dy -= strength*(diffy/dist); //TODO: gets a little bit intense when very close to x,y
+				}
+				if (dist < 0.3) {
+					c.dx /= 8;
+					c.dy /= 8;
 				}
 			}
 		}
 	}
 	
-	public void Push(double x, double y, double effectSize, double strength) { //push from location x,y
-		//player bullets push(x+dx*2,y+dy*2,3,0.025)
-		
-		for (int i = 0; i < xCount-1; i++) { //grid lines across
+	/**Push grid for an explosion look
+	 * @param x x origin of pull
+	 * @param y y origin of pull
+	 * @param size - effect of pull size
+	 * @param strength - strength of the pull
+	 */
+	public void pushGrid(double x, double y, double size, double strength) { //push from location x,y
+		for (int i = 0; i < xCount-1; i++) {
 			for (int j = 1; j < yCount-1; j++) {
 				
 				Cell curCell = grid[i][j]; //ease of use
@@ -125,28 +104,34 @@ public class SpringGrid extends GameObject{
 				double diffx = curCell.ox-x;
 				double diffy = curCell.oy-y;
 				
-				if (diffx*diffx + diffy*diffy < effectSize*effectSize) {
+				if (diffx*diffx + diffy*diffy < size*size) {
 				
-					double diffxo = curCell.ox - curCell.x;
-					double diffyo = curCell.oy - curCell.y;
+//					double diffxo = curCell.ox - curCell.x;
+//					double diffyo = curCell.oy - curCell.y;
 					
 					double dist = diffx*diffx + diffy*diffy;
-					double disto = diffxo*diffxo + diffyo*diffyo;
+//					double disto = diffxo*diffxo + diffyo*diffyo;
 					
-//					if (dist > 1 && disto < 4) { //?
-						curCell.dx += strength*diffx;
+					if (dist > 0.02){// && disto < 0.1) { //only push it if its not inside, but not also far from original position
+						curCell.dx += strength*diffx; //don't know why we check the 'dist' variable here
 						curCell.dy += strength*diffy;
-//					}
+					}
 				}
 			}
 		}
 		
 	}
 	
-	public void Shockwave(double x, double y) { //shockwave at location
-		for (int i = 0; i < xCount-1; i++) { //grid lines across
+	public void shockwaveGrid(double x, double y, double size, double strength) { //shockwave at location
+		for (int i = 0; i < xCount-1; i++) {
 			for (int j = 1; j < yCount-1; j++) {
-				grid[i][j].disrupt((grid[i][j].x-x), (grid[i][j].y-y));
+				Cell c = grid[i][j];
+				double diffx = c.x - x;
+				double diffy = c.y - y;
+				if (diffx*diffx + diffy*diffy < size) {
+					c.dx += diffx*strength;
+					c.dy += diffy*strength;
+				}
 			}
 		}
 	}
@@ -163,54 +148,110 @@ public class SpringGrid extends GameObject{
 	}
 	
 	
-		class Cell { //does NOT extend gameobject, as putting extra things in there is slow
+	//////////////////////////////////////////////////////////////////
+	public void drawSelf(GL2 gl) {
+		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+		gl.glLineWidth(1); //a setting option maybe?
+		
+		gl.glColor4d(0.1, 0.1, 0.1, 0.5);
+		gl.glBegin(GL2.GL_LINES);
+			
+			double def = 0.03;
+//			double diff = 0.5; //TODO please fix colours
+			
+			for (int i = 0; i < xCount-1; i++) { //grid lines across
+				for (int j = 1; j < yCount-1; j++) {
+					Cell c = grid[i][j];
+					double diff = c.xDiff()*c.xDiff() + c.yDiff()*c.yDiff();
+					
+					diff = Math.min(diff, 0.5);
+//					diff = diff % 0.7;
+					
+					gl.glColor4d(diff+def, diff+def, diff+def, 0.5);
+
+					gl.glVertex2d(c.x, c.y);
+					gl.glVertex2d(grid[i+1][j].x, grid[i+1][j].y);
+				}
+			}
+			
+			for (int i = 1; i < xCount-1; i++) { //grid lines vertical
+				for (int j = 0; j < yCount-1; j++) {
+					Cell c = grid[i][j];
+					double diff = c.xDiff()*c.xDiff() + c.yDiff()*c.yDiff();
+
+					diff = Math.min(diff, 0.5);
+//					diff = diff % 0.7;
+					
+					gl.glColor4d(diff+def, diff+def, diff+def, 0.5);
+
+					gl.glVertex2d(c.x, c.y);
+					gl.glVertex2d(grid[i][j+1].x, grid[i][j+1].y);
+				}
+			}
+		gl.glEnd();
+
+		gl.glColor4d(0.1, 0.1, 0.1, 0.5);
+//		gl.glPointSize(2); //a setting option maybe?
+		gl.glBegin(GL2.GL_POINTS);
+			for (int i = 1; i < xCount-1; i++) { //grid dots
+				for (int j = 0; j < yCount-1; j++) {
+					Cell c = grid[i][j];
+					gl.glVertex2d(c.x, c.y);
+				}
+			}
+		gl.glEnd();
+		
+		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+	}
+	
+	
+	class Cell { //does NOT extend gameobject, as putting extra things in there would be slow
 		double x, y, dx, dy = 0;
-		double ox, oy = 0; //original position of grid point
+		double ox, oy = 0; //original position of the grid point, springs need this for their restoring force
 		
 		Cell(double i, double j) {
 			x = ox = i;
 			y = oy = j;
 		}
+		
+		double xDiff() {
+			return Math.abs(ox-x);
+		}
+		double yDiff() {
+			return Math.abs(oy-y);
+		}
 
+		 //this method doesn't want to be touched either
 		public void update(double dt, double xrestore, double yrestore) {
-			if (Math.abs(xrestore-x) > 0.04) //if restoring force is greater than 0.04, help it
-				dx += (xrestore-x);
-			if (Math.abs(yrestore-y) > 0.04) 
-				dy += (yrestore-y);
+//			if (Math.abs(xrestore) > 0.035) //this number bigger removes propogations in the mesh
+			if (Math.abs(xrestore) > 0.075) //this number bigger removes propogations in the mesh
+				dx += Helper.sgn(xrestore);
+			if (Math.abs(yrestore) > 0.075) //if this is <=0.035 its non-damped and doesn't stop bouncing
+//			if (Math.abs(yrestore) > 0.035)
+				dy += Helper.sgn(yrestore);
 
-			if (Math.abs(ox-x) > 0.02) { //if original position difference is really close, do stuff
-				x += (ox-x)*0.02;
-				dx += (ox-x)/2;
+			if (Math.abs(ox-x) > 0.05) { //if original position difference is really close, do stuff
+				x += (ox-x)*0.05;
+				dx += (ox-x)/4;
 			} else {
 				x = ox;
 			}
-			if (Math.abs(oy-y) > 0.02) {
-				y += (oy-y)*0.02;
-				dy += (oy-y)/2;
+			if (Math.abs(oy-y) > 0.05) {
+				y += (oy-y)*0.05;
+				dy += (oy-y)/4;
 			} else {
 				y = oy;
 			}
 			
-			dx *= 0.95;
-			dy *= 0.95; //strong decay because bounciness
+			dx *= 0.899;
+			dy *= 0.899; //for some reason this is really stable
 			
 			x += dx*dt;
 			y += dy*dt;
 		}
 		
 		public void disrupt(double xx, double yy) {
-//			if (Math.abs(xx) > 8) xx = xx/16;
-//			if (Math.abs(yy) > 8) yy = yy/16; //what is this bit for?
-			//TODO not working
-			
-			dx += xx;
-			dy += yy;
-			
-			double speed = dx*dx + dy*dy;
-			if (speed > 7) { //TODO HARDCODED NUMBER
-				dx /= speed;
-				dy /= speed;
-			}
+			//placeholder for something that should be here
 		}
 	}
 }

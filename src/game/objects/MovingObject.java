@@ -13,7 +13,11 @@ public abstract class MovingObject extends GameObject {
 	
 	MovingObject(double size, double[] colour) {
 		super();
-		this.colour = colour;
+		this.colour[0] = colour[0];
+		this.colour[1] = colour[1];
+		this.colour[2] = colour[2];
+		this.colour[3] = colour[3];
+		
 		this.size = size;
 		this.spawnTimer = 0;
 		

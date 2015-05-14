@@ -109,8 +109,8 @@ public class Spawner extends GameObject {
 	/**draw shape, then draw bigger shape (of size + (double)health/10 larger)
 	 */
 	public void drawSelf(GL2 gl) {
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[spawnType].getTextureId());
 		
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[spawnType].getTextureId()); //fix please
 		gl.glColor4d(Engine.WHITE[0], Engine.WHITE[1], Engine.WHITE[2], Engine.WHITE[3]);
 		Helper.square(gl);
 		

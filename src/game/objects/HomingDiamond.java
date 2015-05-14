@@ -32,8 +32,8 @@ public class HomingDiamond extends HomingObject {
 				double distY = d.y - y;
 				double dist = (distX*distX) + (distY*distY) + 0.0001;
 				if (dist < 0.5*((size*size)+(d.size*d.size))) {
-					dx -= Helper.sgn(distX)/(12*Math.sqrt(dist)); //try changing 12 for good effect
-					dy -= Helper.sgn(distY)/(12*Math.sqrt(dist));
+					dx -= Helper.sgn(distX)/(2*Math.sqrt(dist));
+					dy -= Helper.sgn(distY)/(2*Math.sqrt(dist));
 				}
 			}
 		}

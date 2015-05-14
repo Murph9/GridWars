@@ -85,6 +85,7 @@ public class Engine implements GLEventListener {
 		grid = new SpringGrid(inSettings.getGridXCount(),inSettings.getGridYCount(),
 										inSettings.getBoardWidth(),inSettings.getBoardHeight());
 
+		
 		spawner = inSpawnner;
 		gameState = inState;
 		settings = inSettings;

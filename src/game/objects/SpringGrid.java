@@ -157,7 +157,6 @@ public class SpringGrid extends GameObject{
 		gl.glBegin(GL2.GL_LINES);
 			
 			double def = 0.03;
-//			double diff = 0.5; //TODO please fix colours
 			
 			for (int i = 0; i < xCount-1; i++) { //grid lines across
 				for (int j = 1; j < yCount-1; j++) {
@@ -165,7 +164,6 @@ public class SpringGrid extends GameObject{
 					double diff = c.xDiff()*c.xDiff() + c.yDiff()*c.yDiff();
 					
 					diff = Math.min(diff, 0.5);
-//					diff = diff % 0.7;
 					
 					gl.glColor4d(diff+def, diff+def, diff+def, 0.5);
 
@@ -180,7 +178,6 @@ public class SpringGrid extends GameObject{
 					double diff = c.xDiff()*c.xDiff() + c.yDiff()*c.yDiff();
 
 					diff = Math.min(diff, 0.5);
-//					diff = diff % 0.7;
 					
 					gl.glColor4d(diff+def, diff+def, diff+def, 0.5);
 
@@ -191,7 +188,7 @@ public class SpringGrid extends GameObject{
 		gl.glEnd();
 
 		gl.glColor4d(0.1, 0.1, 0.1, 0.5);
-//		gl.glPointSize(2); //a setting option maybe?
+//		gl.glPointSize(2); //TODO a setting option maybe?
 		gl.glBegin(GL2.GL_POINTS);
 			for (int i = 1; i < xCount-1; i++) { //grid dots
 				for (int j = 0; j < yCount-1; j++) {

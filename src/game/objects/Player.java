@@ -14,9 +14,9 @@ import javax.swing.JOptionPane;
 public class Player extends MovingObject implements KeyListener, MouseListener {
 
 	public static double MAX_SPEED = 6.5;
-	public static double MAX_ACCEL = 1;
+	public static double ACCEL = 1;
 	
-	public static double PLAYER_INERTIA = 1.04; //please don't change these numbers again (user defined probably)
+	public static double PLAYER_DRAG = 1.04;//TODO user setting, please don't change these numbers though
 	public static double SHOOT_RATE = 0.14;
 	
 	private boolean xPosAccel = false,
@@ -104,7 +104,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		}
 		
 		
-		if (Engine.gameState.ifRearShot()) {
+		if (Engine.gameState.ifRearShot() > 0) {
 			MovingObject b12 = new PlayerBullet(0.35, Engine.YELLOW);
 			b12.x = -Math.cos(Math.toRadians(angle))*size/2 + x;
 			b12.y = -Math.sin(Math.toRadians(angle))*size/2 + y;
@@ -113,7 +113,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			b12.dy = (dy/2-2*Math.sin(Math.toRadians(angle)))*speed;
 		}
 		
-		if (Engine.gameState.ifSideShot()) {
+		if (Engine.gameState.ifSideShot() > 0) {
 			MovingObject b12 = new PlayerBullet(0.35, Engine.YELLOW);
 			b12.x = Math.cos(Math.toRadians(angle+90))*size/2 + x;
 			b12.y = Math.sin(Math.toRadians(angle+90))*size/2 + y;
@@ -162,18 +162,20 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			r.y = y+0.1*(Engine.rand.nextDouble()*2 -1);
 		}
 		
-		if (Engine.gameState.ifTempShield()) {
-			shieldAngle += dt*100;
+		double shield = Engine.gameState.ifTempShield();
+		if (shield > 0) {
+			if (shield > 1) shield = 1;
+			shieldAngle += dt*100*shield; //slow down of shield
 		}
 		
 		//acceleration calculations 
-		if		(xPosAccel) { dx += MAX_ACCEL; }
-		else if	(xNegAccel) { dx -= MAX_ACCEL; }
-		else 				{ dx /= PLAYER_INERTIA; }
+		if		(xPosAccel) { dx += ACCEL; }
+		else if	(xNegAccel) { dx -= ACCEL; }
+		else 				{ dx /= PLAYER_DRAG; }
 		
-		if		(yPosAccel) { dy += MAX_ACCEL; }
-		else if	(yNegAccel) { dy -= MAX_ACCEL; }
-		else 				{ dy /= PLAYER_INERTIA; }
+		if		(yPosAccel) { dy += ACCEL; }
+		else if	(yNegAccel) { dy -= ACCEL; }
+		else 				{ dy /= PLAYER_DRAG; }
 		
     	blackHole();
     	selfCol();
@@ -189,7 +191,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	 * rather than pushing on other similar objects like all the other selfCol()
 	 */
 	public void selfCol() {
-		if (Engine.gameState.ifTempShield()) {
+		if (Engine.gameState.ifTempShield() > 0) { //if shield active, can still get powerups, but not other objects
 			ArrayList<PowerUp> list = new ArrayList<PowerUp>(PowerUp.ALL_THIS);
 			for (PowerUp p: list) {
 				double[] pos = p.getCollisionPosition();
@@ -205,7 +207,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		for (GameObject o: objects) {
 			if (o instanceof PlayerBullet || o instanceof Player || o instanceof Border || o instanceof Camera || o instanceof Shield || o instanceof Particle) {
-				continue; //nothing, can't hit these things
+				continue; //nothing, can't hit these things TODO make sure these have a collision position of really far away
 			} else {
 				double[] pos = o.getCollisionPosition();
 				double distX = pos[0] - x;
@@ -243,14 +245,18 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.PLAYER].getTextureId());
 		
-		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
+		gl.glColor4d(Engine.WHITE[0], Engine.WHITE[1], Engine.WHITE[2], Engine.WHITE[3]);
 		Helper.square(gl);
 		
-		if (Engine.gameState.ifTempShield()) {
+		double shield = Engine.gameState.ifTempShield();
+		if (shield > 0) {
+			if (shield > 1) shield = 1;
+			gl.glColor4d(shield, shield, shield, 0.5); //decay of shield..
+			
 			gl.glPushMatrix();
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.PLAYER_SHEILD].getTextureId());
 			
-			gl.glRotated(shieldAngle- angle,0,0,1);
+			gl.glRotated(shieldAngle - angle,0,0,1);
 			gl.glScaled(2, 2, 1);
 			Helper.square(gl);
 			
@@ -259,7 +265,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 			gl.glPushMatrix();
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.PLAYER_SHEILD].getTextureId());
 			
-			gl.glRotated(-shieldAngle- angle,0,0,1);
+			gl.glRotated(-shieldAngle - angle,0,0,1);
 			gl.glScaled(2, 2, 1);
 			Helper.square(gl);
 			

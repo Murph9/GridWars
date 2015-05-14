@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class SpawnHandler {
 
-	private static final int POWER_UP_OFFSET = 2500; //according to the info, TODO balance?
+	private static final int POWER_UP_OFFSET = 2000;
 	private static final int PLAYER_SPAWN_RANGE = 4;
 	private int powerUpScore;
 	
@@ -47,7 +47,11 @@ public class SpawnHandler {
 		this.diff = difficulty;
 		this.random = new Random();
 		this.frameCount = 0; //so they don't spawn striaght away
-		this.powerUpScore = POWER_UP_OFFSET;
+		this.powerUpScore = 5000; //always 5000 from the start.
+		
+		if (diff.equals(Engine.MEDIUM_D)) {
+			frameCount = 2000; //TODO needs testing
+		}
 		
 		if (diff.equals(Engine.HARD_D)) { //so it starts with hard things
 			frameCount = 7000;
@@ -64,34 +68,42 @@ public class SpawnHandler {
 		int score = Engine.gameState.getScore();
 		int mult = Engine.gameState.getMultiplier();
 		
-		if (score >= powerUpScore) {
-			int rand = random.nextInt(9);
-			int type = -1; //so it breaks if not changed
+		if (score >= powerUpScore) { //from the source code method MakePowerUp(tp:Int=-1)
+			int type = random.nextInt(2); //0 or 1
 			
-			switch (rand) { //TODO only spawn things we need
-			case 0:
-				type = Engine.EXTRA_SPEED; break;
-			case 1:
-				type = Engine.EXTRA_BULLET; break;
-			case 2:
-				type = Engine.EXTRA_BOMB; break;
-			case 3:
-				type = Engine.EXTRA_LIFE; break;
-			case 4:
-				type = Engine.SIDE_SHOT; break;
-			case 5:
-				type = Engine.REAR_SHOT; break;
-			case 6:
-				type = Engine.TEMP_SHIELD; break;
-			case 7:
-				type = Engine.SUPER_SHOT; break;
-			case 8:
-				type = Engine.BOUNCY_SHOT; break;
+			if (Engine.rand.nextInt(100) > 80) { //choosing super, bouncy, speed or shield first
+				int rand = random.nextInt(4);
+				switch(rand) {
+				case 0: 
+					type = Engine.TEMP_SHIELD; break;
+				case 1: 
+					type = Engine.SUPER_SHOT; break;
+				case 2: 
+					type = Engine.BOUNCY_SHOT; break;
+				case 3: 
+					type = Engine.EXTRA_SPEED;	break;
+				default:
+					System.err.println("help, powerup code ~line 81");
+				}
 			}
 			
-			powerUpScore += POWER_UP_OFFSET*mult; //so it get slowly further and further away
-				//TODO: balance this number
-//			System.out.println(powerUpScore);
+			if (Engine.gameState.getBulletCount() < 4) { //extra bullet
+				if (random.nextInt(Engine.gameState.getBulletCount()) == 0) {
+					type = Engine.EXTRA_BULLET;
+				}
+			}
+			
+			if (type < 2 && random.nextInt(100) > 40) { //extra life or extra bomb 
+				if (Engine.gameState.getBulletSpeed() < 2) { //in seriouser trouble
+					type = Engine.EXTRA_LIFE;
+				} else if (Engine.gameState.getBombCount() < 2) { //in serious trouble
+					type = Engine.EXTRA_BOMB;
+				}
+			}
+
+			powerUpScore += POWER_UP_OFFSET*mult*mult; //so it get slowly further and further away
+				//source code says POWERUP*mult*mult but that gets way too big?
+//			System.out.println(powerUpScore + " " + mult);
 			
 			PowerUp up = new PowerUp(type);
 			chooseSpawn(up, 0);
@@ -153,16 +165,19 @@ public class SpawnHandler {
 		}
 
 		if (frameCount % 444 == 0) {
-			int count =  16 + random.nextInt(Math.min((int)(frameCount/2000) + 1, 16));
-			double rate = 1.5 + (double)random.nextInt(60)/100d  - (double)(frameCount)/100000; //TODO fix timing of spawners [properly]
-			if (rate > 1.5) 
-				rate = 1.5;
+			int health =  16 + random.nextInt(Math.min((int)(frameCount/2000) + 1, 16));
+			
+			double rate = 1.5 //base rate
+					+ random.nextDouble()//random between 0 and 1   
+					- (double)frameCount/10000d; //it gets smaller as the game goes on
+			
+			if (rate < 1.5) rate = 1.5;
 
 			int type = pickEnemy(frameCount/4) + 1;
-			if (type == 5) type = 3+ random.nextInt(3); //3,4,5
+			if (type == 5) type = 3 + random.nextInt(3); //3, 4 or 5
 			if (type == 8) type = 9;
 			
-			createSpawner(type, count, rate, random.nextInt(13));
+			createSpawner(type, health, rate, random.nextInt(13));
 		}
 		
 		//swarm 1 spawn: 
@@ -275,8 +290,8 @@ public class SpawnHandler {
 	}
 	
 	
-	private void createSpawner(int spawnType, int count, double rate, int location) {
-		GameObject o = new Spawner(0.2, spawnType, count, rate);
+	private void createSpawner(int spawnType, int health, double rate, int location) {
+		GameObject o = new Spawner(0.2, spawnType, health, rate);
 		chooseSpawn(o, location);
 	}
 	
@@ -322,36 +337,38 @@ public class SpawnHandler {
 		}
 
 		double[] playerPos = Engine.player.getPosition();
+		double width = Engine.settings.getBoardWidth();
+		double height = Engine.settings.getBoardHeight();
 		
 		//actually place it in the corner (or random or player)
 		switch (location) {
 		case 0: //random spawn
-			o.x = random.nextDouble()*Engine.settings.getBoardWidth()*2 - Engine.settings.getBoardWidth();
-			o.y = random.nextDouble()*Engine.settings.getBoardHeight()*2 - Engine.settings.getBoardHeight();
+			o.x = random.nextDouble()*width*2 - width;
+			o.y = random.nextDouble()*height*2 - height;
 			break;
 		case 1: //corners 1,2,3,4
-			o.x = Engine.settings.getBoardWidth()-o.size;
-			o.y = Engine.settings.getBoardHeight()-o.size;
+			o.x = width - o.size - random.nextDouble();
+			o.y = height - o.size - random.nextDouble();
 			break;
 		case 2:
-			o.x = -Engine.settings.getBoardWidth()+o.size;
-			o.y = -Engine.settings.getBoardHeight()+o.size;
+			o.x = -width + o.size + random.nextDouble();
+			o.y = -height + o.size + random.nextDouble();
 			break;
 		case 3:
-			o.x = -Engine.settings.getBoardWidth()+o.size;
-			o.y = Engine.settings.getBoardHeight()-o.size;
+			o.x = -width + o.size + random.nextDouble();
+			o.y = height - o.size - random.nextDouble();
 			break;
 		case 4:
-			o.x = Engine.settings.getBoardWidth()-o.size;
-			o.y = -Engine.settings.getBoardHeight()+o.size;
+			o.x = width-o.size - random.nextDouble();
+			o.y = -height+o.size + random.nextDouble();
 			break;
 		case 12:
 			while (true) {
 				double angle = random.nextDouble()*Math.PI*2;
 		    	o.x = playerPos[0]+(Math.cos(angle)*PLAYER_SPAWN_RANGE);
 		    	o.y = playerPos[1]+(Math.sin(angle)*PLAYER_SPAWN_RANGE);
-		    	if (o.x < Engine.settings.getBoardWidth() && o.x > -Engine.settings.getBoardWidth() && 
-		    			o.y < Engine.settings.getBoardHeight() && o.y > -Engine.settings.getBoardHeight()) {
+		    	if (o.x < width && o.x > -width && 
+		    			o.y < height && o.y > -height) {
 		    		break;
 		    	}
 			}
@@ -360,14 +377,15 @@ public class SpawnHandler {
 			try { 
 				throw new Exception();
 			} catch (Exception e) {
+				System.err.println("invalid corner in spawnhandler.java, line ~380");
 				e.printStackTrace();
 			}
 		}
 
 		//trying to stop objects directly spawning on player
 		double dist = (playerPos[0]-o.x)*(playerPos[0]-o.x) + (playerPos[1]-o.y)*(playerPos[1]-o.y);
-		if (dist < 5) {
-			chooseSpawn(o, 0);
+		if (dist < PLAYER_SPAWN_RANGE + 0.1) {
+			chooseSpawn(o, 0); //random, this may be slightly recursive...
 		} else {
 			//we done here, shockwave!:
 			Engine.grid.shockwaveGrid(o.x, o.y, 3, 3);

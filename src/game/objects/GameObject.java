@@ -88,7 +88,7 @@ public class GameObject {
     //below is usually what the class will call after binding the texture...
     public void drawSelf(GL2 gl) {
     	//...here
-    	gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
+    	gl.glColor4d(this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
     	Helper.square(gl);
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		
@@ -115,7 +115,7 @@ public class GameObject {
         }
         
         drawSelf(gl);
-        //this used to have ROOT code, but it seem to have just been slowing things down?
+        //this used to have ROOT code, but it seems to have just been slowing things down?
         
         gl.glPopMatrix(); //.... then put it back 
     }

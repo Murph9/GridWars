@@ -118,6 +118,7 @@ public class ConnectedTriangle extends MovingObject {
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.TRIANGLE].getTextureId());
 		gl.glColor4d(colour[0], colour[1],colour[2],colour[3]);
+		
 		if (partner != null) {
 			gl.glPushMatrix();
 			gl.glRotated(60,0,0,1);

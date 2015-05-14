@@ -6,8 +6,6 @@ import game.logic.*;
 import javax.media.opengl.GL2;
 
 
-//TODO source code says it has a 4/100 chance of moving towards the player
-
 /**The name should be a good hint
  * @author Jake Murphy
  */
@@ -45,6 +43,12 @@ public class PowerUp extends MovingObject {
 		y += dy*dt;
 		
 		Helper.keepInside(this, Helper.BOUNCE);
+		
+		if (Engine.rand.nextInt(100) < 4) { //source code says 4/100 chance of moving towards the player
+			double[] playerPos = Engine.getPlayerPos();
+			dx += (playerPos[0]-x)/2;
+			dy += (playerPos[1]-y)/2;
+		}
 		
 		selfCol();
 		blackHole();
@@ -105,6 +109,13 @@ public class PowerUp extends MovingObject {
 	}
 	
 	public void drawSelf(GL2 gl) {
+		double col = this.decayTimer;
+		if (col > 1) col = 1;
+		
+		this.colour[0] = col;
+		this.colour[1] = col; //always white, and fade to black when dying
+		this.colour[2] = col;
+		
 		switch (type) {
 		case Engine.EXTRA_SPEED:
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.EXTRA_SPEED].getTextureId()); 	break;

@@ -14,9 +14,9 @@ public class GameState {
 	
 	private final double SPEED_INC = 0.15;
 	
-	//TODO these change value depending on the level
+	//maybe change these values depending on the level ??is this a feature??
 	private static final double POWERUP_LENGTH_LONG = 15; //15 seconds is the standard (according to the game)
-	private static final double POWERUP_LENGTH_SHORT = 15; //10 is for super shots
+	private static final double POWERUP_LENGTH_SHORT = 10; //10 is for super shots
 	
 	private final int[] killSteps = new int[]{25,50,100,200,400,800,1600,3200,6400,12800}; //multipler steps
 	
@@ -88,7 +88,7 @@ public class GameState {
 			HomingButterfly.MAX_SPEED *= 0.75;
 			ConnectedTriangle.MAX_SPEED *= 0.7;
 			break;
-		case Engine.MEDIUM_D:
+		case Engine.MEDIUM_D: //here for clarity
 			break;
 		case Engine.HARD_D:
 			ShySquare.MAX_SPEED *= 1.25;
@@ -220,7 +220,7 @@ public class GameState {
 		powerupCount++;
 	}
 	public void gotBouncyShot() { 
-		hasBouncyShot = POWERUP_LENGTH_LONG; 
+		hasBouncyShot = POWERUP_LENGTH_SHORT;
 		TextPopup s = new TextPopup(Engine.WHITE, "Bouncy Shot", 2, Engine.getPlayerPos()[0]-0.5, Engine.getPlayerPos()[1]);
 		powerupCount++;
 	}
@@ -249,11 +249,11 @@ public class GameState {
 	public int    getBulletCount() { return bulletCount; }
 	public double getBulletSpeed() { return bulletSpeed; }
 
-	public boolean ifTempShield() { return (hasShield > 0);      }
-	public boolean ifSideShot()   { return (hasSideBullets > 0); }
-	public boolean ifRearShot()   { return (hasRearBullets > 0); }
-	public boolean ifBouncyShot() { return (hasBouncyShot > 0);  }
-	public boolean ifSuperShot()  { return (hasSuperShot > 0);   }
+	public double ifTempShield() { return hasShield;      }
+	public double ifSideShot()   { return hasSideBullets; }
+	public double ifRearShot()   { return hasRearBullets; }
+	public double ifBouncyShot() { return hasBouncyShot;  }
+	public double ifSuperShot()  { return hasSuperShot;   }
 	
 	
 	public String toString() { //has been outdated

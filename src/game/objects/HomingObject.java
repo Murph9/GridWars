@@ -15,13 +15,14 @@ public abstract class HomingObject extends MovingObject {
 		this.MAX_SPEED = speed;
 	}
 	
+	
 	public void update(double dt) {
 		if (this.spawnTimer > 0) {
 			this.spawnTimer -= dt;
 			return;
 		}
 		
-		x += dx*dt*MAX_SPEED;
+		x += dx*dt*MAX_SPEED; //because we always want it going full speed
 		y += dy*dt*MAX_SPEED;
 		
 		Helper.keepInside(this, Helper.SPLAT);

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import javax.media.opengl.GL2;
 
 
-//TODO bullet blackhole stuff not working
-
 public class PlayerBullet extends MovingObject {
 
 	public final static ArrayList<PlayerBullet> ALL_THIS = new ArrayList<PlayerBullet>();
@@ -50,7 +48,7 @@ public class PlayerBullet extends MovingObject {
 			hasCollided = true;
 		}
 
-		if (hasCollided && !Engine.gameState.ifBouncyShot()) {
+		if (hasCollided && Engine.gameState.ifBouncyShot() <= 0) {
 			this.amHit(false);
 			return;
 		} else {
@@ -77,11 +75,11 @@ public class PlayerBullet extends MovingObject {
 				double dist = Math.sqrt(distx*distx + disty*disty) + 0.0001;
 				
 				if (dist < BlackHole.SUCK_RADIUS && !h.isInert()) {
-					dx -= distx/(dist*4);
-					dy -= disty/(dist*4);
+					dx -= distx/(dist*2);
+					dy -= disty/(dist*2);
 				}
 				if (dist < h.size/2) {
-					if (!Engine.gameState.ifSuperShot()) {
+					if (Engine.gameState.ifSuperShot() <= 0) {
 						this.amHit(false);
 					}
 					h.amHit();
@@ -95,7 +93,7 @@ public class PlayerBullet extends MovingObject {
 				double distX = pos[0] - x;
 				double distY = pos[1] - y;
 				if ((distX*distX) + (distY*distY) < ((size/2)*(size/2) + (o.size/2)*(o.size/2))) {
-					if (!Engine.gameState.ifSuperShot()) {
+					if (Engine.gameState.ifSuperShot() <= 0) {
 						this.amHit(false);
 					}
 					if (o instanceof SnakeBody || o instanceof Shield) {
@@ -116,11 +114,11 @@ public class PlayerBullet extends MovingObject {
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.BULLET].getTextureId());
 		
-    	if (Engine.gameState.ifBouncyShot()) {
+    	if (Engine.gameState.ifBouncyShot() > 0) {
     		this.colour = Engine.GREEN;
     	}
 
-    	if (Engine.gameState.ifSuperShot()) {
+    	if (Engine.gameState.ifSuperShot() > 0) {
     		this.colour = Engine.RED;
     	}
 

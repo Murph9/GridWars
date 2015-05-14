@@ -40,7 +40,7 @@ public class BlackHole extends MovingObject {
 	}
 	
 	public void giveObject(double x, double y) {
-		dx += x/12; //objects give it speed, TODO depending on size?
+		dx += x/12; //hardcoded number alert, this seems to work well though
 		dy += y/12;
 		
 		numCount++;
@@ -67,7 +67,7 @@ public class BlackHole extends MovingObject {
 			this.spawnTimer -= dt*2;
 		}
 		
-		x += dx*dt;//*BlackHole.MAX_SPEED; //TODO why do they still go so fast?
+		x += dx*dt;//*BlackHole.MAX_SPEED;
 		y += dy*dt;//*BlackHole.MAX_SPEED;
 		
 		particleCount = 0;
@@ -137,8 +137,7 @@ public class BlackHole extends MovingObject {
 			}
 		}
 		
-		Engine.grid.pullGrid(x,y, BlackHole.SUCK_RADIUS*Math.sqrt(size), 20); //pull on the grid, TODO CHANGE '20' to not so hardcoded
-			//TODO gets too big [fixed?]
+		Engine.grid.pullGrid(x,y, BlackHole.SUCK_RADIUS*Math.sqrt(size), 20); //pull on the grid, warning hardcoded
 	}
 	
 	public void selfCol() {

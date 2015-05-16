@@ -29,8 +29,7 @@ public class FileHelper {
 			HIGHEST_SCORE = "high_score", HIGHEST_MULTI = "high_multiplier",
 			TOTAL_POWERUPS = "total_powerups",	TOTAL_KILLS = "total_kills", 
 			TOTAL_SCORE = "total_score", TOTAL_TIME = "total_time", TOTAL_DEATHS = "total_deaths",
-			LONGEST_GAME = "longest_game";
-		//other ideas: times played, 
+			LONGEST_GAME = "longest_game", TIMES_LOADED = "time_loaded";
 
 	//Settings
 	private static final String SETTINGS = "settings.txt",
@@ -39,7 +38,7 @@ public class FileHelper {
 			IF_PARTICLES = "particles", PARTICLE_COUNT = "particle_count", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
 			NAME = "name", DIFFICULTY = "difficulty", GRID_X_COUNT = "grid_x_count", GRID_Y_COUNT = "grid_y_count";
 	
-	
+	//no setting for debug options please, its someting that you should always have to turn on
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	//SETTINGS:
@@ -184,7 +183,8 @@ public class FileHelper {
 		File file = new File(STATS);
 		
 		Scanner stats = null;
-		int hiScore = 0, multi = 0, powerups = 0, kills = 0, totalScore = 0, time = 0, deaths = 0, longest = 0;
+		int hiScore = 0, multi = 0, powerups = 0, kills = 0, totalScore = 0, 
+					time = 0, deaths = 0, longest = 0, loaded = 0;
 		
 		try {
 			if (!file.exists()) {
@@ -213,6 +213,8 @@ public class FileHelper {
 					deaths = INT + state.getTotalDeaths();
 				} else if (next.equals(LONGEST_GAME)) {
 					longest = Math.max(INT, (int)state.getTime());
+				} else if (next.equals(TIMES_LOADED)) {
+					loaded = INT + 1;
 				}
 			}
 			stats.close();
@@ -230,6 +232,7 @@ public class FileHelper {
 			out.println(TOTAL_TIME + " " + time);
 			out.println(TOTAL_DEATHS + " " + deaths);
 			out.println(LONGEST_GAME + " " + longest);
+			out.println(TIMES_LOADED + " " + loaded);
 			
 			out.close();
 			
@@ -262,6 +265,7 @@ public class FileHelper {
 		out.println(TOTAL_TIME + " 0");
 		out.println(TOTAL_DEATHS + " 0");
 		out.println(LONGEST_GAME + " 0");
+		out.println(TIMES_LOADED + " 0");
 		
 		out.close();
 	}

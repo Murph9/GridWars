@@ -321,6 +321,9 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { //escape is a good pause button I think
 			Engine.togglePause();
 		}
+		if (e.getKeyCode() == KeyEvent.VK_1) {
+			Engine.toggleDebug();
+		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_Q && Engine.isPaused()) { //quit on a 'q' press while paused
 			int dialogResult = JOptionPane.showConfirmDialog (null, "Are you sure you want to quit?", "Confirm",

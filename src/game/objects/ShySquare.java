@@ -26,7 +26,8 @@ public class ShySquare extends MovingObject {
 		
 		this.spawnTimer = spawnTimer;
 		
-		SoundEffect.SHOOT.play(10, 0);
+//		SoundEffect.SHOOT.play(10, 0);
+		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class ShySquare extends MovingObject {
 		ArrayList<GameObject> objects = new ArrayList<GameObject>(PlayerBullet.ALL_THIS);
 		for (GameObject o: objects) {
 			double distance = (x - o.x)*(x - o.x) + (y - o.y)*(y - o.y);
-			if (distance < dodgeRange && distance < 0.01) {
+			if (distance < dodgeRange && distance != 0) {
 				dx += (x-o.x)/(distance);
 				dy += (y-o.y)/(distance);
 			}

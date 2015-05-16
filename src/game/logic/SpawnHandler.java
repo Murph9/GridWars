@@ -5,6 +5,9 @@ import game.objects.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+
+//TODO blackholes always spawn in the centre..?
+
 @SuppressWarnings("unused")
 
 /**Handles the spawning of objects (position and time).
@@ -50,7 +53,7 @@ public class SpawnHandler {
 		this.powerUpScore = 5000; //always 5000 from the start.
 		
 		if (diff.equals(Engine.MEDIUM_D)) {
-			frameCount = 2000; //TODO needs testing
+			frameCount = 1500;
 		}
 		
 		if (diff.equals(Engine.HARD_D)) { //so it starts with hard things
@@ -304,8 +307,6 @@ public class SpawnHandler {
 		//these options are for picking many corners with the same number
 			//e.g. 6 will alternate between corners 1 and 2 (good for swarms)
 		
-		location = 5;
-		
 		switch (location) {
 		case 5: //random corner
 			location = random.nextInt(4) + 1; //1,2,3,4
@@ -336,7 +337,7 @@ public class SpawnHandler {
 			break;
 		}
 
-		double[] playerPos = Engine.player.getPosition();
+		double[] playerPos = Engine.player.getPosition(); //need it twice below
 		double width = Engine.settings.getBoardWidth();
 		double height = Engine.settings.getBoardHeight();
 		

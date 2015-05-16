@@ -1,17 +1,16 @@
 package game.logic;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.sound.sampled.*;
-
+import javafx.scene.media.AudioClip;
 
 /**
  * Audio playing and handling.
- * @author Another random internet user
+ * @author Link in this source
  */
-public enum SoundEffect {
+public class SoundEffect extends Thread {
 	//TODO makes better ones
 	/*lots of others needed:
 		bullet shoot, hit, bounce
@@ -21,110 +20,48 @@ public enum SoundEffect {
 		object spawn sound
 		???
 	*/
-	
-	//Good:
-	OBJECT_KILL("sounds/bullet1.wav"), //bullet shoot, make shorter 
+	public static final String 
 
-	//Bad:
-	BULLET_KILL("sounds/bullet_hit.wav"), //bullet die 
-	POWERUP("sounds/Powerup.wav"),   // powerup
-	POWERUP2("sounds/Powerup2.wav"),         // gong
-	SHOOT("sounds/shot.wav");       // bullet hit
+	SHOT_HARD =	"sounds/shot_hard.wav", 
+	SHOT_SOFT =	"sounds/shot_soft.wav",
+	POWERUP =	"sounds/powerup.wav",
+	POWERUP2 =	"sounds/powerup2.wav",
+	SPAWN = 	"sounds/spawn.wav";
 
+	//variables to use when run is called
+	private String soundFileName; //file location
+	private int level; //volume of played sound
+	private double pan; //pan of sound, -1 -> 1
 	
-	// Nested class for specifying volume
-	public static enum Volume {
-		MUTE, LOW, MEDIUM, HIGH
-	}
-	
-	public static Volume volume = Volume.HIGH;
-	
-	
-	// Each sound effect has its own clip, loaded with its own sound file.
-	private Clip clip = null;
-	
-	SoundEffect(String soundFileName) {
-		try {
-			// Open an audio input stream.
-			File r = new File(soundFileName);
-			URL url = r.toURI().toURL();
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-			// Get a sound clip resource.
-			clip = AudioSystem.getClip();
-
-			// Open audio clip and load samples from the audio input stream.
-			clip.open(audioIn);
-		} catch (UnsupportedAudioFileException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/** Play sound from beginning, simple.
+	/** Play sound from beginning, simple. Called using new SoundEffect(<sound>).start()
 	 * @param level Decibles from maximum sound (0 = loudest, 100 = softest)
 	 * @param pan Not implemented
 	 */
-	public void play(int level, float pan) { //pan not used yet TODO
-		if (volume != Volume.MUTE) {
-			if (clip.isRunning()) {
-				clip.stop();   // Stop the player if it is still running
-			}
-			clip.setFramePosition(0); // rewind to the beginning
-			clip.start();     // Start playing
-		}
-		
-		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-		gainControl.setValue(-level); // Reduce volume by level decibels.
+	public SoundEffect(String soundFileName, int volume, double pan) {
+		this.soundFileName = soundFileName;
+		this.level = volume;
+		this.pan = pan;
 	}
 	
-	// Optional static method to pre-load all the sound files.
-	static void init() {
-		values(); // calls the constructor for all the elements
+	
+	@Override
+	public void run() {
+		File file = new File(soundFileName);
+		URL u = null;
+		try {
+			u = file.toURI().toURL();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		AudioClip sound = new AudioClip(u.toString());
+		sound.setBalance(pan);
+		sound.setVolume(level); //TODO find what this wants
+		sound.play();
+		
+		//yeah so apparently there is this thing in javafx that helps .... [wish i found this sooner]
+		//https://docs.oracle.com/javafx/2/api/javafx/scene/media/AudioClip.html
 	}
 }
 
-
-//http://www3.ntu.edu.sg/home/ehchua/programming/java/J8c_PlayingSound.html
-
-
-
-
-//below is for playing 2 songs at once from: TODO
-	//http://stackoverflow.com/questions/9656462/how-do-i-play-two-sounds-at-once
-
-/*import java.net.URL;
-import javax.swing.*;
-import javax.sound.sampled.*;
-
-public class LoopSounds {
-
-    public static void main(String[] args) throws Exception {
-        URL url = new URL(
-            "http://pscode.org/media/leftright.wav");
-        Clip clip = AudioSystem.getClip();
-        AudioInputStream ais = AudioSystem.
-            getAudioInputStream( url );
-        clip.open(ais);
-
-        URL url2 = new URL(
-            "http://pscode.org/media/100_2817-linear.wav");
-        Clip clip2 = AudioSystem.getClip();
-        AudioInputStream ais2 = AudioSystem.
-            getAudioInputStream( url2 );
-        clip2.open(ais2);
-
-        // loop continuously
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-        clip2.loop(Clip.LOOP_CONTINUOUSLY);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                // A GUI element to prevent the Clip's daemon Thread
-                // from terminating at the end of the main()
-                JOptionPane.showMessageDialog(null, "Close to exit!");
-            }
-        });
-    }
-}*/

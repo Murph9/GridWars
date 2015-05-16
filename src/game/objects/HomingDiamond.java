@@ -21,7 +21,8 @@ public class HomingDiamond extends HomingObject {
 		score = 50;
 		
 		this.spawnTimer = spawnTimer;
-		SoundEffect.SHOOT.play(10, 0);
+//		SoundEffect.SHOOT.play(10, 0);
+		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
 	}
 	
 	//this works perfectly:, copy this if you need good collision of objects (not bouncing) 

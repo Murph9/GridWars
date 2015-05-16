@@ -76,10 +76,13 @@ public class GameObject {
         	Engine.gameState.addKill();
         	Engine.gameState.addScore(score);
         	
+        	@SuppressWarnings("unused")
         	TextPopup s = new TextPopup(this.colour, score, 1, x-(size/2), y-0.1);
-        	s.angle = 0; //because annoying warning is gone now that ive used it :P
         	
-        	SoundEffect.OBJECT_KILL.play(10, 0);
+        	double x = Engine.getPlayerPos()[0];
+        	double t = (this.x-x)/10; //seems to work well
+        	
+        	new SoundEffect(SoundEffect.SHOT_HARD, 1, t).start();
         }
     }
     
@@ -117,6 +120,6 @@ public class GameObject {
         drawSelf(gl);
         //this used to have ROOT code, but it seems to have just been slowing things down?
         
-        gl.glPopMatrix(); //.... then put it back 
+        gl.glPopMatrix(); //.... then put it back
     }
 }

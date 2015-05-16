@@ -48,7 +48,7 @@ public abstract class MovingObject extends GameObject {
 				}
 			} else {
 				int offset = Engine.rand.nextInt(180);
-				for (int i = 0; i < 8; i++) {
+				for (int i = 0; i < 10; i++) {
 					MovingObject p = new Particle(2, this.colour, 1, Particle.DEFAULT_DRAG);
 					p.x = x;
 					p.y = y;

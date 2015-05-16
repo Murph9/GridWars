@@ -30,7 +30,8 @@ public class ShieldedClone extends MovingObject {
 		score = 100;
 		this.spawnTimer = spawnTimer;
 		
-		SoundEffect.SHOOT.play(10, 0);
+//		SoundEffect.SHOOT.play(10, 0);
+		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
 	}
 
 	@Override
@@ -83,7 +84,6 @@ public class ShieldedClone extends MovingObject {
 		double[] playerPos = Engine.getPlayerPos();
 		double angleToPlayer = Math.toDegrees(Math.atan2((playerPos[1]-y), (playerPos[0]-x)));
 
-		
 		//TODO still kind of turns the wrong way sometimes, LOOK AT SNAKE BODY ANGLE CODE
 		
 		lastAngle = lastAngle % 360;

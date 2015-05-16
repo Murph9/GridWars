@@ -79,11 +79,14 @@ public class SpringGrid extends GameObject{
 
 				if (dist > 0.1 && dist < size && disto < size) {
 					c.dx -= strength*(diffx/dist);
-					c.dy -= strength*(diffy/dist); //TODO: gets a little bit intense when very close to x,y
+					c.dy -= strength*(diffy/dist); 
 				}
 				if (dist < 0.3) {
-					c.dx /= 8;
-					c.dy /= 8;
+					c.x = x;
+					c.y = y;
+					c.dx = 0;
+					c.dy = 0;
+						
 				}
 			}
 		}
@@ -118,7 +121,7 @@ public class SpringGrid extends GameObject{
 					}
 				}
 			}
-		}
+		}//TODO this method doesn't work quite yet, try looking at engine.killall to test (line ~500)
 		
 	}
 	
@@ -188,7 +191,7 @@ public class SpringGrid extends GameObject{
 		gl.glEnd();
 
 		gl.glColor4d(0.1, 0.1, 0.1, 0.5);
-//		gl.glPointSize(2); //TODO a setting option maybe?
+//		gl.glPointSize(5); //TODO a setting option maybe?
 		gl.glBegin(GL2.GL_POINTS);
 			for (int i = 1; i < xCount-1; i++) { //grid dots
 				for (int j = 0; j < yCount-1; j++) {

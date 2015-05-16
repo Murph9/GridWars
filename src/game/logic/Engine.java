@@ -62,11 +62,10 @@ public class Engine implements GLEventListener {
 
 	private double curAspect; //for the GUI positioning
 	private long myTime;
-	
-	@SuppressWarnings("unused")
 	private double fps;
 	
 	private static boolean isPaused;
+	private static boolean debug;
 	
 	private static GameObject killObj;
 	private static double hitObjCounter; //if just died
@@ -172,11 +171,11 @@ public class Engine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		SoundEffect.init(); //sounds are per file now
-		if (settings.ifSound()) {
-			SoundEffect.volume = SoundEffect.Volume.HIGH;
-		} else {
-			SoundEffect.volume = SoundEffect.Volume.MUTE; //too easy i get it..
+//		SoundEffect.init(); //sounds are per file now
+		if (settings.ifSound()) { //TODO add sound settings
+//			SoundEffect.volume = SoundEffect.Volume.HIGH;
+//		} else {
+//			SoundEffect.volume = SoundEffect.Volume.MUTE; //too easy i get it..
 		}
 	}
 
@@ -234,27 +233,28 @@ public class Engine implements GLEventListener {
 	/** Updates all the game objects, called from display(GL)
 	 */
 	private void update() {
-		long time = System.currentTimeMillis();
-		this.fps = time - myTime;
-		double dt = (time - myTime) / 1000.0;
-		myTime = time;
+		long time = System.nanoTime();
+		double dt = (time - myTime)/1000000; //the actual dt i should be using
+		
+		this.myTime = time;
 		
 		//lag handling TO?DO
-		double lagfixeddt = 0.01666; //seems to work at this point, as its always the same
+		double lagfixeddt = 1/60d; //seems to work at this point, as its always the same
+		fps = dt;
 		
 		if (hitObjCounter > 0) { //just hit something
-			hitObjCounter -= dt;
+			hitObjCounter -= lagfixeddt;
 			//animate just the particles because visuals are cool
 			LinkedList<Particle> all = new LinkedList<Particle>(Particle.ALL_THIS);
 			for (GameObject obj: all) {
-				obj.update(dt);
+				obj.update(lagfixeddt);
 			}
-			grid.update(dt);
+			grid.update(lagfixeddt);
 			
 			return; //because we don't want anything else to move
 			
 		} else if (respawnCounter > 0) {
-			respawnCounter -= dt;
+			respawnCounter -= lagfixeddt;
 			
 			if (killObj != null) { //first time in respawn, 
 				killObj = null; //so it finally goes away
@@ -262,7 +262,7 @@ public class Engine implements GLEventListener {
 				Particle.ALL_THIS.clear(); //no more particles please
 				Engine.killAll(null, false, false); //kill everything for real this time
 				
-				Engine.spawner.lostLife(); //TODO?: maybe listeners for this kind of stuff?
+				Engine.spawner.lostLife();
 				Engine.gameState.lostLife();
 				
 				grid.resetAll(); //reset grid so its easier
@@ -438,19 +438,21 @@ public class Engine implements GLEventListener {
 			}
 			gl.glPopMatrix();
 		
-		//frame speed TODO setting
-			/*String fString = Double.toString(fps); //math so its in the form ddddd.d
+		//displays the time since the last frame
+		if (debug) {
+//			String fString = (Double.toString(fps*1000)).subSequence(0, 5).toString()  + "ms";
+			String fString = Double.toString(fps);
 			
 			gl.glPushMatrix();
-			gl.glTranslated(0.9*curAspect,0.5,0);
+			gl.glTranslated(0.75*curAspect,0.9,0);
 			gl.glScalef(0.0004f, 0.0004f, 1); //for some reason it starts very big (152 or something)
 	
 			for (int i = 0; i < fString.length(); i++) {
 				char ch = fString.charAt(i);
 				glut.glutStrokeCharacter(GLUT.STROKE_ROMAN, ch);
 			}
-			gl.glPopMatrix();*/
-			
+			gl.glPopMatrix();
+		}
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 	}
 
@@ -504,7 +506,7 @@ public class Engine implements GLEventListener {
 			PowerUp.ALL_THIS.clear(); //remove all powerups on a lost life
 		}
 		
-//		grid.Push(player.x, player.y, 60, 20); //large
+//		grid.pushGrid(player.x, player.y, 60, 20); //large
 		
 		if (particles) {
 			for (int i = 0; i < 40; i++) {
@@ -542,6 +544,9 @@ public class Engine implements GLEventListener {
 		return isPaused;
 	}
 	
+	public static boolean isDebug() {
+		return debug;
+	}
 	
 	public static void gameQuit() {
 		gameOver = true;
@@ -563,6 +568,9 @@ public class Engine implements GLEventListener {
 		}
 	}
 	
+	public static void toggleDebug() {
+		debug = !debug;
+	}
 	
 	@SuppressWarnings("unused")
 	public static void togglePause() {

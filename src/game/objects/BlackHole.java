@@ -187,13 +187,13 @@ public class BlackHole extends MovingObject {
 				s.y = y+Math.sin(i);
 				s.spawnTimer = 0;
 			}
-			
+			int offset = Engine.rand.nextInt(180);			
 			for (int i = 0; i < 50; i++) {
-				Particle a = new Particle(1, this.colour, 2, Particle.DEFAULT_DRAG*0.85); //little bit longer than usual
+				Particle a = new Particle(1, this.colour, 2, Particle.DEFAULT_DRAG); //little bit longer than usual
 				a.x = this.x;
 				a.y = this.y;
-				a.dx = Engine.rand.nextDouble()*2 - 1;
-				a.dy = Engine.rand.nextDouble()*2 - 1;
+				a.dx = Math.cos(offset+i*360/8)*32*Engine.rand.nextDouble();
+				a.dy = Math.cos(offset+i*360/8)*32*Engine.rand.nextDouble();
 			}
 		}
 	}

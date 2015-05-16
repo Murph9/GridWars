@@ -27,7 +27,8 @@ public class SimpleSpinner extends MovingObject {
 		
 		score = 25;
 		this.spawnTimer = spawnTimer;
-		SoundEffect.SHOOT.play(10, 0);
+//		SoundEffect.SHOOT.play(10, 0);
+		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
 	}
 
 	public void update(double dt) {

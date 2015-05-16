@@ -32,7 +32,8 @@ public class ConnectedTriangle extends MovingObject {
 		score = 150;
 		this.spawnTimer = spawnTimer;
 		
-		SoundEffect.SHOOT.play(10, 0);
+//		SoundEffect.SHOOT.play(10, 0);
+		new SoundEffect(SoundEffect.SPAWN, 10, 0).start();
 	}
 
 	@Override

@@ -1,8 +1,9 @@
 high_score 2339612
 high_multiplier 8
-total_powerups 1425
-total_kills 171674
-total_score 38577202
-total_time 328092
-total_deaths 558
-longest_game 4464
+total_powerups 1448
+total_kills 178239
+total_score 39601471
+total_time 105763725
+total_deaths 586
+longest_game 105367487
+time_loaded 97

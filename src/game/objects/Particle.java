@@ -8,7 +8,7 @@ import javax.media.opengl.GL2;
 
 public class Particle extends MovingObject {
 
-	public static final double DEFAULT_DRAG = 1.05;
+	public static final double DEFAULT_DRAG = 1.04;
 	public final static ArrayList<Particle> ALL_THIS = new ArrayList<Particle>();
 	
 	private boolean inOrbit;
@@ -141,8 +141,9 @@ public class Particle extends MovingObject {
 		gl.glColor4d(colour[0], colour[1], colour[2], colour[3]);
 		
 		gl.glPointSize((float)thickness);
-		gl.glBegin(GL2.GL_POINTS);
-			gl.glVertex2d(x,y); //testing?
+		gl.glBegin(GL2.GL_LINES);
+			gl.glVertex2d(x,y);
+			gl.glVertex2d(x-(dx*1/60d),y-(dy*1/60d));
 		gl.glEnd();
 	}
 }

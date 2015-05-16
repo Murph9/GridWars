@@ -55,7 +55,8 @@ public class SplitingSquare extends HomingObject {
 		
 		this.spawnTimer = spawnTimer;
 		score = 50; //starts big then changes score to small when hit once
-		SoundEffect.SHOOT.play(10, 0);
+//		SoundEffect.SHOOT.play(10, 0);
+		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
 	}
 	
 	public double getOrbitAngle() {

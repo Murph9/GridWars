@@ -22,13 +22,15 @@ public class GameSettings {
 	private boolean ifParticles;
 	private boolean ifAliasing;
 	
+	private boolean ifDebug;
+	
 	private int particlePercent;
 	
 	GameSettings() {
 		this(1024, 728, 16, 12, 10); //default
 	}
 	
-	/** ...
+	/** init
 	 * @param pixelWidth
 	 * @param pixelHeight
 	 * @param boardWidth
@@ -47,6 +49,8 @@ public class GameSettings {
 		ifSound = true;
 		ifAliasing = true; //default, change with setters if needed
 		ifParticles = true;
+		
+		ifDebug = false;
 		particlePercent = 100;
 	}
 	
@@ -64,6 +68,10 @@ public class GameSettings {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public void setDebug(boolean in) {
+		this.ifDebug = in;
+	}
+	
 	public void setParticlePercentage(int count) {
 		if (count > 100) count = 100;
 		if (count < 0) count = 0; //its a percentage
@@ -95,6 +103,8 @@ public class GameSettings {
 	public boolean ifSound()      { return ifSound;     }
 	public boolean ifParticles()  { return ifParticles; }
 	public boolean ifAliasing()   { return ifAliasing;  }
+	
+	public boolean ifDebug() { return ifDebug; }
 	
 	public int getParticlePercentage() { return particlePercent; }
 

@@ -34,7 +34,8 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		}
 		this.spawnTimer = spawnTimer;
 		
-		SoundEffect.SHOOT.play(10, 0);
+//		SoundEffect.SHOOT.play(10, 0);
+		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
 		after = new SnakeBody(size*0.85, colour, this, length);
 	}
 	

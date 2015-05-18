@@ -20,16 +20,11 @@ public class SoundEffect extends Thread {
 		object spawn sound
 		???
 	*/
-	public static final String 
 
-	SHOT_HARD =	"sounds/shot_hard.wav", 
-	SHOT_SOFT =	"sounds/shot_soft.wav",
-	POWERUP =	"sounds/powerup.wav",
-	POWERUP2 =	"sounds/powerup2.wav",
-	SPAWN = 	"sounds/spawn.wav";
-
+	public static boolean ifSound = true;
+	
 	//variables to use when run is called
-	private String soundFileName; //file location
+	private int soundFileIndex; //file location
 	private int level; //volume of played sound
 	private double pan; //pan of sound, -1 -> 1
 	
@@ -37,8 +32,14 @@ public class SoundEffect extends Thread {
 	 * @param level Decibles from maximum sound (0 = loudest, 100 = softest)
 	 * @param pan Not implemented
 	 */
-	public SoundEffect(String soundFileName, int volume, double pan) {
-		this.soundFileName = soundFileName;
+	public SoundEffect(int soundFileIndex, int volume, double pan) {
+		if (soundFileIndex > Engine.SOUND_SIZE || soundFileIndex < 0) {
+			System.err.println("Sound int wrong, SoundEffect line ~37");
+			this.soundFileIndex = -1;
+			return;
+		}
+		
+		this.soundFileIndex = soundFileIndex;
 		this.level = volume;
 		this.pan = pan;
 	}
@@ -46,7 +47,8 @@ public class SoundEffect extends Thread {
 	
 	@Override
 	public void run() {
-		File file = new File(soundFileName);
+		if (!ifSound) return;
+		File file = Engine.sounds[soundFileIndex];
 		URL u = null;
 		try {
 			u = file.toURI().toURL();
@@ -62,6 +64,11 @@ public class SoundEffect extends Thread {
 		
 		//yeah so apparently there is this thing in javafx that helps .... [wish i found this sooner]
 		//https://docs.oracle.com/javafx/2/api/javafx/scene/media/AudioClip.html
+	}
+
+
+	public static void setSound(boolean in) {
+		ifSound = in;
 	}
 }
 

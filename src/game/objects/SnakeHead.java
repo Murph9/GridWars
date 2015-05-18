@@ -35,13 +35,13 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		this.spawnTimer = spawnTimer;
 		
 //		SoundEffect.SHOOT.play(10, 0);
-		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
+		new SoundEffect(Engine.SPAWN, 10 ,0).start();
 		after = new SnakeBody(size*0.85, colour, this, length);
 	}
 	
 	public void amHit(boolean ifPoints) {
 		super.amHit(ifPoints);
-		after.amHit(false); //no body gives points
+		after.iDied();
 	}
 	
 	
@@ -100,16 +100,16 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		after.update(dt); //will always exist (at least on head)
 	}
 	
-	public void selfCol() {
-		//snakes do NOT collide
-	}
+	public void selfCol() {	} //snakes do NOT collide
 	
 	public void drawSelf(GL2 gl) {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, Engine.textures[Engine.SNAKEHEAD].getTextureId());
 		super.drawSelf(gl);
 	}
 
-
+	@Override
+	public void iDied() {  } //does nothing in head
+	
 	@Override
 	public SnakeObject getBefore() { return null; }
 	@Override

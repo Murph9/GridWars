@@ -11,7 +11,7 @@ public class ConnectedTriangle extends MovingObject {
 	public final static ArrayList<ConnectedTriangle> ALL_THIS = new ArrayList<ConnectedTriangle>();
 	public static double MAX_SPEED = 4;
 	
-	private final int LINK_STRENGTH = 20;
+	private final int LINK_STRENGTH = 18;
 	
 	private ConnectedTriangle partner;
 	private int strength;
@@ -33,7 +33,7 @@ public class ConnectedTriangle extends MovingObject {
 		this.spawnTimer = spawnTimer;
 		
 //		SoundEffect.SHOOT.play(10, 0);
-		new SoundEffect(SoundEffect.SPAWN, 10, 0).start();
+		new SoundEffect(Engine.SPAWN, 10, 0).start();
 	}
 
 	@Override

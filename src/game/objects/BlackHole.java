@@ -145,10 +145,14 @@ public class BlackHole extends MovingObject {
 			if (!s.equals(this)) { //because that would be silly
 				double distX = s.x - x;
 				double distY = s.y - y;
-				double dist = distX*distX + distY*distY + 0.0001;
-				if (dist < (size*size)+(s.size*s.size)) {
+				double dist = distX*distX + distY*distY;
+				if (dist < (size*size)+(s.size*s.size) && dist != 0) {
 					dx -= Helper.sgn(distX)/(2*Math.sqrt(dist));
 					dy -= Helper.sgn(distY)/(2*Math.sqrt(dist));
+				}
+				if (dist == 0) { //so they don't stay in each other
+					dx += Engine.rand.nextDouble()*2-1;
+					dy += Engine.rand.nextDouble()*2-1;
 				}
 			}
 		}

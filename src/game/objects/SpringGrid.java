@@ -98,7 +98,7 @@ public class SpringGrid extends GameObject{
 	 * @param size - effect of pull size
 	 * @param strength - strength of the pull
 	 */
-	public void pushGrid(double x, double y, double size, double strength) { //push from location x,y
+	public void pushGrid(double x, double y, double size, double strength) { //push from location x,y TODO doesn't quite work yet
 		for (int i = 0; i < xCount-1; i++) {
 			for (int j = 1; j < yCount-1; j++) {
 				
@@ -159,16 +159,20 @@ public class SpringGrid extends GameObject{
 		gl.glColor4d(0.1, 0.1, 0.1, 0.5);
 		gl.glBegin(GL2.GL_LINES);
 			
-			double def = 0.03;
+			double def = 0.03; //colour offset from zero (because then you couldn't see it otherwise)
+			
+			double xdif = Math.abs(grid[0][0].ox - grid[1][0].ox);
+			double ydif = Math.abs(grid[0][0].oy - grid[0][1].oy);
 			
 			for (int i = 0; i < xCount-1; i++) { //grid lines across
 				for (int j = 1; j < yCount-1; j++) {
 					Cell c = grid[i][j];
-					double diff = c.xDiff()*c.xDiff() + c.yDiff()*c.yDiff();
+					Cell d = grid[i+1][j];
+					double diff = Math.sqrt((c.x-d.x)*(c.x-d.x)+(c.y-d.y)*(c.y-d.y))- xdif;
+
+					diff = Math.max(Math.min(diff, 0.5), 0); //0 < x < 0.5
 					
-					diff = Math.min(diff, 0.5);
-					
-					gl.glColor4d(diff+def, diff+def, diff+def, 0.5);
+					gl.glColor4d(diff+def, diff+def, diff+def, 0.5); //x + def
 
 					gl.glVertex2d(c.x, c.y);
 					gl.glVertex2d(grid[i+1][j].x, grid[i+1][j].y);
@@ -178,11 +182,12 @@ public class SpringGrid extends GameObject{
 			for (int i = 1; i < xCount-1; i++) { //grid lines vertical
 				for (int j = 0; j < yCount-1; j++) {
 					Cell c = grid[i][j];
-					double diff = c.xDiff()*c.xDiff() + c.yDiff()*c.yDiff();
-
-					diff = Math.min(diff, 0.5);
+					Cell d = grid[i][j+1];
+					double diff = Math.sqrt((c.x-d.x)*(c.x-d.x)+(c.y-d.y)*(c.y-d.y)) - ydif;
 					
-					gl.glColor4d(diff+def, diff+def, diff+def, 0.5);
+					diff = Math.max(Math.min(diff, 0.5), 0); //0 < x < 0.5
+					
+					gl.glColor4d(diff+def, diff+def, diff+def, 0.5); //x + def
 
 					gl.glVertex2d(c.x, c.y);
 					gl.glVertex2d(grid[i][j+1].x, grid[i][j+1].y);
@@ -191,7 +196,7 @@ public class SpringGrid extends GameObject{
 		gl.glEnd();
 
 		gl.glColor4d(0.1, 0.1, 0.1, 0.5);
-//		gl.glPointSize(5); //TODO a setting option maybe?
+//		gl.glPointSize(5); 
 		gl.glBegin(GL2.GL_POINTS);
 			for (int i = 1; i < xCount-1; i++) { //grid dots
 				for (int j = 0; j < yCount-1; j++) {
@@ -223,11 +228,9 @@ public class SpringGrid extends GameObject{
 
 		 //this method doesn't want to be touched either
 		public void update(double dt, double xrestore, double yrestore) {
-//			if (Math.abs(xrestore) > 0.035) //this number bigger removes propogations in the mesh
 			if (Math.abs(xrestore) > 0.075) //this number bigger removes propogations in the mesh
 				dx += Helper.sgn(xrestore);
-			if (Math.abs(yrestore) > 0.075) //if this is <=0.035 its non-damped and doesn't stop bouncing
-//			if (Math.abs(yrestore) > 0.035)
+			if (Math.abs(yrestore) > 0.075) //if this is <=0.035 its non-damped and doesn't stop bouncing (at 60 fps)
 				dy += Helper.sgn(yrestore);
 
 			if (Math.abs(ox-x) > 0.05) { //if original position difference is really close, do stuff
@@ -252,6 +255,7 @@ public class SpringGrid extends GameObject{
 		
 		public void disrupt(double xx, double yy) {
 			//placeholder for something that should be here
+			//not to sure why it is here actually
 		}
 	}
 }

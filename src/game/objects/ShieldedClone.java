@@ -31,7 +31,7 @@ public class ShieldedClone extends MovingObject {
 		this.spawnTimer = spawnTimer;
 		
 //		SoundEffect.SHOOT.play(10, 0);
-		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
+		new SoundEffect(Engine.SPAWN, 10 ,0).start();
 	}
 
 	@Override

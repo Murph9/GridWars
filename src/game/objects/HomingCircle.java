@@ -22,8 +22,7 @@ public class HomingCircle extends HomingObject {
 		score = 10;
 		
 		this.spawnTimer = spawnTimer;
-//		SoundEffect.SHOOT.play(10, 0);
-		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
+		new SoundEffect(Engine.SPAWN, 10 ,0).start();
 	}
 	
 	public void selfCol() {

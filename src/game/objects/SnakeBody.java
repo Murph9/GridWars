@@ -6,6 +6,7 @@ import javax.media.opengl.GL2;
 public class SnakeBody extends MovingObject implements SnakeObject {
 
 	public static final int score = 0;
+	private boolean waitaFrame;
 	
 	private SnakeObject before;
 	private SnakeObject after; //if next == end then this == tail
@@ -23,12 +24,13 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 		x = Integer.MAX_VALUE;
 		y = Integer.MAX_VALUE;
 		spawnTimer = 0;
+		waitaFrame = false;
 	}
 	
 	public void amHit(boolean isPoints) {
 		super.amHit(false); //never gives points
 		if (after != null) {
-			after.amHit(false); //still never gives points
+			after.iDied();
 		}
 	}
 	
@@ -40,6 +42,15 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 	///////////////////////////////////////////
 	@Override
 	public void update(double dt) {
+		if (before == null) {
+			if (waitaFrame) {
+				amHit(false);
+			} else {
+				waitaFrame = true;
+			}
+			return;
+		}
+		
 		spawnTimer = before.getSpawnTimer();
 		
 		double[] beforePos = before.getPosition();
@@ -83,5 +94,10 @@ public class SnakeBody extends MovingObject implements SnakeObject {
 	@Override
 	public double getSpawnTimer() {
 		return spawnTimer;
+	}
+
+	@Override
+	public void iDied() {
+		before = null;
 	}
 }

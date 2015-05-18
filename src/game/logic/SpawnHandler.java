@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-//TODO blackholes always spawn in the centre..?
-
-@SuppressWarnings("unused")
+@SuppressWarnings("unused") //this is because spawning objects just requires a call not to use it
 
 /**Handles the spawning of objects (position and time).
  * @author Jake Murphy
@@ -114,10 +112,10 @@ public class SpawnHandler {
 			up.dy = random.nextDouble()*2 -1;
 		}
 		
-		///////////////////////////////////
-		//check to see if objects should spawn
+		////////////////////////////////////////////
+		//check to see which/if objects should spawn
 		objectSpawn(dt);
-		///////////////////////////////////
+		////////////////////////////////////////////
 		
 		
 		//increase game difficulty with each 3600th frame
@@ -135,7 +133,8 @@ public class SpawnHandler {
 				break;
 			}
 			
-			ShySquare.MAX_SPEED += inc; //speed scaling done so the game might actually end :)
+			//speed scaling of objects done so the game might actually end
+			ShySquare.MAX_SPEED += inc; 
 			SimpleSpinner.MAX_SPEED += inc;
 			HomingDiamond.MAX_SPEED += inc;
 			SplitingSquare.MAX_SPEED += inc;
@@ -282,8 +281,10 @@ public class SpawnHandler {
 		case 5:		
 			if (BlackHole.ALL_THIS.size() < 4) { //can't have too many blackholes
 				o = new BlackHole(spawnDelay);
+			} else {
+				o = new SimpleSpinner(spawnDelay);
 			}
-			o = new SimpleSpinner(spawnDelay); break;
+			break;
 		case 6:		o = new ConnectedTriangle(spawnDelay); break;
 		case 7:		o = new SnakeHead(spawnDelay); break;
 		case 8:		o = new ShieldedClone(spawnDelay); break;

@@ -26,8 +26,7 @@ public class PowerUp extends MovingObject {
 		
 		ALL_THIS.add(this);
 		
-//		SoundEffect.SHOOT.play(10, 0);
-		new SoundEffect(SoundEffect.SPAWN, 10 ,0).start();
+		new SoundEffect(Engine.SPAWN, 10 ,0).start();
 	}
 	
 	public void update(double dt) {

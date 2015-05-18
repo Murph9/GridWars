@@ -102,7 +102,7 @@ public class TheGame {
         gameFrame.setLocationRelativeTo(null); //middle of the screen
         
         animator = new FPSAnimator(60, false); //why is it fine that its 0 here? [infinite FPS!]
-        animator.add(gamePanel); //TODO why do i need false?, why is fps ms 20?
+        animator.add(gamePanel); //TODO why do i need a false?, why is fps always 20ms?
         animator.start();
     }
 	

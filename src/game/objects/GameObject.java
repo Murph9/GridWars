@@ -82,7 +82,7 @@ public class GameObject {
         	double x = Engine.getPlayerPos()[0];
         	double t = (this.x-x)/10; //seems to work well
         	
-        	new SoundEffect(SoundEffect.SHOT_HARD, 1, t).start();
+        	new SoundEffect(Engine.SHOT_HARD, 1, t).start();
         }
     }
     

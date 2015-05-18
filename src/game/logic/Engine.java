@@ -1,6 +1,7 @@
 package game.logic;
 import game.objects.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +33,16 @@ public class Engine implements GLEventListener {
 			EXTRA_LIFE = 26, BOUNCY_SHOT = 27, SUPER_SHOT = 28, REAR_SHOT = 29, SIDE_SHOT = 30,
 							/**/
 			PLAYER_SHEILD = 31;
+
+	////Sounds
+	public static File[] sounds;
+	public static final int SOUND_SIZE = 10; //space for more
+	public static final int SHOT_HARD = 0, SHOT_SOFT = 1, POWERUP = 2, POWERUP2 = 3, SPAWN = 4;
+//	public static final String
+//	SHOT_HARD =	"sounds/shot_hard.wav", SHOT_SOFT =	"sounds/shot_soft.wav",
+//	POWERUP =	"sounds/powerup.wav", POWERUP2 =	"sounds/powerup2.wav",
+//	SPAWN = 	"sounds/spawn.wav";
+	
 	
 	////Colours - note the alpha values
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
@@ -84,7 +95,6 @@ public class Engine implements GLEventListener {
 		grid = new SpringGrid(inSettings.getGridXCount(),inSettings.getGridYCount(),
 										inSettings.getBoardWidth(),inSettings.getBoardHeight());
 
-		
 		spawner = inSpawnner;
 		gameState = inState;
 		settings = inSettings;
@@ -93,6 +103,7 @@ public class Engine implements GLEventListener {
 		
 		Engine.player = new Player(1, Engine.WHITE);
 		textures = new MyTexture[TEXTURE_SIZE];
+		sounds = new File[SOUND_SIZE];
 		
 		isPaused = false;
 		respawnCounter = 2; //seems fine
@@ -115,6 +126,7 @@ public class Engine implements GLEventListener {
 		
 		String img = "images/"; //because everything is in its own folder
 		
+		////textures
 		textures[PLAYER] = new MyTexture(gl, img + "player.png");
 		textures[SPINNER] = new MyTexture(gl, img + "spinner.png");
 		textures[DIAMOND] = new MyTexture(gl, img + "diamond.png");
@@ -141,7 +153,15 @@ public class Engine implements GLEventListener {
 		
 		textures[PLAYER_SHEILD] = new MyTexture(gl, img+"playerShield.png");
 		
-		playerPos = player.getPosition(); //this is here because it requires a screen to function
+		////sounds
+		sounds[SHOT_HARD] = new File("sounds/shot_hard.wav");
+		sounds[SHOT_SOFT] = new File("sounds/shot_soft.wav");
+		sounds[POWERUP] = new File("sounds/powerup.wav");
+		sounds[POWERUP2] = new File("sounds/powerup2.wav");
+		sounds[SPAWN] = new File("sounds/spawn.wav");
+		
+		
+		playerPos = player.getPosition(); //this is here because it requires a screen to function, rather than in the constuctor
         mousePos = Mouse.theMouse.getPosition();
         
         gameOver = false;
@@ -171,12 +191,7 @@ public class Engine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-//		SoundEffect.init(); //sounds are per file now
-		if (settings.ifSound()) { //TODO add sound settings
-//			SoundEffect.volume = SoundEffect.Volume.HIGH;
-//		} else {
-//			SoundEffect.volume = SoundEffect.Volume.MUTE; //too easy i get it..
-		}
+		SoundEffect.setSound(settings.ifSound());
 	}
 
 	@Override
@@ -187,7 +202,7 @@ public class Engine implements GLEventListener {
 		if (gameOver) { //killed in the last update
 			TheGame.reloadMenu(gameState, settings.getName());
 			GameObject.ALL_OBJECTS.clear();
-			return; //game will die now :)
+			return; //game will die now :(
 		}
 		
 		update();

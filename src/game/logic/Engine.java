@@ -38,11 +38,6 @@ public class Engine implements GLEventListener {
 	public static File[] sounds;
 	public static final int SOUND_SIZE = 10; //space for more
 	public static final int SHOT_HARD = 0, SHOT_SOFT = 1, POWERUP = 2, POWERUP2 = 3, SPAWN = 4;
-//	public static final String
-//	SHOT_HARD =	"sounds/shot_hard.wav", SHOT_SOFT =	"sounds/shot_soft.wav",
-//	POWERUP =	"sounds/powerup.wav", POWERUP2 =	"sounds/powerup2.wav",
-//	SPAWN = 	"sounds/spawn.wav";
-	
 	
 	////Colours - note the alpha values
 	public static final double[] WHITE = {1,1,1,0.5}, RED = {1,0,0,0.5}, LIGHT_BLUE = {0,1,0.8,0.5}, GREEN = {0,1,0,0.5},
@@ -196,7 +191,7 @@ public class Engine implements GLEventListener {
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		settings.setPixelHeight(drawable.getSurfaceHeight()); //might decide that the window can't be resized later 
+		settings.setPixelHeight(drawable.getSurfaceHeight()); //TODO might decide that the window can't be resized later 
 		settings.setPixelWidth(drawable.getSurfaceWidth());
 		
 		if (gameOver) { //killed in the last update

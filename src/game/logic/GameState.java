@@ -55,15 +55,13 @@ public class GameState {
 		bulletCount = 2;
 		bulletSpeed = 1.6;
 		
-//		hasShield =1000;
+//		hasShield =1000; //for debugging
 		
 		resetSpeeds(difficulty);
 	}
 	
 	//because as the game goes these speed get faster
 	private void resetSpeeds(String diff) {
-		Player.MAX_SPEED = 6.5;
-		
 		ShySquare.MAX_SPEED = 3.5;
 		SimpleSpinner.MAX_SPEED = 2.25;
 		HomingDiamond.MAX_SPEED = 3.25;

@@ -14,6 +14,8 @@ public class GameSettings {
 	private int gridXCount;
 	private int gridYCount;
 	
+	private int inertia;
+	
 	private int pixelWidth, pixelHeight;
 	private int boardWidth, boardHeight;
 	private double scale;
@@ -50,6 +52,8 @@ public class GameSettings {
 		ifAliasing = true; //default, change with setters if needed
 		ifParticles = true;
 		
+		inertia = 4;
+		
 		ifDebug = false;
 		particlePercent = 100;
 	}
@@ -68,6 +72,9 @@ public class GameSettings {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public void setInertia(int in) {
+		this.inertia = in;
+	}
 	public void setDebug(boolean in) {
 		this.ifDebug = in;
 	}
@@ -85,7 +92,7 @@ public class GameSettings {
 		this.gridXCount = in; 
 	}
 	public void setGridYCount(int in) { 
-		this.gridYCount = in; 
+		this.gridYCount = in;
 	}
 	
 	public int getPixelWidth()  { return pixelWidth;  }
@@ -96,6 +103,8 @@ public class GameSettings {
 	public double getScale() { return scale; }
 	public String getName()  { return name;  }
 	public String getDifficulty()  { return diff; }
+	public int getInertia() { return inertia; }
+	
 	
 	public int getGridXCount() { return gridXCount; }
 	public int getGridYCount() { return gridYCount; }

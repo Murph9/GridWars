@@ -1,10 +1,8 @@
 package game.objects;
+
 import game.logic.*;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
@@ -13,16 +11,13 @@ import javax.swing.JOptionPane;
 
 public class Player extends MovingObject implements KeyListener, MouseListener {
 
-	public static double MAX_SPEED = 6.5;
-	public static double ACCEL = 1;
+	public final static double SHOOT_RATE = 0.14;
+	public final static double ACCEL = 1;
+	public final static double MAX_SPEED = 6.5;
 	
-	public static double PLAYER_DRAG = 1.04;//TODO user setting, please don't change these numbers though
-	public static double SHOOT_RATE = 0.14;
+	public double playerDrag = 1.04; //user setting
 	
-	private boolean xPosAccel = false,
-					xNegAccel = false,
-					yPosAccel = false,
-					yNegAccel = false;
+	private boolean xPosAccel, xNegAccel, yPosAccel, yNegAccel;
 	
 	private double shootTimer;
 	private boolean shooting;
@@ -37,19 +32,23 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		double angle = Math.toDegrees(Math.atan2((s[1]-myPos[1]), (s[0]-myPos[0])));
 		setRotation(angle);
 		
+		xPosAccel = xNegAccel = yPosAccel = yNegAccel = false;
+		
 		shootTimer = SHOOT_RATE;
+		
+		playerDrag = 1 + ((double)Engine.settings.getInertia())/100; //its defined to be hundredth of the drag
 		
 		this.shooting = true;
 		this.spawnTimer = 0; //doesn't have spawn delay
 	}
 	
 	private void shoot() { //creates PlayerBullets, large
-		if (!Engine.canSpawn()) {
-    		return;
-    	}
 		if (!shooting) {
 			return;
 		}
+		if (!Engine.canSpawn()) {
+			return;
+    	}
 		
 		int num = Engine.gameState.getBulletCount();
 		double speed = MAX_SPEED*Engine.gameState.getBulletSpeed();
@@ -171,11 +170,11 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		//acceleration calculations 
 		if		(xPosAccel) { dx += ACCEL; }
 		else if	(xNegAccel) { dx -= ACCEL; }
-		else 				{ dx /= PLAYER_DRAG; }
+		else 				{ dx /= playerDrag; }
 		
 		if		(yPosAccel) { dy += ACCEL; }
 		else if	(yNegAccel) { dy -= ACCEL; }
-		else 				{ dy /= PLAYER_DRAG; }
+		else 				{ dy /= playerDrag; }
 		
     	blackHole();
     	selfCol();

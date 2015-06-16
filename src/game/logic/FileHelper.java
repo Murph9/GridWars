@@ -2,18 +2,8 @@ package game.logic;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -36,7 +26,8 @@ public class FileHelper {
 			PIXEL_WIDTH = "pixel_width", PIXEL_HEIGHT = "pixel_height",
 			BOARD_WIDTH = "board_width", BOARD_HEIGHT = "board_height", SCALE = "scale",
 			IF_PARTICLES = "particles", PARTICLE_COUNT = "particle_count", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
-			NAME = "name", DIFFICULTY = "difficulty", GRID_X_COUNT = "grid_x_count", GRID_Y_COUNT = "grid_y_count";
+			NAME = "name", DIFFICULTY = "difficulty", PLAYER_INERTIA = "player_inertia",
+			GRID_X_COUNT = "grid_x_count", GRID_Y_COUNT = "grid_y_count";
 	
 	//no setting for debug options please, its someting that you should always have to turn on
 	
@@ -51,7 +42,7 @@ public class FileHelper {
 		double scale = -1;
 		boolean	particles = true, antialiasing = true, sound = true;
 		String name = "null", diff = "null";
-		int gridX = -1, gridY = -1;
+		int gridX = -1, gridY = -1, inertia = 4;
 		
 		if (file.exists()) {
 			try {
@@ -65,6 +56,7 @@ public class FileHelper {
 					else if (text.equals(BOARD_HEIGHT)) board_height = settings.nextInt();
 
 					else if (text.equals(NAME)) name = settings.next();
+					else if (text.equals(PLAYER_INERTIA)) inertia = settings.nextInt();
 					else if (text.equals(SCALE)) scale = settings.nextDouble();
 					
 					else if (text.equals(DIFFICULTY)) diff = settings.next();
@@ -79,7 +71,7 @@ public class FileHelper {
 					
 					else {
 						//rewrite is needed but, for testing this will just say:
-						System.out.println("Reverting back to default settings, as something broke.\nOld settings moved to old_<>");
+						System.err.println("Reverting back to default settings, as something broke.\nOld settings moved to old_####");
 						File oldSettings = new File("old_"+SETTINGS);
 						file.renameTo(oldSettings);
 						
@@ -90,6 +82,7 @@ public class FileHelper {
 						particles = true;
 						antialiasing = true;
 						name = "me";
+						inertia = 4;
 						particleCount = 100;
 						
 						gridX = 100;
@@ -115,6 +108,7 @@ public class FileHelper {
 			particles = true;
 			antialiasing = true;
 			name = "me";
+			inertia = 4;
 			particleCount = 100;
 			
 			gridX = 100;
@@ -128,8 +122,9 @@ public class FileHelper {
 		GameSettings set = new GameSettings(pixel_width, pixel_height, board_width, board_height, scale);
 		set.setIfAliasing(antialiasing);
 		set.setIfParticles(particles);
-		set.setIfSound(sound); //wouldn't fit into constructor
+		set.setIfSound(sound); //all this wouldn't fit into constructor
 		set.setName(name);
+		set.setInertia(inertia);
 		set.setParticlePercentage(particleCount);
 		
 		set.setDifficulty(diff);
@@ -160,6 +155,7 @@ public class FileHelper {
 		out.println(SCALE +" "+ settings.getScale());
 		
 		out.println(NAME +" "+ settings.getName());
+		out.println(PLAYER_INERTIA + " " + settings.getInertia());
 		
 		out.println(DIFFICULTY + " " + settings.getDifficulty());
 		out.println(GRID_X_COUNT + " " + settings.getGridXCount());
@@ -271,37 +267,46 @@ public class FileHelper {
 	}
 	
 	//returns the stats saved in the stats.txt
-	public static String getStats() {
-		File file = new File(STATS);
+	public static JPanel getStats() { //TODO i think total_time is wrong
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		JTextArea labels = new JTextArea("Field: ");
+		labels.setOpaque(false);
 		
+		JTextArea values = new JTextArea("Value: ");
+		values.setOpaque(false);
+		
+		File file = new File(STATS);
 		Scanner stats = null;
-		HashMap<String, Integer> statSet = null;
 		try {
 			if (!file.exists()) {
 				createNewStats(file);
 			}
 			stats = new Scanner(new FileReader(file));
 
-			statSet = new HashMap<String, Integer>();
 			while (stats.hasNext()) {
-				statSet.put(stats.next(), stats.nextInt());
+				labels.setText(labels.getText()+ "\n" +stats.next());
+				values.setText(values.getText()+ "\n" +stats.nextInt());
 			}
 			stats.close();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		String out = "";
-		for (String a: statSet.keySet()) {
-			out = out + a + ":\t " + statSet.get(a).toString() + "\n";
-		}
+
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		panel.add(labels, c);
 		
-		return out;
+		c.gridx++;
+		panel.add(values, c);
+		
+		return panel;
 	}
-	
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//SCORES:
+	//////////////////////////////////////////////////////////////////////////////////
 	
 	//writes scores to file (under the current difficulty)
 	public static void writeScore(String diff, int score, String name, int time) {
@@ -389,8 +394,8 @@ public class FileHelper {
 //		if (records.isEmpty()) {
 //			return 0;
 //		} else {
-			return records.getFirst().getScore();
-		}
+		return records.getFirst().getScore();
+	}
 //	}
 	
 	

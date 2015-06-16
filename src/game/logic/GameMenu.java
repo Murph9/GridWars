@@ -7,20 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.*;
 
 public class GameMenu extends JFrame implements ActionListener {
 
@@ -45,8 +32,9 @@ public class GameMenu extends JFrame implements ActionListener {
 	
 	JTextField gridXCount, gridYCount;
 	
-	JTextField nameField; //for your record name
-
+	JTextField nameField; //for the record name
+	JSpinner inertiaField; //for preference
+	
 	
 	GameMenu(final TheGame theGame) {
 		this.theGame = theGame;
@@ -98,7 +86,20 @@ public class GameMenu extends JFrame implements ActionListener {
 		stats.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "\n"+FileHelper.getStats());
+				JFrame a = new JFrame("Stats");
+				a.setLayout(new GridBagLayout());
+				
+				JPanel p = FileHelper.getStats();
+				GridBagConstraints c = new GridBagConstraints();
+				c.insets = new Insets(6,6,6,6);
+				a.add(p, c);
+				
+				a.pack();
+				a.revalidate();
+				a.repaint();
+				a.setVisible(true);
+				
+				a.setLocationRelativeTo(null);
 			}
 		});
 		
@@ -119,36 +120,8 @@ public class GameMenu extends JFrame implements ActionListener {
 		a.gridx++;
 		newGamePanel.add(buttonHard, a);
 		
-		///////////////////////////////////////////////////////
-		////Other
-		
-		JPanel otherPanel = new JPanel();
-		otherPanel.setLayout(new GridBagLayout());
-		otherPanel.setBorder(BorderFactory.createTitledBorder("Other"));
-		a = new GridBagConstraints();
-		a.insets = new Insets(3, 3, 3, 3);
-		
-		a.gridx = 0;
-		a.gridy = 0;
-		a.gridwidth = 1;
-		otherPanel.add(new JLabel("Name:"), a);
-
-		a.gridx++;
-		nameField = new JTextField("null*");
-		otherPanel.add(nameField, a);
-		
-		a.gridx = 0;
-		a.gridy++;
-		a.gridwidth = 2;
-		otherPanel.add(stats, a);
-
 		////////////////////////////////////////////////// 
-		////Settings
-		JPanel settingsPanel = new JPanel();
-		settingsPanel.setLayout(new GridBagLayout());
-		settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
-		GridBagConstraints set = new GridBagConstraints();
-		
+		////Width x Height
 		JPanel widthXHeight = new JPanel();
 		widthXHeight.setLayout(new GridBagLayout());
 		widthXHeight.setBorder(BorderFactory.createTitledBorder("Width x Height"));
@@ -204,10 +177,54 @@ public class GameMenu extends JFrame implements ActionListener {
 		gridYCount = new JTextField("null*");
 		widthXHeight.add(gridYCount, wxh);
 		
+		//////////////////////////////////////
+		//Settings
+		JPanel settingsPanel = new JPanel();
+		settingsPanel.setLayout(new GridBagLayout());
+		settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
+		GridBagConstraints set = new GridBagConstraints();
+		set.insets = new Insets(3, 3, 3, 3);
+		
 
-		//checkboxes
+		
+		//name field
 		set.gridwidth = 1;
 		set.gridx = 0;
+		set.gridy = 0;
+		set.gridwidth = 1;
+		settingsPanel.add(new JLabel("Name:"), set);
+		
+		set.gridx++;
+		nameField = new JTextField("null*");
+		settingsPanel.add(nameField, set);
+		
+		//inertia field
+		set.gridx = 0;
+		set.gridy++;
+		settingsPanel.add(new JLabel("Player Inertia"), set);
+		
+		set.gridx++;
+		inertiaField = new JSpinner(new SpinnerNumberModel(4, 0, 10, 1));
+		settingsPanel.add(inertiaField, set);
+		
+		//stats button TODO formatting
+		set.gridwidth = 2;
+		set.gridx = 0;
+		set.gridy++;
+		settingsPanel.add(stats, set);
+
+		//TODO think about spacing:
+//		set.gridheight = 3;
+//		set.gridx = 2;
+//		set.gridy = 0;
+//		JSeparator x = new JSeparator(SwingConstants.VERTICAL);
+//        x.setPreferredSize(new Dimension(3, 100));
+//        settingsPanel.add(x, set);
+//		set.gridheight = 1;
+		
+		//checkboxes
+		set.gridwidth = 1;
+		set.gridx = 4;
 		set.gridy = 0;
 		particles = new JCheckBox("Particles");
 		settingsPanel.add(particles, set);
@@ -218,12 +235,12 @@ public class GameMenu extends JFrame implements ActionListener {
 		set.gridx++;
 		settingsPanel.add(new JLabel("%"));
 		
-		set.gridx = 0;
+		set.gridx = 4;
 		set.gridy++;
 		antialiasing = new JCheckBox("Antialiasing");
 		settingsPanel.add(antialiasing, set);
 		
-		set.gridx++;
+		set.gridy++;
 		sound = new JCheckBox("Sound");
 		settingsPanel.add(sound, set);
 		
@@ -253,15 +270,12 @@ public class GameMenu extends JFrame implements ActionListener {
 		gbLayout.gridwidth = 1;
 		menuPanel.add(newGamePanel, gbLayout);
 		
-		gbLayout.gridy++;
-		menuPanel.add(otherPanel, gbLayout);
-
 		gbLayout.gridx = 0;
-		gbLayout.gridy = 3;
+		gbLayout.gridy++;
 		menuPanel.add(widthXHeight, gbLayout);
-		
-		gbLayout.gridwidth = 1;
-		gbLayout.gridx++;
+
+		gbLayout.gridwidth = 2;
+		gbLayout.gridy++;
 		menuPanel.add(settingsPanel, gbLayout);
 
 		gbLayout.gridx = 1;
@@ -273,7 +287,9 @@ public class GameMenu extends JFrame implements ActionListener {
 		
 		//////////////////////////////////////////////////
 		GameSettings fileSettings = FileHelper.readSettings();
+		
 		nameField.setText(fileSettings.getName());
+		inertiaField.setValue(fileSettings.getInertia());
 		
 		String diff = fileSettings.getDifficulty();
 		switch (diff) {
@@ -371,6 +387,7 @@ public class GameMenu extends JFrame implements ActionListener {
 		set.setIfSound(sound.isSelected());
 		set.setIfParticles(particles.isSelected());
 		set.setName(nameField.getText());
+		set.setInertia((int)inertiaField.getValue());
 		
 		for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();

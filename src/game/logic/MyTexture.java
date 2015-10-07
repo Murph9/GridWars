@@ -1,5 +1,4 @@
 package game.logic;
-//
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -16,7 +15,7 @@ import com.jogamp.opengl.util.texture.TextureData;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 /**Shamefully stolen from the week7 lecture notes...
- * @author {redacted} course COMP3421 at UNSW
+ * @author malcolmr course COMP3421 at UNSW
  */
 
 public class MyTexture {

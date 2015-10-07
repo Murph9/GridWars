@@ -16,6 +16,11 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 //TODO Idea for gameplay slow down when blackhole is exploded (mixed with a overpowering sound to help the effect)
 
+//TODO change the position of everything to not use matrix multiplications if you don't need to.
+	//PA3D should be a good description of why
+
+//TODO add inbetween points to the background grid to make it feel full
+
 /**
  * Handles all moving objects and all OpenGL initialisation.
  * @author Jake Murphy

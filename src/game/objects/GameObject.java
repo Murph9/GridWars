@@ -22,7 +22,7 @@ public class GameObject {
 	protected double[] colour;
 	protected int score;
 	
-	public GameObject() { 
+	public GameObject() {
 		size = 1;
 		spawnTimer = 0;
 		

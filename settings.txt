@@ -5,10 +5,10 @@ board_height 8
 scale 8.0
 name Murph
 player_inertia 4
-difficulty medium
-grid_x_count 200
-grid_y_count 160
+difficulty easy
+grid_x_count 25
+grid_y_count 20
 sound true
-particles true
-antialiasing true
-particle_count 100
+particles false
+antialiasing false
+particle_count 50

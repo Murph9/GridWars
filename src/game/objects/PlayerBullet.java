@@ -28,23 +28,23 @@ public class PlayerBullet extends MovingObject {
 		boolean hasCollided = false; //wall collision
 		
 		//can't use the helper function here );
-		if (x > Engine.settings.getBoardWidth()-(size/2)) {
+		if (x > Engine.settings.boardWidth-(size/2)) {
 			dx = -dx;
-			x = Engine.settings.getBoardWidth()-(size/2);
+			x = Engine.settings.boardWidth-(size/2);
 			hasCollided = true;
-		} else if (x < -Engine.settings.getBoardWidth()+(size/2)) {
+		} else if (x < -Engine.settings.boardWidth+(size/2)) {
 			dx = -dx;
-			x = -Engine.settings.getBoardWidth()+(size/2);
+			x = -Engine.settings.boardWidth+(size/2);
 			hasCollided = true;
 		}
 		
-		if (y > Engine.settings.getBoardHeight()-(size/2)) {
+		if (y > Engine.settings.boardHeight-(size/2)) {
 			dy = -dy;
-			y = Engine.settings.getBoardHeight()-(size/2);
+			y = Engine.settings.boardHeight-(size/2);
 			hasCollided = true;
-		} else if (y < -Engine.settings.getBoardHeight()+(size/2)) {
+		} else if (y < -Engine.settings.boardHeight+(size/2)) {
 			dy = -dy;
-			y = -Engine.settings.getBoardHeight()+(size/2);
+			y = -Engine.settings.boardHeight+(size/2);
 			hasCollided = true;
 		}
 

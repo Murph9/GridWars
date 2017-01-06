@@ -9,27 +9,42 @@ package game.logic;
 
 public class GameSettings {
 	
-	private String name;
-	private String diff;
-	private int gridXCount;
-	private int gridYCount;
+	public String name;
+	public Engine.Difficulty diff;
+	public int gridXCount;
+	public int gridYCount;
 	
-	private int inertia;
+	public int inertia;
+	public int particlePercent;
 	
-	private int pixelWidth, pixelHeight;
-	private int boardWidth, boardHeight;
-	private double scale;
+	public int pixelWidth, pixelHeight;
+	public int boardWidth, boardHeight;
+	public double scale;
 	
-	private boolean ifSound;
-	private boolean ifParticles;
-	private boolean ifAliasing;
+	public boolean ifSound;
+	public boolean ifParticles;
+	public boolean ifAliasing;
 	
-	private boolean ifDebug;
-	
-	private int particlePercent;
+	public boolean ifDebug;
 	
 	GameSettings() {
-		this(1024, 728, 16, 12, 10); //default
+		name = "me";
+		diff = Engine.Difficulty.easy;
+		
+		pixelWidth = 1024;
+		pixelHeight = 728;
+		boardWidth = 16;
+		boardHeight = 12;
+		particlePercent = 100;
+		scale = 10;
+		ifParticles = true;
+		ifAliasing = true;
+		ifSound = true;
+		
+		
+		gridXCount = 100;
+		gridYCount = 100;
+		inertia = 4;
 	}
 	
 	/** init
@@ -40,88 +55,13 @@ public class GameSettings {
 	 * @param scale
 	 */
 	GameSettings(int pixelWidth, int pixelHeight, int boardWidth, int boardHeight, double scale) {
+		super();
+		
 		this.pixelWidth = pixelWidth;
 		this.pixelHeight = pixelHeight;
 		
 		this.boardWidth = boardWidth;
 		this.boardHeight = boardHeight;
-		
 		this.scale = scale;
-		
-		ifSound = true;
-		ifAliasing = true; //default, change with setters if needed
-		ifParticles = true;
-		
-		inertia = 4;
-		
-		ifDebug = false;
-		particlePercent = 100;
-	}
-	
-	public void setIfSound(boolean ni) {
-		ifSound = ni;
-	}
-	public void setIfParticles(boolean ni) {
-		ifParticles = ni; 
-			//really don't know why its called ni (even with the holy grail reference) [can't type "in"] 
-	}
-	public void setIfAliasing(boolean ni) {
-		ifAliasing = ni;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	public void setInertia(int in) {
-		this.inertia = in;
-	}
-	public void setDebug(boolean in) {
-		this.ifDebug = in;
-	}
-	
-	public void setParticlePercentage(int count) {
-		if (count > 100) count = 100;
-		if (count < 0) count = 0; //its a percentage
-		particlePercent = count;
-	}
-	
-	public void setDifficulty(String diff) {
-		this.diff = diff;
-	}
-	public void setGridXCount(int in) { 
-		this.gridXCount = in; 
-	}
-	public void setGridYCount(int in) { 
-		this.gridYCount = in;
-	}
-	
-	public int getPixelWidth()  { return pixelWidth;  }
-	public int getPixelHeight() { return pixelHeight; }
-	public int getBoardWidth()  { return boardWidth;  }
-	public int getBoardHeight() { return boardHeight; }
-	
-	public double getScale() { return scale; }
-	public String getName()  { return name;  }
-	public String getDifficulty()  { return diff; }
-	public int getInertia() { return inertia; }
-	
-	
-	public int getGridXCount() { return gridXCount; }
-	public int getGridYCount() { return gridYCount; }
-	
-	public boolean ifSound()      { return ifSound;     }
-	public boolean ifParticles()  { return ifParticles; }
-	public boolean ifAliasing()   { return ifAliasing;  }
-	
-	public boolean ifDebug() { return ifDebug; }
-	
-	public int getParticlePercentage() { return particlePercent; }
-
-
-	public void setPixelWidth(int width) {
-		pixelWidth = width;
-	}
-	public void setPixelHeight(int height) {
-		pixelHeight= height;
 	}
 }

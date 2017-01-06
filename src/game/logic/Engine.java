@@ -50,8 +50,12 @@ public class Engine implements GLEventListener {
 			BLUE = {0.2,0.2,1,0.5},	ORANGE = {1,0.6,0,0.5}, REALLY_LIGHT_BLUE = {0,1,0.9,0.5};
 
 	//Difficulty:
-	public static final String 	EASY_D = "easy", MEDIUM_D = "medium", 
-								HARD_D = "hard", EXT_D = ".txt";
+	public static final String EXT_D = ".txt";
+	public enum Difficulty {
+		easy,
+		medium,
+		hard;
+	}
 	
 	//Game Static variables
 	public static SpawnHandler spawner;
@@ -90,10 +94,10 @@ public class Engine implements GLEventListener {
 	@SuppressWarnings("unused")
 	public Engine(SpawnHandler inSpawnner, GameState inState, GameSettings inSettings) {
 		
-		Border border = new Border(inSettings.getBoardWidth(), inSettings.getBoardHeight());
+		Border border = new Border(inSettings.boardWidth, inSettings.boardHeight);
 		
-		grid = new SpringGrid(inSettings.getGridXCount(),inSettings.getGridYCount(),
-										inSettings.getBoardWidth(),inSettings.getBoardHeight());
+		grid = new SpringGrid(inSettings.gridXCount,inSettings.gridYCount,
+										inSettings.boardWidth,inSettings.boardHeight);
 
 		spawner = inSpawnner;
 		gameState = inState;
@@ -174,7 +178,7 @@ public class Engine implements GLEventListener {
 		gl.glEnable(GL2.GL_BLEND); //alpha blending (you know transparency)
 		gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE_MINUS_SRC_ALPHA); //special blending
 		
-		if (settings.ifAliasing()) {
+		if (settings.ifAliasing) {
 			gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_LINE_SMOOTH_HINT, GL2.GL_NICEST);
 			gl.glHint(GL2.GL_POLYGON_SMOOTH_HINT, GL2.GL_NICEST);
@@ -191,16 +195,16 @@ public class Engine implements GLEventListener {
 		shader.init(gl);
 		//this seems to be fine above, check the shader use in draw
 		
-		SoundEffect.setSound(settings.ifSound());
+		SoundEffect.setSound(settings.ifSound);
 	}
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		settings.setPixelHeight(drawable.getSurfaceHeight()); //TODO might decide that the window can't be resized later 
-		settings.setPixelWidth(drawable.getSurfaceWidth());
+		settings.pixelHeight = drawable.getSurfaceHeight(); //TODO might decide that the window can't be resized later 
+		settings.pixelWidth = drawable.getSurfaceWidth();
 		
 		if (gameOver) { //killed in the last update
-			TheGame.reloadMenu(gameState, settings.getName());
+			TheGame.reloadMenu(gameState, settings.name);
 			GameObject.ALL_OBJECTS.clear();
 			return; //game will die now :(
 		}
@@ -477,7 +481,7 @@ public class Engine implements GLEventListener {
 		//called by system when the window is closed
 		//no longer a chance of double up as it quits on the next frame :), using gameOver. 
 
-		FileHelper.writeScore(gameState.getDifficulty(), gameState.getScore(), "auto_"+settings.getName(), (int)gameState.getTime());
+		FileHelper.writeScore(gameState.getDifficulty(), gameState.getScore(), "auto_"+settings.name, (int)gameState.getTime());
 		FileHelper.addToStats(gameState);
 		System.err.println("Game Quit.\n\t- dispose(), Engine");
 

@@ -51,13 +51,13 @@ public class GameMenu extends JFrame implements ActionListener {
 		////////////////////////////////////////////////
 		////Game Mode
 		JRadioButton buttonEasy = new JRadioButton("Easy");
-		buttonEasy.setActionCommand(Engine.EASY_D);
+		buttonEasy.setActionCommand(Engine.Difficulty.easy.toString());
 		
 		JRadioButton buttonMed = new JRadioButton("Med");
-		buttonMed.setActionCommand(Engine.MEDIUM_D);
+		buttonMed.setActionCommand(Engine.Difficulty.medium.toString());
 		
 		JRadioButton buttonHard = new JRadioButton("Hard");
-		buttonHard.setActionCommand(Engine.HARD_D);
+		buttonHard.setActionCommand(Engine.Difficulty.hard.toString());
 		
 		group = new ButtonGroup();
 		group.add(buttonEasy);
@@ -76,7 +76,7 @@ public class GameMenu extends JFrame implements ActionListener {
 		            AbstractButton button = buttons.nextElement();
 
 		            if (button.isSelected()) {
-		            	theGame.initGame(button.getActionCommand());
+		            	theGame.initGame(Engine.Difficulty.valueOf(button.getActionCommand()));
 		            }
 		        }
 			}
@@ -286,20 +286,21 @@ public class GameMenu extends JFrame implements ActionListener {
 		//scoreboard is below
 		
 		//////////////////////////////////////////////////
-		GameSettings fileSettings = FileHelper.readSettings();
+//		GameSettings fileSettings = FileHelper.readSettings();
+		GameSettings fileSettings = new GameSettings();
 		
-		nameField.setText(fileSettings.getName());
-		inertiaField.setValue(fileSettings.getInertia());
+		nameField.setText(fileSettings.name);
+		inertiaField.setValue(fileSettings.inertia);
 		
-		String diff = fileSettings.getDifficulty();
+		Engine.Difficulty diff = fileSettings.diff;
 		switch (diff) {
-		case Engine.EASY_D:
+		case easy:
 			buttonEasy.setSelected(true);
 			break;
-		case Engine.MEDIUM_D:
+		case medium:
 			buttonMed.setSelected(true);
 			break;
-		case Engine.HARD_D:
+		case hard:
 			buttonHard.setSelected(true);
 			break;
 		default:
@@ -308,20 +309,20 @@ public class GameMenu extends JFrame implements ActionListener {
 		leaderBoard = FileHelper.getLeaderBoard(diff);
 		menuPanel.add(leaderBoard, gbLayout); //this should be up above
 		
-		particles.setSelected(fileSettings.ifParticles());
-		antialiasing.setSelected(fileSettings.ifAliasing());
-		sound.setSelected(fileSettings.ifSound());
+		particles.setSelected(fileSettings.ifParticles);
+		antialiasing.setSelected(fileSettings.ifAliasing);
+		sound.setSelected(fileSettings.ifSound);
 		
-		particleCount.setValue(fileSettings.getParticlePercentage());
+		particleCount.setValue(fileSettings.particlePercent);
 		
-		pixelWidth.setText(""+fileSettings.getPixelWidth());
-		pixelHeight.setText(""+fileSettings.getPixelHeight());
+		pixelWidth.setText(""+fileSettings.pixelWidth);
+		pixelHeight.setText(""+fileSettings.pixelHeight);
 		
-		boardWidth.setText(""+fileSettings.getBoardWidth());
-		boardHeight.setText(""+fileSettings.getBoardHeight());
+		boardWidth.setText(""+fileSettings.boardWidth);
+		boardHeight.setText(""+fileSettings.boardHeight);
 		
-		gridXCount.setText(""+fileSettings.getGridXCount());
-		gridYCount.setText(""+fileSettings.getGridYCount());
+		gridXCount.setText(""+fileSettings.gridXCount);
+		gridYCount.setText(""+fileSettings.gridYCount);
 	}
 	
 
@@ -330,7 +331,8 @@ public class GameMenu extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
     	menuPanel.remove(leaderBoard);
     	
-    	leaderBoard = FileHelper.getLeaderBoard(evt.getActionCommand());
+    	String command = evt.getActionCommand();
+    	leaderBoard = FileHelper.getLeaderBoard(Engine.Difficulty.valueOf(command));
     	menuPanel.add(leaderBoard, gbLayout);
     	
     	this.revalidate();
@@ -383,24 +385,24 @@ public class GameMenu extends JFrame implements ActionListener {
 	public GameSettings getSettings() {
 		//should do maths on the size of the screen
 		GameSettings set = new GameSettings(getPixelWidth(), getPixelHeight(), getBoardWidth(), getBoardHeight(), 8);
-		set.setIfAliasing(antialiasing.isSelected());
-		set.setIfSound(sound.isSelected());
-		set.setIfParticles(particles.isSelected());
-		set.setName(nameField.getText());
-		set.setInertia((int)inertiaField.getValue());
+		set.ifAliasing = antialiasing.isSelected();
+		set.ifSound = sound.isSelected();
+		set.ifParticles = particles.isSelected();
+		set.name = nameField.getText();
+		set.inertia = (int)inertiaField.getValue();
 		
 		for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
-            	set.setDifficulty(button.getActionCommand());
+            	set.diff = Engine.Difficulty.valueOf(button.getActionCommand());
             }
         }
 		
-		set.setGridXCount(getGridXCount());
-		set.setGridYCount(getGridYCount());
+		set.gridXCount = getGridXCount();
+		set.gridYCount = getGridYCount();
 		
-		set.setParticlePercentage((int)particleCount.getValue());
+		set.particlePercent = (int)particleCount.getValue();
 		return set;
 	}
 }

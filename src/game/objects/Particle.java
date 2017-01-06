@@ -36,12 +36,12 @@ public class Particle extends MovingObject {
 		
 		ifBlackHoleParticle = false;
 		
-		if (!Engine.settings.ifParticles()) {
+		if (!Engine.settings.ifParticles) {
 			amHit(false);
 		}
 
 		double d = Engine.rand.nextDouble()*100;
-		if (d > Engine.settings.getParticlePercentage()) {
+		if (d > Engine.settings.particlePercent) {
 			amHit(false);
 		}
 	}
@@ -61,20 +61,20 @@ public class Particle extends MovingObject {
 		
 		//can't use the helper function here ;(
 			//because the size of the object is used as 'small'
-		if (x > Engine.settings.getBoardWidth()) {
+		if (x > Engine.settings.boardWidth) {
 			dx = -dx;
-			x = Engine.settings.getBoardWidth();
-		} else if (x < -Engine.settings.getBoardWidth()) {
+			x = Engine.settings.boardWidth;
+		} else if (x < -Engine.settings.boardWidth) {
 			dx = -dx;
-			x = -Engine.settings.getBoardWidth();
+			x = -Engine.settings.boardWidth;
 		}
 		
-		if (y > Engine.settings.getBoardHeight()) {
+		if (y > Engine.settings.boardHeight) {
 			dy = -dy;
-			y = Engine.settings.getBoardHeight();
-		} else if (y < -Engine.settings.getBoardHeight()) {
+			y = Engine.settings.boardHeight;
+		} else if (y < -Engine.settings.boardHeight) {
 			dy = -dy;
-			y = -Engine.settings.getBoardHeight();
+			y = -Engine.settings.boardHeight;
 		}
 		
 		if (!inOrbit) {

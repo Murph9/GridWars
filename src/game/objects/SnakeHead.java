@@ -55,20 +55,20 @@ public class SnakeHead extends MovingObject implements SnakeObject {
 		x += dx*dt;
 		y += dy*dt;
 		
-		if (x > Engine.settings.getBoardWidth()-(size/2)) {
+		if (x > Engine.settings.boardWidth-(size/2)) {
 			curChangeRate = 100;
-			x = Engine.settings.getBoardWidth()-(size/2);
-		} else if (x < -Engine.settings.getBoardWidth()+(size/2)) {
+			x = Engine.settings.boardWidth-(size/2);
+		} else if (x < -Engine.settings.boardWidth+(size/2)) {
 			curChangeRate = 100;
-			x = -Engine.settings.getBoardWidth()+(size/2);
+			x = -Engine.settings.boardWidth+(size/2);
 		}
 		
-		if (y > Engine.settings.getBoardHeight()-(size/2)) {
+		if (y > Engine.settings.boardHeight-(size/2)) {
 			curChangeRate = 100;
-			y = Engine.settings.getBoardHeight()-(size/2);
-		} else if (y < -Engine.settings.getBoardHeight()+(size/2)) {
+			y = Engine.settings.boardHeight-(size/2);
+		} else if (y < -Engine.settings.boardHeight+(size/2)) {
 			curChangeRate = 100;
-			y = -Engine.settings.getBoardHeight()+(size/2);
+			y = -Engine.settings.boardHeight+(size/2);
 		}
 
 		if (curAngleChange) { //pick a direction 

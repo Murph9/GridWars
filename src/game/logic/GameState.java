@@ -25,7 +25,7 @@ public class GameState {
 			hasShield, hasSideBullets, hasRearBullets, hasBouncyShot, hasSuperShot;
 	
 	//Current game values
-	private String difficulty;
+	private Engine.Difficulty difficulty;
 	
 	private int lastRecord, score, lives, multiplier, kills;
 	
@@ -43,7 +43,7 @@ public class GameState {
 	 * @param diff - game difficulty
 	 * @param scale - zoom level (usually 10)
 	 */
-	GameState(String difficulty) {
+	GameState(Engine.Difficulty difficulty) {
 			//note how anything not here is initalised to 0.
 		this.lastRecord = FileHelper.getBestScore(difficulty);
 		this.difficulty = difficulty;
@@ -61,7 +61,7 @@ public class GameState {
 	}
 	
 	//because as the game goes these speed get faster
-	private void resetSpeeds(String diff) {
+	private void resetSpeeds(Engine.Difficulty diff) {
 		ShySquare.MAX_SPEED = 3.5;
 		SimpleSpinner.MAX_SPEED = 2.25;
 		HomingDiamond.MAX_SPEED = 3.25;
@@ -74,7 +74,7 @@ public class GameState {
 		ConnectedTriangle.MAX_SPEED = 2.0;
 		
 		switch(diff) {
-		case Engine.EASY_D:
+		case easy:
 			ShySquare.MAX_SPEED *= 0.65;
 			SimpleSpinner.MAX_SPEED *= 0.75;
 			HomingDiamond.MAX_SPEED *= 0.75;
@@ -86,9 +86,9 @@ public class GameState {
 			HomingButterfly.MAX_SPEED *= 0.75;
 			ConnectedTriangle.MAX_SPEED *= 0.7;
 			break;
-		case Engine.MEDIUM_D: //here for clarity
+		case medium: //here for clarity
 			break;
-		case Engine.HARD_D:
+		case hard:
 			ShySquare.MAX_SPEED *= 1.25;
 			SimpleSpinner.MAX_SPEED *= 1.25;
 			HomingDiamond.MAX_SPEED *= 1.25;
@@ -237,7 +237,7 @@ public class GameState {
 	public int getKills()      { return kills;      }
 	public double getTime()    { return time*10;    }
 
-	public String getDifficulty() {	return difficulty; }
+	public Engine.Difficulty getDifficulty() {	return difficulty; }
 	
 	public int getTotalDeaths() { return deaths;      }
 	public int getTotalKills()  { return totalKills;  }

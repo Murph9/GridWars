@@ -18,7 +18,7 @@ public class Camera extends GameObject {
     public Camera() {
         this.myBackground = new float[4];
         
-        double pixelWidth = Engine.settings.getPixelHeight();
+        double pixelWidth = Engine.settings.pixelHeight;
     	this.size = pixelWidth/GAME_SCALE_CONSTANT;
     }
     
@@ -42,12 +42,12 @@ public class Camera extends GameObject {
     	this.x -= xdiff;//20; //thoughts about a slow moving camera should be squashed as it feels weird
     	this.y -= ydiff;//20;
     	
-    	double pixelWidth = Engine.settings.getPixelHeight();
+    	double pixelWidth = Engine.settings.pixelHeight;
     	this.size = pixelWidth/GAME_SCALE_CONSTANT;
     	
-    	double pixelAspect = pixelWidth/(double)(Engine.settings.getPixelHeight());
-    	int height = Engine.settings.getBoardHeight() + 1;
-    	int width = Engine.settings.getBoardWidth() + 1; //+1 is for buffer size of the game field
+    	double pixelAspect = pixelWidth/(double)(Engine.settings.pixelHeight);
+    	int height = Engine.settings.boardHeight + 1;
+    	int width = Engine.settings.boardWidth + 1; //+1 is for buffer size of the game field
     	
     	if (this.y > (height - this.size)) {
     		this.y = (height - this.size); //want to keep the camera from this.size from the edge

@@ -36,7 +36,7 @@ public class Player extends MovingObject implements KeyListener, MouseListener {
 		
 		shootTimer = SHOOT_RATE;
 		
-		playerDrag = 1 + ((double)Engine.settings.getInertia())/100; //its defined to be hundredth of the drag
+		playerDrag = 1 + ((double)Engine.settings.inertia)/100; //its defined to be hundredth of the drag
 		
 		this.shooting = true;
 		this.spawnTimer = 0; //doesn't have spawn delay

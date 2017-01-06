@@ -21,7 +21,7 @@ public class SpawnHandler {
 	private int powerUpScore;
 	
 	private Random random;
-	private String diff; //maybe: med = normal, easy = 0.8*rate, hard = 0.3+1.1*rate 
+	private Engine.Difficulty diff; //maybe: med = normal, easy = 0.8*rate, hard = 0.3+1.1*rate 
 
 	private long totalTime;
 	private long frameCount;
@@ -44,17 +44,17 @@ public class SpawnHandler {
 	private int swarmType4;
 	private int swarmLocation4;
 	
-	public SpawnHandler(String difficulty) {
+	public SpawnHandler(Engine.Difficulty difficulty) {
 		this.diff = difficulty;
 		this.random = new Random();
 		this.frameCount = 0; //so they don't spawn striaght away
 		this.powerUpScore = 5000; //always 5000 from the start.
 		
-		if (diff.equals(Engine.MEDIUM_D)) {
+		if (diff.equals(Engine.Difficulty.medium)) {
 			frameCount = 1500;
 		}
 		
-		if (diff.equals(Engine.HARD_D)) { //so it starts with hard things
+		if (diff.equals(Engine.Difficulty.hard)) { //so it starts with hard things
 			frameCount = 7000;
 		}
  	}
@@ -122,13 +122,13 @@ public class SpawnHandler {
 		if (frameCount % 3600 == 1) {
 			double inc = 0.15;
 			switch(diff) {
-			case Engine.EASY_D:
+			case easy:
 				inc += 0*0.1; //really?, just a formality at this point
 				break;
-			case Engine.MEDIUM_D:
+			case medium:
 				inc += 1*0.1;
 				break;
-			case Engine.HARD_D:
+			case hard:
 				inc += 2*0.1;
 				break;
 			}
@@ -339,8 +339,8 @@ public class SpawnHandler {
 		}
 
 		double[] playerPos = Engine.player.getPosition(); //need it twice below
-		double width = Engine.settings.getBoardWidth();
-		double height = Engine.settings.getBoardHeight();
+		double width = Engine.settings.boardWidth;
+		double height = Engine.settings.boardHeight;
 		
 		//actually place it in the corner (or random or player)
 		switch (location) {

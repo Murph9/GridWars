@@ -14,6 +14,9 @@ import javax.swing.JTextArea;
  */
 public class FileHelper {
 
+	//save file folder
+	private static final String SAVE_FOLDER = System.getProperty("user.home")+"/.murph9/gridwars/";
+	
 	//Statistics
 	private static final String STATS = "stats.txt", 
 			HIGHEST_SCORE = "high_score", HIGHEST_MULTI = "high_multiplier",
@@ -25,7 +28,7 @@ public class FileHelper {
 	private static final String SETTINGS = "settings.txt",
 			PIXEL_WIDTH = "pixel_width", PIXEL_HEIGHT = "pixel_height",
 			BOARD_WIDTH = "board_width", BOARD_HEIGHT = "board_height", SCALE = "scale",
-			IF_PARTICLES = "particles", PARTICLE_COUNT = "particle_count", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
+			IF_PARTICLES = "particles", PARTICLE_PERCENT = "particle_percent", IF_ANTIALIASING = "antialiasing", IF_SOUND = "sound",
 			NAME = "name", DIFFICULTY = "difficulty", PLAYER_INERTIA = "player_inertia",
 			GRID_X_COUNT = "grid_x_count", GRID_Y_COUNT = "grid_y_count";
 	
@@ -34,109 +37,66 @@ public class FileHelper {
 	//////////////////////////////////////////////////////////////////////////////////
 	//SETTINGS:
 	
-	//returns a int[]: width, height, other boolean (1 = true, 0 = false - same as java)
 	public static GameSettings readSettings() {
-		File file = new File(SETTINGS);
+		File file = new File(SAVE_FOLDER+SETTINGS);
 
-		int pixel_width = -1, pixel_height = -1, board_width = -1, board_height = -1, particleCount = 0;
-		double scale = -1;
-		boolean	particles = true, antialiasing = true, sound = true;
-		String name = "null", diff = "null";
-		int gridX = -1, gridY = -1, inertia = 4;
+		boolean needsNew = false;
+		GameSettings result = null;
 		
 		if (file.exists()) {
 			try {
 				Scanner settings = new Scanner(new FileReader(file));
+				result = new GameSettings();
 				while (settings.hasNext()) {
 					String text = settings.next(); //read it (don't really care for the order)
-					if (text.equals(PIXEL_WIDTH)) pixel_width = settings.nextInt();
-					else if (text.equals(PIXEL_HEIGHT)) pixel_height = settings.nextInt();
+					if (text.equals(PIXEL_WIDTH)) result.pixelWidth = settings.nextInt();
+					else if (text.equals(PIXEL_HEIGHT)) result.pixelHeight = settings.nextInt();
 					
-					else if (text.equals(BOARD_WIDTH)) board_width = settings.nextInt();
-					else if (text.equals(BOARD_HEIGHT)) board_height = settings.nextInt();
+					else if (text.equals(BOARD_WIDTH)) result.boardWidth = settings.nextInt();
+					else if (text.equals(BOARD_HEIGHT)) result.boardHeight = settings.nextInt();
 
-					else if (text.equals(NAME)) name = settings.next();
-					else if (text.equals(PLAYER_INERTIA)) inertia = settings.nextInt();
-					else if (text.equals(SCALE)) scale = settings.nextDouble();
+					else if (text.equals(NAME)) result.name = settings.next();
+					else if (text.equals(PLAYER_INERTIA)) result.inertia = settings.nextInt();
+					else if (text.equals(SCALE)) result.scale = settings.nextDouble();
 					
-					else if (text.equals(DIFFICULTY)) diff = settings.next();
-					else if (text.equals(GRID_X_COUNT)) gridX = settings.nextInt();
-					else if (text.equals(GRID_Y_COUNT)) gridY = settings.nextInt();
+					else if (text.equals(DIFFICULTY)) result.diff = Engine.Difficulty.valueOf(settings.next());
+					else if (text.equals(GRID_X_COUNT)) result.gridXCount = settings.nextInt();
+					else if (text.equals(GRID_Y_COUNT)) result.gridYCount = settings.nextInt();
 					
-					else if (text.equals(IF_SOUND)) sound = settings.nextBoolean();
-					else if (text.equals(IF_PARTICLES)) particles = settings.nextBoolean(); 
-					else if (text.equals(IF_ANTIALIASING)) antialiasing = settings.nextBoolean();
+					else if (text.equals(IF_SOUND)) result.ifSound = settings.nextBoolean();
+					else if (text.equals(IF_PARTICLES)) result.ifParticles = settings.nextBoolean(); 
+					else if (text.equals(IF_ANTIALIASING)) result.ifAliasing = settings.nextBoolean();
 					
-					else if (text.equals(PARTICLE_COUNT)) particleCount = settings.nextInt();
+					else if (text.equals(PARTICLE_PERCENT)) result.particlePercent = settings.nextInt();
 					
 					else {
-						//rewrite is needed but, for testing this will just say:
-						System.err.println("Reverting back to default settings, as something broke.\nOld settings moved to old_####");
-						File oldSettings = new File("old_"+SETTINGS);
-						file.renameTo(oldSettings);
+						//TODO message that it was overwritten
 						
-						GameSettings b = new GameSettings();
-						pixel_width = 1024;
-						pixel_height = 728;
-						sound = true;
-						particles = true;
-						antialiasing = true;
-						name = "me";
-						inertia = 4;
-						particleCount = 100;
-						
-						gridX = 100;
-						gridY = 100;
-						
-						file.delete();
-						writeSettings(b);
-						settings.close();
-						return b;
+						needsNew = true;
+						break;
 					}
 				}
 				settings.close();
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				
 			}
 			
 		} else { //default settings are are below
-			pixel_width = 1024;
-			pixel_height = 728;
-			sound = true;
-			particles = true;
-			antialiasing = true;
-			name = "me";
-			inertia = 4;
-			particleCount = 100;
-			
-			gridX = 100;
-			gridY = 100;
-			
-			GameSettings a = new GameSettings();
-			writeSettings(a); //so it now exists to read from
-			return a;
+			needsNew = true;
 		}
 		
-		GameSettings set = new GameSettings(pixel_width, pixel_height, board_width, board_height, scale);
-		set.setIfAliasing(antialiasing);
-		set.setIfParticles(particles);
-		set.setIfSound(sound); //all this wouldn't fit into constructor
-		set.setName(name);
-		set.setInertia(inertia);
-		set.setParticlePercentage(particleCount);
+		if (needsNew) {
+			result = new GameSettings();
+			writeSettings(result); //so it now exists to read from
+		}
 		
-		set.setDifficulty(diff);
-		set.setGridXCount(gridX);
-		set.setGridYCount(gridY);
-		
-		return set;
+		return result;
 	}
 	
 	//change settings (not many so far) works though
 	public static void writeSettings(GameSettings settings) {
-		File file = new File(SETTINGS);
+		File file = new File(SAVE_FOLDER+SETTINGS);
 		
 		PrintWriter out = null;
 		try {
@@ -147,25 +107,25 @@ public class FileHelper {
 			e.printStackTrace();
 		}
 		
-		out.println(PIXEL_WIDTH +" "+ settings.getPixelWidth());
-		out.println(PIXEL_HEIGHT+" "+ settings.getPixelHeight());
+		out.println(PIXEL_WIDTH +" "+ settings.pixelWidth);
+		out.println(PIXEL_HEIGHT+" "+ settings.pixelHeight);
 		
-		out.println(BOARD_WIDTH +" "+ settings.getBoardWidth());
-		out.println(BOARD_HEIGHT+" "+ settings.getBoardHeight());
-		out.println(SCALE +" "+ settings.getScale());
+		out.println(BOARD_WIDTH +" "+ settings.boardWidth);
+		out.println(BOARD_HEIGHT+" "+ settings.boardHeight);
+		out.println(SCALE +" "+ settings.scale);
 		
-		out.println(NAME +" "+ settings.getName());
-		out.println(PLAYER_INERTIA + " " + settings.getInertia());
+		out.println(NAME +" "+ settings.name);
+		out.println(PLAYER_INERTIA + " " + settings.inertia);
 		
-		out.println(DIFFICULTY + " " + settings.getDifficulty());
-		out.println(GRID_X_COUNT + " " + settings.getGridXCount());
-		out.println(GRID_Y_COUNT + " " + settings.getGridYCount());
+		out.println(DIFFICULTY + " " + settings.diff);
+		out.println(GRID_X_COUNT + " " + settings.gridXCount);
+		out.println(GRID_Y_COUNT + " " + settings.gridYCount);
 		
-		out.println(IF_SOUND +" "+ settings.ifSound());
-		out.println(IF_PARTICLES +" "+ settings.ifParticles());
-		out.println(IF_ANTIALIASING +" "+ settings.ifAliasing());
+		out.println(IF_SOUND +" "+ settings.ifSound);
+		out.println(IF_PARTICLES +" "+ settings.ifParticles);
+		out.println(IF_ANTIALIASING +" "+ settings.ifAliasing);
 		
-		out.println(PARTICLE_COUNT +" "+ settings.getParticlePercentage());
+		out.println(PARTICLE_PERCENT +" "+ settings.particlePercent);
 		
 		out.close();
 	}
@@ -176,7 +136,7 @@ public class FileHelper {
 	
 	//adds the new stats to the stats.txt file
 	public static void addToStats(GameState state) {
-		File file = new File(STATS);
+		File file = new File(SAVE_FOLDER+STATS);
 		
 		Scanner stats = null;
 		int hiScore = 0, multi = 0, powerups = 0, kills = 0, totalScore = 0, 
@@ -276,7 +236,7 @@ public class FileHelper {
 		JTextArea values = new JTextArea("Value: ");
 		values.setOpaque(false);
 		
-		File file = new File(STATS);
+		File file = new File(SAVE_FOLDER+STATS);
 		Scanner stats = null;
 		try {
 			if (!file.exists()) {
@@ -308,11 +268,13 @@ public class FileHelper {
 	//SCORES:
 	//////////////////////////////////////////////////////////////////////////////////
 	
+	private static String diffToFileName(Engine.Difficulty diff) {
+		return SAVE_FOLDER+diff.toString()+Engine.EXT_D;
+	}
+	
 	//writes scores to file (under the current difficulty)
-	public static void writeScore(String diff, int score, String name, int time) {
-		diff += Engine.EXT_D;
-
-		File file = new File(diff);
+	public static void writeScore(Engine.Difficulty diff, int score, String name, int time) {
+		File file = new File(diffToFileName(diff));
 		
 		LinkedList<Record> records = new LinkedList<Record>();
 		
@@ -343,7 +305,7 @@ public class FileHelper {
 		});
 		
 		file.delete();
-		file = new File(diff);
+		file = new File(diffToFileName(diff));
 		
 		PrintWriter out = null;
 		try {
@@ -361,13 +323,10 @@ public class FileHelper {
 	}
 	
 	//returns the best score for the UI best score function
-	public static int getBestScore(String diff) {
-		diff += Engine.EXT_D;
-		
-		File file = new File(diff);
+	public static int getBestScore(Engine.Difficulty diff) {
+		File file = new File(diffToFileName(diff));
 		
 		LinkedList<Record> records = new LinkedList<Record>();
-		
 		if (file.exists()) {
 			try {
 				Scanner scores = new Scanner(new FileReader(file));
@@ -391,39 +350,46 @@ public class FileHelper {
 			}
 		});
 		
-//		if (records.isEmpty()) {
-//			return 0;
-//		} else {
-		return records.getFirst().getScore();
+		if (records.isEmpty()) {
+			return 0;
+		} else {
+			return records.getFirst().getScore();
+		}
 	}
-//	}
 	
 	
 	////////////////////////
 	//JTextArea stuff:
 
 	//returns the TextArea of the scores (for displaying)
-	public static JPanel getLeaderBoard(String diff) {
+	public static JPanel getLeaderBoard(Engine.Difficulty diff) {
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridBagLayout());
 		
-		diff += Engine.EXT_D;
-		File file = new File(diff);
+		//try to open
+		File file = new File(diffToFileName(diff));
 		if (!file.exists()) {
-			throw new IllegalArgumentException("Input file must exist for this method");
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
-		String label = "null";
-		
-		if (diff.equals(Engine.EASY_D + Engine.EXT_D)) {
-			label = "Easy Records";
-		} else if (diff.equals(Engine.MEDIUM_D + Engine.EXT_D)) {
-			label = "Medium Records";
-		} else if (diff.equals(Engine.HARD_D + Engine.EXT_D)){
-			label = "Hard Records";
-		} else {
-			throw new IllegalArgumentException("Please use one of the default difficulties");
+		String label = null;
+		switch(diff){
+			case easy:
+				label = "Easy Records";
+				break;
+			case medium:
+				label = "Medium Records";
+				break;
+			case hard:
+				label = "Hard Records";
+				break;
+			default:
+				throw new IllegalArgumentException("Please use one of the default difficulties");
 		}
 		panel.setBorder(BorderFactory.createTitledBorder(label));
 		

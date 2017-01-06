@@ -63,7 +63,7 @@ public class TheGame {
 	}
 	
 	//initalise the game to have working values
-	public void initGame(String difficulty) {
+	public void initGame(Engine.Difficulty difficulty) {
 		if (!readGUI()) return; //make sure the gui has logical values
 
 		if (engine != null) { //i.e not the first run of the game
@@ -165,7 +165,7 @@ public class TheGame {
 	}
 	
 	public static void reloadMenu(GameState state, String name) {
-		FileHelper.writeScore(Engine.EASY_D, state.getScore(), name, (int)state.getTime());
+		FileHelper.writeScore(Engine.Difficulty.easy, state.getScore(), name, (int)state.getTime());
 		FileHelper.addToStats(state);
 		
 		GUIFrame.setVisible(true);

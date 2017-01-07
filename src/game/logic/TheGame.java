@@ -34,7 +34,7 @@ public class TheGame {
 	
 	private static final int DEFAULT_GRID_X_COUNT = 100;
 	private static final int DEFAULT_GRID_Y_COUNT = 60;
-	
+		
  	public static void main(String[] args) {
 		TheGame system = new TheGame();
 		system.initMenu();

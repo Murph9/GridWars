@@ -2,6 +2,9 @@ package game.logic;
 import game.objects.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -128,7 +131,7 @@ public class Engine implements GLEventListener {
 		myTime = System.currentTimeMillis(); //this is here because of timing
 		GL2 gl = drawable.getGL().getGL2();
 		
-		String img = "images/"; //because everything is in its own folder
+		String img = "/images/"; //because everything is in its own folder
 		
 		////textures
 		textures[PLAYER] = new MyTexture(gl, img + "player.png");
@@ -158,11 +161,11 @@ public class Engine implements GLEventListener {
 		textures[PLAYER_SHEILD] = new MyTexture(gl, img+"playerShield.png");
 		
 		////sounds
-		sounds[SHOT_HARD] = new File("sounds/shot_hard.wav");
-		sounds[SHOT_SOFT] = new File("sounds/shot_soft.wav");
-		sounds[POWERUP] = new File("sounds/powerup.wav");
-		sounds[POWERUP2] = new File("sounds/powerup2.wav");
-		sounds[SPAWN] = new File("sounds/spawn.wav");
+		sounds[SHOT_HARD] = getResourceAsFile("/sounds/shot_hard.wav");
+		sounds[SHOT_SOFT] = getResourceAsFile("/sounds/shot_soft.wav");
+		sounds[POWERUP] = getResourceAsFile("/sounds/powerup.wav");
+		sounds[POWERUP2] = getResourceAsFile("/sounds/powerup2.wav");
+		sounds[SPAWN] = getResourceAsFile("/sounds/spawn.wav");
 		
 		
 		playerPos = player.getPosition(); //this is here because it requires a screen to function, rather than in the constuctor
@@ -196,6 +199,34 @@ public class Engine implements GLEventListener {
 		//this seems to be fine above, check the shader use in draw
 		
 		SoundEffect.setSound(settings.ifSound);
+	}
+	
+	private File getResourceAsFile(String path) {
+		try {
+			InputStream in = getClass().getResourceAsStream(path);
+			if (in == null)
+				throw new Exception("Could not load file at path: " + path);
+			
+			File tempFile = File.createTempFile(String.valueOf(in.hashCode()), ".tmp");
+			tempFile.deleteOnExit();
+			
+			try (FileOutputStream out = new FileOutputStream(tempFile)) {
+				//copy stream
+				byte[] buffer = new byte[1024];
+				int bytesRead;
+				while ((bytesRead = in.read(buffer)) != -1) {
+					out.write(buffer, 0, bytesRead);
+				}
+			}
+			return tempFile;
+			
+		} catch (IOException e) { 
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override

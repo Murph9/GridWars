@@ -1,7 +1,6 @@
 package game.logic;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -32,11 +31,10 @@ public class MyTexture {
 		mipMapEnabled = mipmaps;
 		TextureData data = null;
 		try {
-			 File file = new File(fileName);
-			 BufferedImage img = ImageIO.read(file); // read file into BufferedImage
-			 ImageUtil.flipImageVertically(img);
+			BufferedImage img = ImageIO.read(getClass().getResourceAsStream(fileName));
+			ImageUtil.flipImageVertically(img);
 			 
-			 //This library call flips all images the same way
+			//This library call flips all images the same way
 			data = AWTTextureIO.newTextureData(GLProfile.getDefault(), img, false);
 			
 		} catch (IOException exc) {

@@ -1,7 +1,7 @@
 package game.logic;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -33,10 +33,10 @@ public class ShaderControl {
 
     // loads the shaders
     // in this example we assume that the shader is a file located in the applications JAR file.
-    public String[] loadShader( String name ) {
+    public String[] loadShader(String name) {
         StringBuilder sb = new StringBuilder();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(name));
+            BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(name)));
             String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line);
@@ -49,13 +49,12 @@ public class ShaderControl {
         }
 
         System.err.println("Read shader: " + name); 
-//        System.err.println(sb.toString());
         return new String[]{sb.toString()};
     }
 
     // This compiles and loads the shader to the video card.
     // if there is a problem with the source the program will exit at this point.
-    private void attachShaders( GL2 gl ) throws Exception {
+    private void attachShaders(GL2 gl) throws Exception {
         vertexShaderProgram = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
         fragmentShaderProgram = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
         
@@ -73,7 +72,6 @@ public class ShaderControl {
         IntBuffer intBuffer = IntBuffer.allocate(1);
         
         gl.glGetProgramiv(shaderprogram, GL2.GL_LINK_STATUS, intBuffer);
-//        System.err.println("Linked?   " +intBuffer.get(0));
         
         if (intBuffer.get(0) != GL2.GL_TRUE) { //better than writing ' == GL2.GL_FALSE'
         	
@@ -97,14 +95,14 @@ public class ShaderControl {
     // this function is called when you want to activate the shader.
     // Once activated, it will be applied to anything that you draw from here on
     // until you call the dontUseShader(GL) function.
-    public int useShader( GL2 gl ) {
+    public int useShader(GL2 gl) {
         gl.glUseProgram(shaderprogram);
         return shaderprogram;
     }
 
     // when you have finished drawing everything that you want using the shaders, 
     // call this to stop further shader interactions.
-    public void dontUseShader( GL2 gl ) {
+    public void dontUseShader(GL2 gl) {
         gl.glUseProgram(0);
     }
 }

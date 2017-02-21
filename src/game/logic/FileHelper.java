@@ -369,6 +369,11 @@ public class FileHelper {
 		
 		//try to open
 		File file = new File(diffToFileName(diff));
+		File parent = file.getParentFile();
+		if (!parent.exists() && !parent.mkdirs()) {
+		    throw new IllegalStateException("Couldn't create dir: " + parent);
+		}
+		
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
